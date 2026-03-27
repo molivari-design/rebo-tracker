@@ -86,6 +86,19 @@
       text-transform: uppercase;
     }
     .header-right { display: flex; align-items: center; gap: 12px; }
+    /* ── NAV ── */
+    .header-nav { display: flex; align-items: center; gap: 2px; margin-right: 8px; }
+    .nav-btn {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 0.95rem;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      padding: 6px 14px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { color: var(--text); }
+    .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
     #btn-new-project {
       background: var(--accent);
       color: #0c0c0c;
@@ -665,6 +678,267 @@
       text-transform: uppercase;
     }
 
+    /* ── DIARIO & TODO SECTIONS ── */
+    .main-section { display: none !important; }
+    .main-section.active { display: block !important; }
+    #board.active { display: grid !important; }
+
+    .section-page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 28px;
+    }
+    .section-page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-page-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2rem;
+      letter-spacing: 6px;
+      color: var(--text-bright);
+    }
+    .section-page-title span { color: var(--accent); }
+
+    /* ── DIARIO ── */
+    .diario-entry {
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      margin-bottom: 12px;
+    }
+    .diario-entry-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg3);
+      cursor: pointer;
+    }
+    .diario-entry-header:hover { background: var(--bg4); }
+    .diario-entry-meta { display: flex; align-items: center; gap: 14px; }
+    .diario-date {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1rem;
+      letter-spacing: 3px;
+      color: var(--accent);
+    }
+    .diario-title-text {
+      font-size: 11px;
+      color: var(--text);
+      letter-spacing: 1px;
+    }
+    .diario-entry-body { padding: 16px 18px; display: none; }
+    .diario-entry-body.open { display: block; }
+    .diario-text {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.8;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .diario-entry-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .btn-icon {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      transition: all 0.15s;
+    }
+    .btn-icon:hover { color: var(--text); border-color: var(--border2); }
+    .btn-icon.danger:hover { color: var(--red); border-color: var(--red); }
+
+    /* New entry form */
+    .diario-new-form {
+      border: 1px solid var(--border2);
+      background: var(--bg2);
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+    .diario-new-form.hidden { display: none; }
+    .diario-form-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .diario-textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      color: var(--text-bright);
+      padding: 10px 12px;
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      outline: none;
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.7;
+      transition: border-color 0.15s;
+    }
+    .diario-textarea:focus { border-color: var(--accent); }
+    .diario-form-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    /* ── TODO ── */
+    .todo-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .todo-filter-btn {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border: 1px solid transparent;
+      padding: 4px 10px;
+      transition: all 0.15s;
+    }
+    .todo-filter-btn:hover { color: var(--text); border-color: var(--border2); }
+    .todo-filter-btn.active { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
+    .todo-count-label { margin-left: auto; font-size: 10px; color: var(--text-dim); letter-spacing: 2px; }
+
+    /* New todo form */
+    .todo-new-form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      align-items: flex-start;
+    }
+    .todo-new-form.hidden { display: none; }
+    .todo-new-inputs {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .todo-new-row { display: flex; gap: 8px; }
+    .todo-priority-select {
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      color: var(--text-bright);
+      padding: 8px 10px;
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      outline: none;
+      width: 110px;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .todo-priority-select:focus { border-color: var(--accent); }
+    .todo-date-input {
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      color: var(--text-bright);
+      padding: 8px 10px;
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      outline: none;
+      flex: 1;
+      transition: border-color 0.15s;
+    }
+    .todo-date-input:focus { border-color: var(--accent); }
+
+    /* Todo list */
+    .todo-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      margin-bottom: 6px;
+      transition: opacity 0.2s;
+    }
+    .todo-item.completed { opacity: 0.45; }
+    .todo-item.overdue { border-left: 3px solid var(--red); }
+    .todo-check {
+      width: 16px;
+      height: 16px;
+      border: 1px solid var(--border2);
+      flex-shrink: 0;
+      cursor: pointer;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .todo-check:hover { border-color: var(--accent); }
+    .todo-check.checked {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .todo-check.checked::after {
+      content: '✓';
+      font-size: 10px;
+      color: #0c0c0c;
+      font-weight: bold;
+    }
+    .todo-body { flex: 1; min-width: 0; }
+    .todo-text {
+      font-size: 12px;
+      color: var(--text-bright);
+      line-height: 1.4;
+      margin-bottom: 5px;
+    }
+    .todo-item.completed .todo-text {
+      text-decoration: line-through;
+      color: var(--text-dim);
+    }
+    .todo-meta-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .priority-badge {
+      font-size: 9px;
+      letter-spacing: 2px;
+      padding: 2px 6px;
+      text-transform: uppercase;
+    }
+    .priority-alta { color: var(--red); border: 1px solid var(--red); background: rgba(239,68,68,0.08); }
+    .priority-media { color: var(--yellow); border: 1px solid var(--yellow); background: rgba(251,191,36,0.08); }
+    .priority-baja { color: var(--text-dim); border: 1px solid var(--border2); }
+    .todo-date-label { font-size: 10px; color: var(--text-dim); }
+    .todo-date-label.overdue { color: var(--red); }
+    .overdue-badge {
+      font-size: 9px;
+      color: var(--red);
+      letter-spacing: 2px;
+      padding: 2px 6px;
+      border: 1px solid var(--red);
+      background: rgba(239,68,68,0.08);
+    }
+    .btn-remove-todo {
+      font-size: 14px;
+      color: var(--text-dim);
+      padding: 0 4px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      transition: color 0.15s;
+    }
+    .btn-remove-todo:hover { color: var(--red); }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       #board { grid-template-columns: repeat(2, 1fr); }
@@ -675,6 +949,8 @@
       #modal-detail, #modal-new { width: 100vw; }
       #header { padding: 0 16px; }
       #filter-bar { padding: 10px 16px; overflow-x: auto; }
+      .section-page { padding: 20px 16px; }
+      .diario-form-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -691,6 +967,12 @@
     </div>
   </div>
   <div class="header-right">
+    <nav class="header-nav">
+      <button class="nav-btn active" data-view="board">BOARD</button>
+      <button class="nav-btn" data-view="diario">DIARIO</button>
+      <button class="nav-btn" data-view="todo">TO-DO</button>
+    </nav>
+    <div class="header-divider"></div>
     <span id="project-count"></span>
     <button id="btn-new-project">+ NUEVO PROYECTO</button>
   </div>
@@ -708,7 +990,7 @@
 </div>
 
 <!-- ── BOARD ── -->
-<div id="board">
+<div id="board" class="main-section active">
   <div class="column" data-stage="preproduccion">
     <div class="column-header">
       <span class="column-title">PRE-PRODUCCIÓN</span>
@@ -736,6 +1018,76 @@
       <span class="column-count">0</span>
     </div>
     <div class="column-cards"></div>
+  </div>
+</div>
+
+<!-- ── DIARIO ── -->
+<div id="section-diario" class="main-section">
+  <div class="section-page">
+    <div class="section-page-header">
+      <span class="section-page-title">DIARIO <span>DE PRODUCCIÓN</span></span>
+      <button id="btn-new-entry" class="btn-add-piece">+ NUEVA ENTRADA</button>
+    </div>
+
+    <!-- New entry form -->
+    <div class="diario-new-form hidden" id="diario-new-form">
+      <div class="diario-form-row">
+        <div class="form-group">
+          <label class="form-label">Fecha</label>
+          <input type="date" class="form-input" id="de-date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Título (opcional)</label>
+          <input type="text" class="form-input" id="de-title" placeholder="ej: Rodaje día 1 Tecate" autocomplete="off">
+        </div>
+      </div>
+      <textarea class="diario-textarea" id="de-text" placeholder="Escribí el registro del día…"></textarea>
+      <div class="diario-form-actions">
+        <button class="btn-cancel" id="de-cancel">CANCELAR</button>
+        <button class="btn-submit" id="de-save">GUARDAR ENTRADA</button>
+      </div>
+    </div>
+
+    <!-- Entries list -->
+    <div id="diario-list"></div>
+  </div>
+</div>
+
+<!-- ── TO-DO ── -->
+<div id="section-todo" class="main-section">
+  <div class="section-page">
+    <div class="section-page-header">
+      <span class="section-page-title">TO-DO <span>LIST</span></span>
+      <button id="btn-new-todo" class="btn-add-piece">+ NUEVA TAREA</button>
+    </div>
+
+    <!-- New task form -->
+    <div class="todo-new-form hidden" id="todo-new-form">
+      <div class="todo-new-inputs">
+        <input type="text" class="input-field" id="td-text" placeholder="Descripción de la tarea…" autocomplete="off">
+        <div class="todo-new-row">
+          <select class="todo-priority-select" id="td-priority">
+            <option value="alta">⬆ ALTA</option>
+            <option value="media" selected>— MEDIA</option>
+            <option value="baja">⬇ BAJA</option>
+          </select>
+          <input type="date" class="todo-date-input" id="td-date">
+          <button class="btn-confirm" id="td-save">OK</button>
+          <button class="btn-cancel" id="td-cancel">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="todo-toolbar">
+      <button class="todo-filter-btn active" data-tf="all">TODAS</button>
+      <button class="todo-filter-btn" data-tf="pending">PENDIENTES</button>
+      <button class="todo-filter-btn" data-tf="overdue">ATRASADAS</button>
+      <span class="todo-count-label" id="todo-count"></span>
+    </div>
+
+    <!-- Tasks list -->
+    <div id="todo-list"></div>
   </div>
 </div>
 
@@ -1374,8 +1726,315 @@ class ReboTracker {
   }
 }
 
+// ── DIARIO ────────────────────────────────────────────────────────────────
+class Diario {
+  constructor(toast) {
+    this.toast = toast;
+    this.entries = [];
+    this.load();
+    this.bindEvents();
+    this.render();
+  }
+
+  load() {
+    try { this.entries = JSON.parse(localStorage.getItem('rebo-diario') || '[]'); } catch { this.entries = []; }
+  }
+  save() { localStorage.setItem('rebo-diario', JSON.stringify(this.entries)); }
+  uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,5); }
+
+  fmtDate(d) {
+    if (!d) return '—';
+    const [y,m,day] = d.split('-');
+    const months = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+    return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
+  }
+
+  bindEvents() {
+    document.getElementById('btn-new-entry').addEventListener('click', () => {
+      const form = document.getElementById('diario-new-form');
+      form.classList.toggle('hidden');
+      if (!form.classList.contains('hidden')) {
+        // Default to today
+        document.getElementById('de-date').value = new Date().toISOString().slice(0,10);
+        document.getElementById('de-text').focus();
+      }
+    });
+    document.getElementById('de-cancel').addEventListener('click', () => {
+      document.getElementById('diario-new-form').classList.add('hidden');
+      this.clearForm();
+    });
+    document.getElementById('de-save').addEventListener('click', () => this.saveEntry());
+    document.getElementById('de-text').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.ctrlKey) this.saveEntry();
+    });
+  }
+
+  clearForm() {
+    document.getElementById('de-date').value = '';
+    document.getElementById('de-title').value = '';
+    document.getElementById('de-text').value = '';
+  }
+
+  saveEntry() {
+    const date = document.getElementById('de-date').value;
+    const text = document.getElementById('de-text').value.trim();
+    if (!date) { this.toast('Seleccioná una fecha'); return; }
+    if (!text) { this.toast('Escribí algo en la entrada'); return; }
+    this.entries.unshift({
+      id: this.uid(),
+      date,
+      title: document.getElementById('de-title').value.trim(),
+      text,
+      createdAt: new Date().toISOString()
+    });
+    // Keep sorted by date desc
+    this.entries.sort((a, b) => b.date.localeCompare(a.date));
+    this.save();
+    this.clearForm();
+    document.getElementById('diario-new-form').classList.add('hidden');
+    this.render();
+    this.toast('Entrada guardada');
+  }
+
+  deleteEntry(id) {
+    this.entries = this.entries.filter(e => e.id !== id);
+    this.save();
+    this.render();
+    this.toast('Entrada eliminada');
+  }
+
+  render() {
+    const list = document.getElementById('diario-list');
+    if (!this.entries.length) {
+      list.innerHTML = '<div class="empty-col" style="padding:40px 0">Sin entradas — creá la primera arriba</div>';
+      return;
+    }
+    list.innerHTML = this.entries.map((entry, i) => `
+      <div class="diario-entry">
+        <div class="diario-entry-header" data-idx="${i}">
+          <div class="diario-entry-meta">
+            <span class="diario-date">${this.fmtDate(entry.date)}</span>
+            ${entry.title ? `<span class="diario-title-text">${this.escHtml(entry.title)}</span>` : ''}
+          </div>
+          <span style="color:var(--text-dim);font-size:10px">▼</span>
+        </div>
+        <div class="diario-entry-body" id="de-body-${entry.id}">
+          <div class="diario-text">${this.escHtml(entry.text)}</div>
+          <div class="diario-entry-actions">
+            <button class="btn-icon danger de-delete" data-id="${entry.id}">ELIMINAR</button>
+          </div>
+        </div>
+      </div>`).join('');
+
+    // Toggle expand
+    list.querySelectorAll('.diario-entry-header').forEach(h => {
+      h.addEventListener('click', () => {
+        const body = h.closest('.diario-entry').querySelector('.diario-entry-body');
+        body.classList.toggle('open');
+        h.querySelector('span:last-child').textContent = body.classList.contains('open') ? '▲' : '▼';
+      });
+    });
+    // Auto-open first
+    const first = list.querySelector('.diario-entry-body');
+    if (first) { first.classList.add('open'); list.querySelector('.diario-entry-header span:last-child').textContent = '▲'; }
+
+    // Delete
+    list.querySelectorAll('.de-delete').forEach(btn => {
+      btn.addEventListener('click', e => { e.stopPropagation(); this.deleteEntry(btn.dataset.id); });
+    });
+  }
+
+  escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+}
+
+// ── TODO ──────────────────────────────────────────────────────────────────
+class Todo {
+  constructor(toast) {
+    this.toast = toast;
+    this.tasks = [];
+    this.filter = 'all';
+    this.load();
+    this.bindEvents();
+    this.render();
+  }
+
+  load() {
+    try { this.tasks = JSON.parse(localStorage.getItem('rebo-todo') || '[]'); } catch { this.tasks = []; }
+  }
+  save() { localStorage.setItem('rebo-todo', JSON.stringify(this.tasks)); }
+  uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,5); }
+
+  today() { return new Date().toISOString().slice(0,10); }
+
+  isOverdue(task) {
+    if (task.completed || !task.date) return false;
+    return task.date < this.today();
+  }
+
+  fmtDate(d) {
+    if (!d) return '';
+    const [y,m,day] = d.split('-');
+    const months = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+    return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
+  }
+
+  bindEvents() {
+    document.getElementById('btn-new-todo').addEventListener('click', () => {
+      const form = document.getElementById('todo-new-form');
+      form.classList.toggle('hidden');
+      if (!form.classList.contains('hidden')) {
+        document.getElementById('td-date').value = this.today();
+        document.getElementById('td-text').focus();
+      }
+    });
+    document.getElementById('td-cancel').addEventListener('click', () => {
+      document.getElementById('todo-new-form').classList.add('hidden');
+      this.clearForm();
+    });
+    document.getElementById('td-save').addEventListener('click', () => this.addTask());
+    document.getElementById('td-text').addEventListener('keydown', e => {
+      if (e.key === 'Enter') this.addTask();
+      if (e.key === 'Escape') document.getElementById('td-cancel').click();
+    });
+
+    // Filters
+    document.querySelectorAll('.todo-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.todo-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.filter = btn.dataset.tf;
+        this.render();
+      });
+    });
+  }
+
+  clearForm() {
+    document.getElementById('td-text').value = '';
+    document.getElementById('td-priority').value = 'media';
+    document.getElementById('td-date').value = '';
+  }
+
+  addTask() {
+    const text = document.getElementById('td-text').value.trim();
+    if (!text) { this.toast('Escribí la tarea'); return; }
+    this.tasks.unshift({
+      id: this.uid(),
+      text,
+      priority: document.getElementById('td-priority').value,
+      date: document.getElementById('td-date').value,
+      completed: false,
+      createdAt: new Date().toISOString()
+    });
+    this.save();
+    this.clearForm();
+    document.getElementById('todo-new-form').classList.add('hidden');
+    this.render();
+    this.toast('Tarea agregada');
+  }
+
+  toggleTask(id) {
+    const t = this.tasks.find(t => t.id === id);
+    if (t) { t.completed = !t.completed; this.save(); this.render(); }
+  }
+
+  deleteTask(id) {
+    this.tasks = this.tasks.filter(t => t.id !== id);
+    this.save();
+    this.render();
+  }
+
+  getFiltered() {
+    let list = [...this.tasks];
+    // Sort: incomplete first, then by priority, then by date
+    const pOrder = { alta: 0, media: 1, baja: 2 };
+    list.sort((a, b) => {
+      if (a.completed !== b.completed) return a.completed ? 1 : -1;
+      if (this.isOverdue(a) !== this.isOverdue(b)) return this.isOverdue(a) ? -1 : 1;
+      if (pOrder[a.priority] !== pOrder[b.priority]) return pOrder[a.priority] - pOrder[b.priority];
+      if (a.date && b.date) return a.date.localeCompare(b.date);
+      return 0;
+    });
+    if (this.filter === 'pending') list = list.filter(t => !t.completed);
+    if (this.filter === 'overdue') list = list.filter(t => this.isOverdue(t));
+    return list;
+  }
+
+  render() {
+    const filtered = this.getFiltered();
+    const total = this.tasks.length;
+    const done = this.tasks.filter(t => t.completed).length;
+    const overdue = this.tasks.filter(t => this.isOverdue(t)).length;
+    document.getElementById('todo-count').textContent =
+      `${done}/${total} COMPLETADAS${overdue ? ` · ${overdue} ATRASADA${overdue > 1 ? 'S' : ''}` : ''}`;
+
+    const list = document.getElementById('todo-list');
+    if (!filtered.length) {
+      list.innerHTML = '<div class="empty-col" style="padding:40px 0">Sin tareas</div>';
+      return;
+    }
+
+    list.innerHTML = filtered.map(t => {
+      const overdue = this.isOverdue(t);
+      const classes = ['todo-item', t.completed ? 'completed' : '', overdue ? 'overdue' : ''].filter(Boolean).join(' ');
+      return `
+        <div class="${classes}" data-id="${t.id}">
+          <div class="todo-check ${t.completed ? 'checked' : ''}" data-id="${t.id}"></div>
+          <div class="todo-body">
+            <div class="todo-text">${this.escHtml(t.text)}</div>
+            <div class="todo-meta-row">
+              <span class="priority-badge priority-${t.priority}">${t.priority.toUpperCase()}</span>
+              ${t.date ? `<span class="todo-date-label ${overdue ? 'overdue' : ''}">${this.fmtDate(t.date)}</span>` : ''}
+              ${overdue ? '<span class="overdue-badge">ATRASADA</span>' : ''}
+            </div>
+          </div>
+          <button class="btn-remove-todo" data-id="${t.id}">✕</button>
+        </div>`;
+    }).join('');
+
+    list.querySelectorAll('.todo-check').forEach(el => {
+      el.addEventListener('click', () => this.toggleTask(el.dataset.id));
+    });
+    list.querySelectorAll('.btn-remove-todo').forEach(btn => {
+      btn.addEventListener('click', () => this.deleteTask(btn.dataset.id));
+    });
+  }
+
+  escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────
+function initNav(app) {
+  const views = {
+    board: document.getElementById('board'),
+    diario: document.getElementById('section-diario'),
+    todo: document.getElementById('section-todo'),
+  };
+  const filterBar = document.getElementById('filter-bar');
+  const btnNewProject = document.getElementById('btn-new-project');
+  const projectCount = document.getElementById('project-count');
+
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      Object.values(views).forEach(el => el.classList.remove('active'));
+      views[view].classList.add('active');
+      // Show/hide board-specific UI
+      const isBoard = view === 'board';
+      filterBar.style.display = isBoard ? '' : 'none';
+      btnNewProject.style.display = isBoard ? '' : 'none';
+      projectCount.style.display = isBoard ? '' : 'none';
+    });
+  });
+}
+
 // ── BOOT ───────────────────────────────────────────────────────────────────
 const app = new ReboTracker();
+const toastFn = (msg) => app.toast(msg);
+const diario = new Diario(toastFn);
+const todo = new Todo(toastFn);
+initNav(app);
 </script>
 </body>
 </html>
