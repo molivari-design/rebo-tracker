@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REBO TRACKER</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0c0c0c;
+      --bg2: #111111;
+      --bg3: #181818;
+      --bg4: #1f1f1f;
+      --border: #272727;
+      --border2: #333333;
+      --text: #c8c8c8;
+      --text-dim: #555;
+      --text-bright: #e8e8e8;
+      --accent: #e8ff47;
+      --accent-dim: rgba(232,255,71,0.12);
+      --blue: #60a5fa;
+      --yellow: #fbbf24;
+      --orange: #f97316;
+      --green: #4ade80;
+      --red: #ef4444;
+      --col-pre: #60a5fa;
+      --col-prod: #fbbf24;
+      --col-post: #f97316;
+      --col-entrega: #4ade80;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    button { cursor: pointer; font-family: inherit; border: none; background: none; }
+    input, select, textarea { font-family: inherit; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); }
+
+    /* ── HEADER ── */
+    #header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      height: 60px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .logo {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.2rem;
+      color: var(--accent);
+      letter-spacing: 6px;
+      line-height: 1;
+    }
+    .header-divider { width: 1px; height: 28px; background: var(--border2); }
+    .header-titles { display: flex; flex-direction: column; gap: 1px; }
+    .header-title-main {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.1rem;
+      color: var(--text-bright);
+      letter-spacing: 4px;
+      line-height: 1;
+    }
+    .header-title-sub {
+      font-size: 9px;
+      color: var(--text-dim);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    #btn-new-project {
+      background: var(--accent);
+      color: #0c0c0c;
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1rem;
+      letter-spacing: 3px;
+      padding: 8px 18px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    #btn-new-project:hover { opacity: 0.85; }
+    #project-count {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 2px;
+    }
+
+    /* ── FILTER BAR ── */
+    #filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 12px 28px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .filter-label {
+      font-size: 9px;
+      color: var(--text-dim);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-right: 10px;
+    }
+    .filter-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border: 1px solid transparent;
+      padding: 5px 12px;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { color: var(--text); border-color: var(--border2); }
+    .filter-btn.active {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    /* ── BOARD ── */
+    #board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      min-height: calc(100vh - 120px);
+      border-left: 1px solid var(--border);
+    }
+    .column {
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 120px);
+    }
+    .column-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 60px;
+      background: var(--bg);
+      z-index: 50;
+    }
+    .column-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1rem;
+      letter-spacing: 4px;
+    }
+    .column[data-stage="preproduccion"] .column-title { color: var(--col-pre); }
+    .column[data-stage="produccion"] .column-title { color: var(--col-prod); }
+    .column[data-stage="postproduccion"] .column-title { color: var(--col-post); }
+    .column[data-stage="entrega"] .column-title { color: var(--col-entrega); }
+
+    .column[data-stage="preproduccion"] { border-top: 2px solid var(--col-pre); }
+    .column[data-stage="produccion"] { border-top: 2px solid var(--col-prod); }
+    .column[data-stage="postproduccion"] { border-top: 2px solid var(--col-post); }
+    .column[data-stage="entrega"] { border-top: 2px solid var(--col-entrega); }
+
+    .column-count {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.2rem;
+      color: var(--text-dim);
+      letter-spacing: 2px;
+    }
+    .column-cards {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    /* ── CARDS ── */
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+    }
+    .column[data-stage="preproduccion"] .project-card::before { background: var(--col-pre); }
+    .column[data-stage="produccion"] .project-card::before { background: var(--col-prod); }
+    .column[data-stage="postproduccion"] .project-card::before { background: var(--col-post); }
+    .column[data-stage="entrega"] .project-card::before { background: var(--col-entrega); }
+    .project-card:hover { border-color: var(--border2); background: var(--bg3); }
+    .card-inner { padding: 12px 12px 12px 15px; }
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .card-client {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.1rem;
+      color: var(--text-bright);
+      letter-spacing: 3px;
+      line-height: 1;
+    }
+    .division-badge {
+      font-size: 9px;
+      letter-spacing: 2px;
+      padding: 2px 6px;
+      border: 1px solid;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .division-mx { color: var(--blue); border-color: var(--blue); }
+    .division-miami { color: var(--orange); border-color: var(--orange); }
+    .card-name {
+      font-size: 11px;
+      color: var(--text);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 10px;
+    }
+    .card-meta-row {
+      font-size: 10px;
+      color: var(--text-dim);
+      display: flex;
+      gap: 6px;
+    }
+    .card-meta-label { color: var(--text-dim); }
+    .card-meta-val { color: var(--text); }
+    .card-progress-wrap {
+      height: 2px;
+      background: var(--border);
+      margin: 0 -12px 0 -15px;
+      margin-bottom: 8px;
+    }
+    .card-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.3s;
+    }
+    .card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+    .tag {
+      font-size: 9px;
+      letter-spacing: 1px;
+      padding: 2px 5px;
+      background: var(--bg4);
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+    .card-progress-pct {
+      font-size: 10px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .card-progress-pct.zero { color: var(--text-dim); }
+
+    /* ── MODAL OVERLAY ── */
+    #modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 200;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+    #modal-overlay.hidden { display: none; }
+
+    /* ── MODAL DETAIL ── */
+    #modal-detail {
+      width: 600px;
+      max-width: 100vw;
+      height: 100vh;
+      background: var(--bg2);
+      border-left: 1px solid var(--border2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #modal-detail.hidden { display: none; }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .modal-header-left { display: flex; flex-direction: column; gap: 3px; }
+    .modal-client {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.6rem;
+      color: var(--text-bright);
+      letter-spacing: 5px;
+      line-height: 1;
+    }
+    .modal-name { font-size: 12px; color: var(--text); letter-spacing: 1px; }
+    .modal-header-right { display: flex; align-items: center; gap: 8px; }
+    .btn-close {
+      font-size: 18px;
+      color: var(--text-dim);
+      padding: 4px 8px;
+      transition: color 0.15s;
+    }
+    .btn-close:hover { color: var(--text-bright); }
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    /* Stage selector in modal */
+    .modal-stage-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 1px solid var(--border);
+    }
+    .stage-btn {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      padding: 10px 8px;
+      text-align: center;
+      color: var(--text-dim);
+      border-right: 1px solid var(--border);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+      line-height: 1.2;
+    }
+    .stage-btn:last-child { border-right: none; }
+    .stage-btn:hover { color: var(--text); background: var(--bg3); }
+    .stage-btn.active-pre { color: var(--col-pre); border-bottom-color: var(--col-pre); background: rgba(96,165,250,0.06); }
+    .stage-btn.active-prod { color: var(--col-prod); border-bottom-color: var(--col-prod); background: rgba(251,191,36,0.06); }
+    .stage-btn.active-post { color: var(--col-post); border-bottom-color: var(--col-post); background: rgba(249,115,22,0.06); }
+    .stage-btn.active-entrega { color: var(--col-entrega); border-bottom-color: var(--col-entrega); background: rgba(74,222,128,0.06); }
+
+    /* Modal info grid */
+    .modal-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .info-cell {
+      padding: 12px 24px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .info-cell:nth-child(2n) { border-right: none; }
+    .info-label {
+      font-size: 9px;
+      color: var(--text-dim);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .info-value { font-size: 12px; color: var(--text-bright); }
+    .info-value.editable {
+      cursor: pointer;
+      border-bottom: 1px dashed var(--border2);
+      transition: border-color 0.15s;
+    }
+    .info-value.editable:hover { border-bottom-color: var(--accent); color: var(--accent); }
+
+    /* ── PIECES ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px 10px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1rem;
+      letter-spacing: 4px;
+      color: var(--text-dim);
+    }
+    .btn-add-piece {
+      font-size: 10px;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 4px 10px;
+      letter-spacing: 2px;
+      transition: background 0.15s;
+    }
+    .btn-add-piece:hover { background: var(--accent-dim); }
+
+    .piece-block {
+      border: 1px solid var(--border);
+      margin: 0 16px 12px;
+      background: var(--bg);
+    }
+    .piece-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg3);
+    }
+    .piece-name {
+      font-size: 11px;
+      color: var(--text-bright);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .piece-progress-mini {
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+    .piece-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-remove-piece {
+      font-size: 14px;
+      color: var(--text-dim);
+      padding: 0 4px;
+      transition: color 0.15s;
+    }
+    .btn-remove-piece:hover { color: var(--red); }
+    .stage-rows { display: flex; flex-direction: column; }
+    .stage-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .stage-row:last-child { border-bottom: none; }
+    .stage-row:hover { background: var(--bg3); }
+    .stage-row-name {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .state-badge {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border: 1px solid;
+      transition: all 0.12s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .state-badge::before {
+      content: '●';
+      font-size: 7px;
+    }
+    .state-pending { color: var(--text-dim); border-color: var(--border2); }
+    .state-inprogress { color: var(--yellow); border-color: var(--yellow); background: rgba(251,191,36,0.08); }
+    .state-done { color: var(--green); border-color: var(--green); background: rgba(74,222,128,0.08); }
+    .state-blocked { color: var(--red); border-color: var(--red); background: rgba(239,68,68,0.08); }
+
+    /* Add piece form */
+    .add-piece-form {
+      display: flex;
+      gap: 8px;
+      padding: 0 16px 12px;
+    }
+    .add-piece-form.hidden { display: none; }
+    .input-field {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      color: var(--text-bright);
+      padding: 8px 12px;
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .input-field:focus { border-color: var(--accent); }
+    .input-field::placeholder { color: var(--text-dim); }
+    .btn-confirm {
+      background: var(--accent);
+      color: #0c0c0c;
+      font-family: 'Bebas Neue', cursive;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      padding: 8px 14px;
+      transition: opacity 0.15s;
+    }
+    .btn-confirm:hover { opacity: 0.85; }
+    .btn-cancel {
+      color: var(--text-dim);
+      border: 1px solid var(--border2);
+      padding: 8px 12px;
+      font-size: 10px;
+      letter-spacing: 1px;
+      transition: all 0.15s;
+    }
+    .btn-cancel:hover { color: var(--text); border-color: var(--border2); }
+
+    /* ── NOTES ── */
+    .notes-section {
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+    }
+    .notes-input-wrap {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      margin-bottom: 14px;
+    }
+    .notes-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      color: var(--text-bright);
+      padding: 8px 12px;
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      outline: none;
+      resize: none;
+      height: 36px;
+      transition: border-color 0.15s;
+    }
+    .notes-input:focus { border-color: var(--accent); height: 72px; }
+    .note-item {
+      border-left: 2px solid var(--border2);
+      padding: 8px 0 8px 12px;
+      margin-bottom: 8px;
+    }
+    .note-text { font-size: 11px; color: var(--text); line-height: 1.5; margin-bottom: 4px; }
+    .note-time { font-size: 9px; color: var(--text-dim); letter-spacing: 1px; }
+
+    /* ── MODAL NEW PROJECT ── */
+    #modal-new {
+      width: 480px;
+      max-width: 100vw;
+      height: 100vh;
+      background: var(--bg2);
+      border-left: 1px solid var(--border2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #modal-new.hidden { display: none; }
+    .new-form-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .new-form-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.4rem;
+      letter-spacing: 5px;
+      color: var(--text-bright);
+    }
+    .new-form-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-label {
+      font-size: 9px;
+      color: var(--text-dim);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .form-input, .form-select {
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      color: var(--text-bright);
+      padding: 10px 12px;
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--accent); }
+    .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23555' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+    .form-select option { background: var(--bg2); }
+    .form-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-shrink: 0;
+    }
+    .btn-submit {
+      background: var(--accent);
+      color: #0c0c0c;
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1rem;
+      letter-spacing: 3px;
+      padding: 10px 24px;
+      transition: opacity 0.15s;
+    }
+    .btn-submit:hover { opacity: 0.85; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--accent);
+      color: #0c0c0c;
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1rem;
+      letter-spacing: 3px;
+      padding: 10px 24px;
+      z-index: 999;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+      pointer-events: none;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── EMPTY STATE ── */
+    .empty-col {
+      padding: 24px 16px;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      #board { grid-template-columns: repeat(2, 1fr); }
+      .column { min-height: auto; }
+    }
+    @media (max-width: 540px) {
+      #board { grid-template-columns: 1fr; }
+      #modal-detail, #modal-new { width: 100vw; }
+      #header { padding: 0 16px; }
+      #filter-bar { padding: 10px 16px; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header id="header">
+  <div class="header-left">
+    <div class="logo">RBO</div>
+    <div class="header-divider"></div>
+    <div class="header-titles">
+      <span class="header-title-main">REBOLUCION</span>
+      <span class="header-title-sub">POST-PRODUCTION TRACKER</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <span id="project-count"></span>
+    <button id="btn-new-project">+ NUEVO PROYECTO</button>
+  </div>
+</header>
+
+<!-- ── FILTER BAR ── -->
+<div id="filter-bar">
+  <span class="filter-label">VER:</span>
+  <button class="filter-btn active" data-filter="all">TODOS</button>
+  <button class="filter-btn" data-filter="MX">MX</button>
+  <button class="filter-btn" data-filter="MIAMI">MIAMI</button>
+  <button class="filter-btn" data-filter="Spot">SPOTS</button>
+  <button class="filter-btn" data-filter="Film">FILMS</button>
+  <button class="filter-btn" data-filter="Digital">DIGITAL</button>
+</div>
+
+<!-- ── BOARD ── -->
+<div id="board">
+  <div class="column" data-stage="preproduccion">
+    <div class="column-header">
+      <span class="column-title">PRE-PRODUCCIÓN</span>
+      <span class="column-count">0</span>
+    </div>
+    <div class="column-cards"></div>
+  </div>
+  <div class="column" data-stage="produccion">
+    <div class="column-header">
+      <span class="column-title">PRODUCCIÓN</span>
+      <span class="column-count">0</span>
+    </div>
+    <div class="column-cards"></div>
+  </div>
+  <div class="column" data-stage="postproduccion">
+    <div class="column-header">
+      <span class="column-title">POST-PRODUCCIÓN</span>
+      <span class="column-count">0</span>
+    </div>
+    <div class="column-cards"></div>
+  </div>
+  <div class="column" data-stage="entrega">
+    <div class="column-header">
+      <span class="column-title">ENTREGA</span>
+      <span class="column-count">0</span>
+    </div>
+    <div class="column-cards"></div>
+  </div>
+</div>
+
+<!-- ── MODAL OVERLAY ── -->
+<div id="modal-overlay" class="hidden">
+
+  <!-- DETAIL MODAL -->
+  <div id="modal-detail" class="hidden">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <span class="modal-client" id="md-client"></span>
+        <span class="modal-name" id="md-name"></span>
+      </div>
+      <div class="modal-header-right">
+        <span class="division-badge" id="md-division"></span>
+        <button class="btn-close" id="btn-close-detail">✕</button>
+      </div>
+    </div>
+
+    <!-- Stage selector -->
+    <div class="modal-stage-bar" id="modal-stage-bar">
+      <button class="stage-btn" data-stage="preproduccion">PRE<br>PRODUCCIÓN</button>
+      <button class="stage-btn" data-stage="produccion">PRODUCCIÓN</button>
+      <button class="stage-btn" data-stage="postproduccion">POST<br>PRODUCCIÓN</button>
+      <button class="stage-btn" data-stage="entrega">ENTREGA</button>
+    </div>
+
+    <div class="modal-body" id="modal-body">
+      <!-- Info grid -->
+      <div class="modal-info" id="md-info-grid"></div>
+
+      <!-- Pieces -->
+      <div class="section-header">
+        <span class="section-title">PIEZAS</span>
+        <button class="btn-add-piece" id="btn-add-piece">+ AGREGAR PIEZA</button>
+      </div>
+      <div id="pieces-list"></div>
+      <div class="add-piece-form hidden" id="add-piece-form">
+        <input type="text" class="input-field" id="new-piece-name" placeholder="ej: Spot 30&quot; / Cutdown 15&quot;" maxlength="60">
+        <button class="btn-confirm" id="confirm-add-piece">OK</button>
+        <button class="btn-cancel" id="cancel-add-piece">✕</button>
+      </div>
+
+      <!-- Notes -->
+      <div class="notes-section">
+        <span class="section-title">NOTAS INTERNAS</span>
+        <div class="notes-input-wrap">
+          <textarea class="notes-input" id="note-input" placeholder="Escribí una nota y presioná Enter…" rows="1"></textarea>
+        </div>
+        <div id="notes-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW PROJECT MODAL -->
+  <div id="modal-new" class="hidden">
+    <div class="new-form-header">
+      <span class="new-form-title">NUEVO PROYECTO</span>
+      <button class="btn-close" id="btn-close-new">✕</button>
+    </div>
+    <div class="new-form-body">
+      <div class="form-group">
+        <label class="form-label">Cliente *</label>
+        <input type="text" class="form-input" id="f-client" placeholder="COCA-COLA" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nombre del proyecto *</label>
+        <input type="text" class="form-input" id="f-name" placeholder="Verano 2026" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Director</label>
+        <input type="text" class="form-input" id="f-director" placeholder="Nombre Apellido" autocomplete="off">
+      </div>
+      <div class="form-group-row">
+        <div class="form-group">
+          <label class="form-label">División *</label>
+          <select class="form-select" id="f-division">
+            <option value="MX">MX</option>
+            <option value="MIAMI">MIAMI</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tipo</label>
+          <select class="form-select" id="f-type">
+            <option value="Spot">Spot</option>
+            <option value="Film">Film</option>
+            <option value="Digital">Digital</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group-row">
+        <div class="form-group">
+          <label class="form-label">Fecha de rodaje</label>
+          <input type="date" class="form-input" id="f-shoot">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha de entrega</label>
+          <input type="date" class="form-input" id="f-delivery">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Etapa inicial</label>
+        <select class="form-select" id="f-stage">
+          <option value="preproduccion">Pre-producción</option>
+          <option value="produccion">Producción</option>
+          <option value="postproduccion">Post-producción</option>
+          <option value="entrega">Entrega</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn-cancel" id="btn-cancel-new">CANCELAR</button>
+      <button class="btn-submit" id="btn-submit-new">CREAR PROYECTO</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── TOAST ── -->
+<div id="toast"></div>
+
+<script>
+// ── CONSTANTS ──────────────────────────────────────────────────────────────
+const STAGE_LABELS = {
+  offline:   'OFFLINE / MONTAJE',
+  color:     'COLOR / ETALONAJE',
+  audio:     'AUDIO / MIX',
+  vfx:       'VFX / MOTION',
+  versiones: 'VERSIONES / SUBS',
+  master:    'MÁSTER Y ENTREGA'
+};
+const STAGE_CYCLE = ['pending', 'inprogress', 'done', 'blocked'];
+const STATE_LABELS = { pending: 'PENDIENTE', inprogress: 'EN CURSO', done: 'LISTO', blocked: 'BLOQUEADO' };
+const STAGE_ACTIVE_CLASS = { preproduccion: 'active-pre', produccion: 'active-prod', postproduccion: 'active-post', entrega: 'active-entrega' };
+
+// ── DEMO DATA ──────────────────────────────────────────────────────────────
+const DEMO_DATA = [
+  {
+    id: 'tecate-001',
+    client: 'TECATE',
+    name: 'Verano 2026',
+    director: 'Armano Bo + Seba Lopez',
+    shootDate: '2026-03-28',
+    deliveryDate: '',
+    division: 'MX',
+    type: 'Spot',
+    stage: 'produccion',
+    tags: ['Spot'],
+    pieces: [
+      { id: 'p1', name: 'Spot 30"', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } },
+      { id: 'p2', name: 'Cutdown 15"', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } },
+      { id: 'p3', name: 'Digital 9:16', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } }
+    ],
+    notes: []
+  },
+  {
+    id: 'popeyes-001',
+    client: 'POPEYES',
+    name: 'Crispy Season',
+    director: 'Lautaro Furiolo',
+    shootDate: '2026-04-02',
+    deliveryDate: '',
+    division: 'MX',
+    type: 'Spot',
+    stage: 'produccion',
+    tags: ['Spot'],
+    pieces: [
+      { id: 'p1', name: 'Spot 30"', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } },
+      { id: 'p2', name: 'Cutdown 15"', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } }
+    ],
+    notes: []
+  },
+  {
+    id: 'santaclara-001',
+    client: 'SANTA CLARA',
+    name: 'Lechitas + Chopeo',
+    director: 'Vellas',
+    shootDate: '',
+    deliveryDate: '2026-04-10',
+    division: 'MX',
+    type: 'Spot',
+    stage: 'postproduccion',
+    tags: ['Spot'],
+    pieces: [
+      { id: 'p1', name: 'Lechitas 30"', stages: { offline: 'done', color: 'inprogress', audio: 'inprogress', vfx: 'pending', versiones: 'pending', master: 'pending' } },
+      { id: 'p2', name: 'Chopeo 30"', stages: { offline: 'done', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } }
+    ],
+    notes: [{ id: 'n1', text: 'Offline aprobado. Esperando grade con colorista.', timestamp: '2026-03-22T14:30:00' }]
+  },
+  {
+    id: 'epson-001',
+    client: 'EPSON',
+    name: 'Print the Future',
+    director: 'Roi Ricci',
+    shootDate: '2026-04-05',
+    deliveryDate: '',
+    division: 'MIAMI',
+    type: 'Spot',
+    stage: 'produccion',
+    tags: ['Spot'],
+    pieces: [
+      { id: 'p1', name: 'Spot 30"', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } },
+      { id: 'p2', name: 'Digital 1:1', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } }
+    ],
+    notes: []
+  },
+  {
+    id: 'intermiami-001',
+    client: 'INTER MIAMI',
+    name: 'Season Opener',
+    director: 'Seba Lopez',
+    shootDate: '',
+    deliveryDate: '2026-03-15',
+    division: 'MIAMI',
+    type: 'Spot',
+    stage: 'entrega',
+    tags: ['Spot'],
+    pieces: [
+      { id: 'p1', name: 'Hero Film 60"', stages: { offline: 'done', color: 'done', audio: 'done', vfx: 'done', versiones: 'done', master: 'done' } },
+      { id: 'p2', name: 'Cutdown 30"', stages: { offline: 'done', color: 'done', audio: 'done', vfx: 'done', versiones: 'done', master: 'done' } },
+      { id: 'p3', name: 'Digital 9:16', stages: { offline: 'done', color: 'done', audio: 'done', vfx: 'done', versiones: 'done', master: 'done' } }
+    ],
+    notes: [
+      { id: 'n1', text: 'Entregado al cliente. Aprobado por MLS.', timestamp: '2026-03-14T10:00:00' },
+      { id: 'n2', text: 'Versiones en inglés y español entregadas.', timestamp: '2026-03-15T09:15:00' }
+    ]
+  },
+  {
+    id: 'toyota-001',
+    client: 'TOYOTA',
+    name: 'Lanzamiento SUV',
+    director: 'Por asignar',
+    shootDate: '2026-04-15',
+    deliveryDate: '',
+    division: 'MX',
+    type: 'Spot',
+    stage: 'preproduccion',
+    tags: ['Spot'],
+    pieces: [
+      { id: 'p1', name: 'Spot 30"', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } }
+    ],
+    notes: []
+  }
+];
+
+// ── APP ────────────────────────────────────────────────────────────────────
+class ReboTracker {
+  constructor() {
+    this.projects = [];
+    this.filter = 'all';
+    this.activeProjectId = null;
+    this.init();
+  }
+
+  // ── DATA ────────────────────────────────────────────────────────────────
+  init() {
+    this.loadData();
+    this.bindEvents();
+    this.render();
+  }
+
+  loadData() {
+    try {
+      const saved = localStorage.getItem('rebo-projects');
+      this.projects = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEMO_DATA));
+    } catch {
+      this.projects = JSON.parse(JSON.stringify(DEMO_DATA));
+    }
+    if (!this.projects.length) this.projects = JSON.parse(JSON.stringify(DEMO_DATA));
+    this.save();
+  }
+
+  save() { localStorage.setItem('rebo-projects', JSON.stringify(this.projects)); }
+
+  getProject(id) { return this.projects.find(p => p.id === id); }
+
+  getFiltered() {
+    const f = this.filter;
+    if (f === 'all') return this.projects;
+    if (f === 'MX' || f === 'MIAMI') return this.projects.filter(p => p.division === f);
+    return this.projects.filter(p => p.type === f);
+  }
+
+  calcProgress(project) {
+    let total = 0, done = 0;
+    project.pieces.forEach(piece => {
+      Object.values(piece.stages).forEach(s => { total++; if (s === 'done') done++; });
+    });
+    return total ? Math.round((done / total) * 100) : 0;
+  }
+
+  uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+  // ── FORMAT ──────────────────────────────────────────────────────────────
+  fmtDate(d) {
+    if (!d) return '—';
+    const [y,m,day] = d.split('-');
+    const months = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+    return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
+  }
+
+  fmtTs(ts) {
+    const d = new Date(ts);
+    return d.toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' }) +
+           ' · ' + d.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
+  }
+
+  // ── RENDER BOARD ────────────────────────────────────────────────────────
+  render() {
+    const filtered = this.getFiltered();
+    const total = filtered.length;
+    document.getElementById('project-count').textContent = `${total} PROYECTO${total !== 1 ? 'S' : ''}`;
+
+    ['preproduccion','produccion','postproduccion','entrega'].forEach(stage => {
+      const col = document.querySelector(`.column[data-stage="${stage}"]`);
+      const cards = col.querySelector('.column-cards');
+      const count = col.querySelector('.column-count');
+      const projects = filtered.filter(p => p.stage === stage);
+      count.textContent = projects.length;
+      if (!projects.length) {
+        cards.innerHTML = '<div class="empty-col">Sin proyectos</div>';
+        return;
+      }
+      cards.innerHTML = projects.map(p => this.renderCard(p)).join('');
+      cards.querySelectorAll('.project-card').forEach(el => {
+        el.addEventListener('click', () => this.openDetail(el.dataset.id));
+      });
+    });
+  }
+
+  renderCard(p) {
+    const pct = this.calcProgress(p);
+    const div = p.division.toLowerCase();
+    const tags = (p.tags||[]).map(t => `<span class="tag">${t}</span>`).join('');
+    return `
+      <div class="project-card" data-id="${p.id}">
+        <div class="card-inner">
+          <div class="card-top">
+            <span class="card-client">${p.client}</span>
+            <span class="division-badge division-${div}">${p.division}</span>
+          </div>
+          <div class="card-name">${p.name}</div>
+          <div class="card-meta">
+            <div class="card-meta-row">
+              <span class="card-meta-label">DIR</span>
+              <span class="card-meta-val">${p.director || '—'}</span>
+            </div>
+            ${p.shootDate ? `<div class="card-meta-row"><span class="card-meta-label">RODAJE</span><span class="card-meta-val">${this.fmtDate(p.shootDate)}</span></div>` : ''}
+            ${p.deliveryDate ? `<div class="card-meta-row"><span class="card-meta-label">ENTREGA</span><span class="card-meta-val">${this.fmtDate(p.deliveryDate)}</span></div>` : ''}
+          </div>
+        </div>
+        <div class="card-progress-wrap">
+          <div class="card-progress-fill" style="width:${pct}%"></div>
+        </div>
+        <div class="card-inner">
+          <div class="card-bottom">
+            <div class="card-tags">${tags}</div>
+            <span class="card-progress-pct ${pct === 0 ? 'zero' : ''}">${pct > 0 ? pct + '%' : '—'}</span>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ── DETAIL MODAL ─────────────────────────────────────────────────────────
+  openDetail(id) {
+    const p = this.getProject(id);
+    if (!p) return;
+    this.activeProjectId = id;
+    this.renderDetail(p);
+    document.getElementById('modal-overlay').classList.remove('hidden');
+    document.getElementById('modal-detail').classList.remove('hidden');
+    document.getElementById('modal-new').classList.add('hidden');
+  }
+
+  renderDetail(p) {
+    document.getElementById('md-client').textContent = p.client;
+    document.getElementById('md-name').textContent = p.name;
+    const divBadge = document.getElementById('md-division');
+    divBadge.textContent = p.division;
+    divBadge.className = `division-badge division-${p.division.toLowerCase()}`;
+
+    // Stage bar
+    document.querySelectorAll('.stage-btn').forEach(btn => {
+      btn.className = 'stage-btn';
+      if (btn.dataset.stage === p.stage) {
+        btn.classList.add(STAGE_ACTIVE_CLASS[p.stage]);
+      }
+    });
+
+    // Info grid
+    document.getElementById('md-info-grid').innerHTML = `
+      <div class="info-cell"><div class="info-label">DIRECTOR</div><div class="info-value">${p.director || '—'}</div></div>
+      <div class="info-cell"><div class="info-label">TIPO</div><div class="info-value">${p.type || '—'}</div></div>
+      <div class="info-cell"><div class="info-label">FECHA RODAJE</div><div class="info-value">${this.fmtDate(p.shootDate)}</div></div>
+      <div class="info-cell"><div class="info-label">FECHA ENTREGA</div><div class="info-value">${this.fmtDate(p.deliveryDate)}</div></div>
+      <div class="info-cell"><div class="info-label">PIEZAS</div><div class="info-value">${p.pieces.length}</div></div>
+      <div class="info-cell"><div class="info-label">PROGRESO POST</div><div class="info-value" style="color:var(--accent)">${this.calcProgress(p)}%</div></div>
+    `;
+
+    // Pieces
+    this.renderPieces(p);
+
+    // Notes
+    this.renderNotes(p);
+
+    // Reset add piece form
+    document.getElementById('add-piece-form').classList.add('hidden');
+    document.getElementById('new-piece-name').value = '';
+    document.getElementById('note-input').value = '';
+  }
+
+  renderPieces(p) {
+    const list = document.getElementById('pieces-list');
+    if (!p.pieces.length) {
+      list.innerHTML = '<div class="empty-col">Sin piezas — agregá una arriba</div>';
+      return;
+    }
+    list.innerHTML = p.pieces.map(piece => {
+      const doneCount = Object.values(piece.stages).filter(s => s === 'done').length;
+      const rows = Object.entries(STAGE_LABELS).map(([key, label]) => {
+        const state = piece.stages[key];
+        return `
+          <div class="stage-row" data-piece="${piece.id}" data-stage="${key}">
+            <span class="stage-row-name">${label}</span>
+            <span class="state-badge state-${state}">${STATE_LABELS[state]}</span>
+          </div>`;
+      }).join('');
+      return `
+        <div class="piece-block">
+          <div class="piece-header">
+            <span class="piece-name">${piece.name}</span>
+            <div class="piece-actions">
+              <span class="piece-progress-mini">${doneCount}/6</span>
+              <button class="btn-remove-piece" data-piece="${piece.id}" title="Eliminar pieza">✕</button>
+            </div>
+          </div>
+          <div class="stage-rows">${rows}</div>
+        </div>`;
+    }).join('');
+
+    // Bind stage click (cycle state)
+    list.querySelectorAll('.stage-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const proj = this.getProject(this.activeProjectId);
+        const piece = proj.pieces.find(pc => pc.id === row.dataset.piece);
+        if (!piece) return;
+        const cur = piece.stages[row.dataset.stage];
+        const idx = STAGE_CYCLE.indexOf(cur);
+        piece.stages[row.dataset.stage] = STAGE_CYCLE[(idx + 1) % STAGE_CYCLE.length];
+        this.save();
+        this.renderPieces(proj);
+        this.render();
+        // update progress in detail
+        document.getElementById('md-info-grid').querySelector('.info-cell:last-child .info-value').textContent = this.calcProgress(proj) + '%';
+      });
+    });
+
+    // Bind remove piece
+    list.querySelectorAll('.btn-remove-piece').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const proj = this.getProject(this.activeProjectId);
+        if (proj.pieces.length <= 1) { this.toast('Debe haber al menos una pieza'); return; }
+        proj.pieces = proj.pieces.filter(pc => pc.id !== btn.dataset.piece);
+        this.save();
+        this.renderPieces(proj);
+        this.render();
+      });
+    });
+  }
+
+  renderNotes(p) {
+    const list = document.getElementById('notes-list');
+    if (!p.notes || !p.notes.length) { list.innerHTML = ''; return; }
+    list.innerHTML = [...p.notes].reverse().map(n => `
+      <div class="note-item">
+        <div class="note-text">${this.escHtml(n.text)}</div>
+        <div class="note-time">${this.fmtTs(n.timestamp)}</div>
+      </div>`).join('');
+  }
+
+  escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  closeModals() {
+    document.getElementById('modal-overlay').classList.add('hidden');
+    document.getElementById('modal-detail').classList.add('hidden');
+    document.getElementById('modal-new').classList.add('hidden');
+    this.activeProjectId = null;
+  }
+
+  // ── EVENTS ───────────────────────────────────────────────────────────────
+  bindEvents() {
+    // Close on overlay click
+    document.getElementById('modal-overlay').addEventListener('click', e => {
+      if (e.target === document.getElementById('modal-overlay')) this.closeModals();
+    });
+
+    // Close buttons
+    document.getElementById('btn-close-detail').addEventListener('click', () => this.closeModals());
+    document.getElementById('btn-close-new').addEventListener('click', () => this.closeModals());
+    document.getElementById('btn-cancel-new').addEventListener('click', () => this.closeModals());
+
+    // New project button
+    document.getElementById('btn-new-project').addEventListener('click', () => {
+      document.getElementById('modal-overlay').classList.remove('hidden');
+      document.getElementById('modal-new').classList.remove('hidden');
+      document.getElementById('modal-detail').classList.add('hidden');
+    });
+
+    // Submit new project
+    document.getElementById('btn-submit-new').addEventListener('click', () => this.submitNewProject());
+
+    // Filters
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.filter = btn.dataset.filter;
+        this.render();
+      });
+    });
+
+    // Stage buttons in modal
+    document.querySelectorAll('.stage-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const proj = this.getProject(this.activeProjectId);
+        if (!proj) return;
+        proj.stage = btn.dataset.stage;
+        this.save();
+        // Update stage bar
+        document.querySelectorAll('.stage-btn').forEach(b => {
+          b.className = 'stage-btn';
+          if (b.dataset.stage === proj.stage) b.classList.add(STAGE_ACTIVE_CLASS[proj.stage]);
+        });
+        this.render();
+        this.toast('Etapa actualizada');
+      });
+    });
+
+    // Add piece
+    document.getElementById('btn-add-piece').addEventListener('click', () => {
+      document.getElementById('add-piece-form').classList.remove('hidden');
+      document.getElementById('new-piece-name').focus();
+    });
+    document.getElementById('confirm-add-piece').addEventListener('click', () => this.addPiece());
+    document.getElementById('cancel-add-piece').addEventListener('click', () => {
+      document.getElementById('add-piece-form').classList.add('hidden');
+      document.getElementById('new-piece-name').value = '';
+    });
+    document.getElementById('new-piece-name').addEventListener('keydown', e => {
+      if (e.key === 'Enter') this.addPiece();
+      if (e.key === 'Escape') document.getElementById('cancel-add-piece').click();
+    });
+
+    // Notes
+    document.getElementById('note-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        const val = document.getElementById('note-input').value.trim();
+        if (!val) return;
+        const proj = this.getProject(this.activeProjectId);
+        if (!proj) return;
+        if (!proj.notes) proj.notes = [];
+        proj.notes.push({ id: this.uid(), text: val, timestamp: new Date().toISOString() });
+        this.save();
+        document.getElementById('note-input').value = '';
+        this.renderNotes(proj);
+      }
+    });
+
+    // Escape key closes modal
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') this.closeModals();
+    });
+  }
+
+  addPiece() {
+    const val = document.getElementById('new-piece-name').value.trim();
+    if (!val) { this.toast('Escribí el nombre de la pieza'); return; }
+    const proj = this.getProject(this.activeProjectId);
+    if (!proj) return;
+    proj.pieces.push({
+      id: this.uid(),
+      name: val,
+      stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' }
+    });
+    this.save();
+    document.getElementById('add-piece-form').classList.add('hidden');
+    document.getElementById('new-piece-name').value = '';
+    this.renderPieces(proj);
+    this.render();
+    this.toast('Pieza agregada');
+  }
+
+  submitNewProject() {
+    const client = document.getElementById('f-client').value.trim().toUpperCase();
+    const name = document.getElementById('f-name').value.trim();
+    if (!client || !name) { this.toast('Cliente y proyecto son requeridos'); return; }
+
+    const newProj = {
+      id: this.uid(),
+      client,
+      name,
+      director: document.getElementById('f-director').value.trim() || 'Por asignar',
+      shootDate: document.getElementById('f-shoot').value || '',
+      deliveryDate: document.getElementById('f-delivery').value || '',
+      division: document.getElementById('f-division').value,
+      type: document.getElementById('f-type').value,
+      stage: document.getElementById('f-stage').value,
+      tags: [document.getElementById('f-type').value],
+      pieces: [
+        { id: this.uid(), name: 'Pieza principal', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } }
+      ],
+      notes: []
+    };
+
+    this.projects.unshift(newProj);
+    this.save();
+    this.render();
+    this.closeModals();
+    this.toast('Proyecto creado');
+
+    // Clear form
+    ['f-client','f-name','f-director','f-shoot','f-delivery'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+  }
+
+  toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+}
+
+// ── BOOT ───────────────────────────────────────────────────────────────────
+const app = new ReboTracker();
+</script>
+</body>
+</html>
