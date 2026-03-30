@@ -1,2040 +1,1094 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>REBO TRACKER</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
-  <style>
-    /* ── RESET & BASE ── */
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --bg: #0c0c0c;
-      --bg2: #111111;
-      --bg3: #181818;
-      --bg4: #1f1f1f;
-      --border: #272727;
-      --border2: #333333;
-      --text: #c8c8c8;
-      --text-dim: #555;
-      --text-bright: #e8e8e8;
-      --accent: #e8ff47;
-      --accent-dim: rgba(232,255,71,0.12);
-      --blue: #60a5fa;
-      --yellow: #fbbf24;
-      --orange: #f97316;
-      --green: #4ade80;
-      --red: #ef4444;
-      --col-pre: #60a5fa;
-      --col-prod: #fbbf24;
-      --col-post: #f97316;
-      --col-entrega: #4ade80;
-    }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    button { cursor: pointer; font-family: inherit; border: none; background: none; }
-    input, select, textarea { font-family: inherit; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REBOLUCION TRACKER</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Rebo Tracker">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --white: #ffffff;
+    --ink: #111111;
+    --rule: #e8e8e8;
+    --muted: #999;
+    --muted2: #ccc;
+    --soft: #f8f8f8;
+    --green: #1e7a3a;
+    --green-light: #edf7f1;
+    --green-mid: #2ecc71;
+    --yellow: #9a6c00;
+    --yellow-light: #fdf8e8;
+    --yellow-mid: #f1c40f;
+    --orange: #b84e0e;
+    --orange-light: #fef3ec;
+    --orange-mid: #e8a87c;
+    --red: #c0392b;
+    --red-light: #fef0ef;
+    --blue: #2252b8;
+    --blue-light: #eef2fc;
+    --blue-mid: #3498db;
+    --purple: #6c3db8;
+    --purple-light: #f3eeff;
+  }
 
-    /* ── SCROLLBAR ── */
-    ::-webkit-scrollbar { width: 4px; height: 4px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border2); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #ffffff; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; min-height: 100vh; font-size: 14px; }
 
-    /* ── HEADER ── */
-    #header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 28px;
-      height: 60px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .header-left { display: flex; align-items: center; gap: 16px; }
-    .logo {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 2.2rem;
-      color: var(--accent);
-      letter-spacing: 6px;
-      line-height: 1;
-    }
-    .header-divider { width: 1px; height: 28px; background: var(--border2); }
-    .header-titles { display: flex; flex-direction: column; gap: 1px; }
-    .header-title-main {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 1.1rem;
-      color: var(--text-bright);
-      letter-spacing: 4px;
-      line-height: 1;
-    }
-    .header-title-sub {
-      font-size: 9px;
-      color: var(--text-dim);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-    .header-right { display: flex; align-items: center; gap: 12px; }
-    /* ── NAV ── */
-    .header-nav { display: flex; align-items: center; gap: 2px; margin-right: 8px; }
-    .nav-btn {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 0.95rem;
-      letter-spacing: 3px;
-      color: var(--text-dim);
-      padding: 6px 14px;
-      border-bottom: 2px solid transparent;
-      transition: all 0.15s;
-    }
-    .nav-btn:hover { color: var(--text); }
-    .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-    #btn-new-project {
-      background: var(--accent);
-      color: #0c0c0c;
-      font-family: 'Bebas Neue', cursive;
-      font-size: 1rem;
-      letter-spacing: 3px;
-      padding: 8px 18px;
-      border: none;
-      cursor: pointer;
-      transition: opacity 0.15s;
-    }
-    #btn-new-project:hover { opacity: 0.85; }
-    #project-count {
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 2px;
-    }
+  .demo { background: #111; color: #e8ff47; text-align: center; padding: 8px; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; }
 
-    /* ── FILTER BAR ── */
-    #filter-bar {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      padding: 12px 28px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
-    }
-    .filter-label {
-      font-size: 9px;
-      color: var(--text-dim);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-right: 10px;
-    }
-    .filter-btn {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      border: 1px solid transparent;
-      padding: 5px 12px;
-      transition: all 0.15s;
-    }
-    .filter-btn:hover { color: var(--text); border-color: var(--border2); }
-    .filter-btn.active {
-      color: var(--accent);
-      border-color: var(--accent);
-      background: var(--accent-dim);
-    }
+  /* HEADER */
+  header {
+    background: var(--white);
+    border-bottom: 2px solid var(--ink);
+    padding: 0 36px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
 
-    /* ── BOARD ── */
-    #board {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0;
-      min-height: calc(100vh - 120px);
-      border-left: 1px solid var(--border);
-    }
-    .column {
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      min-height: calc(100vh - 120px);
-    }
-    .column-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 16px;
-      border-bottom: 2px solid var(--border);
-      position: sticky;
-      top: 60px;
-      background: var(--bg);
-      z-index: 50;
-    }
-    .column-title {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 1rem;
-      letter-spacing: 4px;
-    }
-    .column[data-stage="preproduccion"] .column-title { color: var(--col-pre); }
-    .column[data-stage="produccion"] .column-title { color: var(--col-prod); }
-    .column[data-stage="postproduccion"] .column-title { color: var(--col-post); }
-    .column[data-stage="entrega"] .column-title { color: var(--col-entrega); }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 5px; cursor: pointer; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .header-date { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
 
-    .column[data-stage="preproduccion"] { border-top: 2px solid var(--col-pre); }
-    .column[data-stage="produccion"] { border-top: 2px solid var(--col-prod); }
-    .column[data-stage="postproduccion"] { border-top: 2px solid var(--col-post); }
-    .column[data-stage="entrega"] { border-top: 2px solid var(--col-entrega); }
+  .btn {
+    font-size: 11px; letter-spacing: 0.5px; padding: 7px 16px;
+    border: 1px solid var(--rule); background: none; color: var(--muted);
+    cursor: pointer; transition: all .15s; font-family: 'Inter', sans-serif;
+  }
+  .btn:hover { border-color: var(--ink); color: var(--ink); }
+  .btn.ink { background: var(--ink); color: var(--white); border-color: var(--ink); }
+  .btn.ink:hover { background: #333; }
 
-    .column-count {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 1.2rem;
-      color: var(--text-dim);
-      letter-spacing: 2px;
-    }
-    .column-cards {
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      flex: 1;
-    }
+  /* VIEWS */
+  #boardView, #detailView { display: none; }
+  #boardView.active, #detailView.active { display: block; }
 
-    /* ── CARDS ── */
-    .project-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
-      position: relative;
-      overflow: hidden;
-    }
-    .project-card::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 3px;
-    }
-    .column[data-stage="preproduccion"] .project-card::before { background: var(--col-pre); }
-    .column[data-stage="produccion"] .project-card::before { background: var(--col-prod); }
-    .column[data-stage="postproduccion"] .project-card::before { background: var(--col-post); }
-    .column[data-stage="entrega"] .project-card::before { background: var(--col-entrega); }
-    .project-card:hover { border-color: var(--border2); background: var(--bg3); }
-    .card-inner { padding: 12px 12px 12px 15px; }
-    .card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 4px;
-    }
-    .card-client {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 1.1rem;
-      color: var(--text-bright);
-      letter-spacing: 3px;
-      line-height: 1;
-    }
-    .division-badge {
-      font-size: 9px;
-      letter-spacing: 2px;
-      padding: 2px 6px;
-      border: 1px solid;
-      text-transform: uppercase;
-      flex-shrink: 0;
-    }
-    .division-mx { color: var(--blue); border-color: var(--blue); }
-    .division-miami { color: var(--orange); border-color: var(--orange); }
-    .card-name {
-      font-size: 11px;
-      color: var(--text);
-      margin-bottom: 8px;
-      line-height: 1.3;
-    }
-    .card-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      margin-bottom: 10px;
-    }
-    .card-meta-row {
-      font-size: 10px;
-      color: var(--text-dim);
-      display: flex;
-      gap: 6px;
-    }
-    .card-meta-label { color: var(--text-dim); }
-    .card-meta-val { color: var(--text); }
-    .card-progress-wrap {
-      height: 2px;
-      background: var(--border);
-      margin: 0 -12px 0 -15px;
-      margin-bottom: 8px;
-    }
-    .card-progress-fill {
-      height: 100%;
-      background: var(--accent);
-      transition: width 0.3s;
-    }
-    .card-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .card-tags { display: flex; gap: 4px; flex-wrap: wrap; }
-    .tag {
-      font-size: 9px;
-      letter-spacing: 1px;
-      padding: 2px 5px;
-      background: var(--bg4);
-      color: var(--text-dim);
-      text-transform: uppercase;
-    }
-    .card-progress-pct {
-      font-size: 10px;
-      color: var(--accent);
-      font-weight: 500;
-    }
-    .card-progress-pct.zero { color: var(--text-dim); }
+  /* ================================ BOARD ================================ */
+  .board-wrap { max-width: 900px; margin: 0 auto; padding: 32px 36px; }
 
-    /* ── MODAL OVERLAY ── */
-    #modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.85);
-      z-index: 200;
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-end;
-    }
-    #modal-overlay.hidden { display: none; }
+  .board-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .board-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
 
-    /* ── MODAL DETAIL ── */
-    #modal-detail {
-      width: 600px;
-      max-width: 100vw;
-      height: 100vh;
-      background: var(--bg2);
-      border-left: 1px solid var(--border2);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    #modal-detail.hidden { display: none; }
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 24px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .modal-header-left { display: flex; flex-direction: column; gap: 3px; }
-    .modal-client {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 1.6rem;
-      color: var(--text-bright);
-      letter-spacing: 5px;
-      line-height: 1;
-    }
-    .modal-name { font-size: 12px; color: var(--text); letter-spacing: 1px; }
-    .modal-header-right { display: flex; align-items: center; gap: 8px; }
-    .btn-close {
-      font-size: 18px;
-      color: var(--text-dim);
-      padding: 4px 8px;
-      transition: color 0.15s;
-    }
-    .btn-close:hover { color: var(--text-bright); }
-    .modal-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 0;
-    }
+  .status-group { margin-bottom: 28px; }
 
-    /* Stage selector in modal */
-    .modal-stage-bar {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      border-bottom: 1px solid var(--border);
-    }
-    .stage-btn {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 0.75rem;
-      letter-spacing: 2px;
-      padding: 10px 8px;
-      text-align: center;
-      color: var(--text-dim);
-      border-right: 1px solid var(--border);
-      border-bottom: 2px solid transparent;
-      transition: all 0.15s;
-      line-height: 1.2;
-    }
-    .stage-btn:last-child { border-right: none; }
-    .stage-btn:hover { color: var(--text); background: var(--bg3); }
-    .stage-btn.active-pre { color: var(--col-pre); border-bottom-color: var(--col-pre); background: rgba(96,165,250,0.06); }
-    .stage-btn.active-prod { color: var(--col-prod); border-bottom-color: var(--col-prod); background: rgba(251,191,36,0.06); }
-    .stage-btn.active-post { color: var(--col-post); border-bottom-color: var(--col-post); background: rgba(249,115,22,0.06); }
-    .stage-btn.active-entrega { color: var(--col-entrega); border-bottom-color: var(--col-entrega); background: rgba(74,222,128,0.06); }
+  .group-label {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--rule);
+  }
+  .group-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .group-name { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  .group-count { font-size: 11px; color: var(--muted2); margin-left: auto; }
 
-    /* Modal info grid */
-    .modal-info {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .info-cell {
-      padding: 12px 24px;
-      border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-    .info-cell:nth-child(2n) { border-right: none; }
-    .info-label {
-      font-size: 9px;
-      color: var(--text-dim);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-    .info-value { font-size: 12px; color: var(--text-bright); }
-    .info-value.editable {
-      cursor: pointer;
-      border-bottom: 1px dashed var(--border2);
-      transition: border-color 0.15s;
-    }
-    .info-value.editable:hover { border-bottom-color: var(--accent); color: var(--accent); }
+  .proj-row {
+    display: flex; align-items: center; padding: 14px 16px;
+    background: var(--white); border: 1px solid var(--rule);
+    margin-bottom: 4px; cursor: pointer; transition: all .15s; gap: 16px;
+  }
+  .proj-row:hover { border-color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 
-    /* ── PIECES ── */
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 24px 10px;
-    }
-    .section-title {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 1rem;
-      letter-spacing: 4px;
-      color: var(--text-dim);
-    }
-    .btn-add-piece {
-      font-size: 10px;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      padding: 4px 10px;
-      letter-spacing: 2px;
-      transition: background 0.15s;
-    }
-    .btn-add-piece:hover { background: var(--accent-dim); }
+  .proj-info { flex: 1; min-width: 0; }
+  .proj-client { font-weight: 600; font-size: 15px; line-height: 1.2; }
+  .proj-name { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-    .piece-block {
-      border: 1px solid var(--border);
-      margin: 0 16px 12px;
-      background: var(--bg);
-    }
-    .piece-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg3);
-    }
-    .piece-name {
-      font-size: 11px;
-      color: var(--text-bright);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-    .piece-progress-mini {
-      font-size: 10px;
-      color: var(--text-dim);
-    }
-    .piece-actions { display: flex; gap: 8px; align-items: center; }
-    .btn-remove-piece {
-      font-size: 14px;
-      color: var(--text-dim);
-      padding: 0 4px;
-      transition: color 0.15s;
-    }
-    .btn-remove-piece:hover { color: var(--red); }
-    .stage-rows { display: flex; flex-direction: column; }
-    .stage-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 9px 14px;
-      border-bottom: 1px solid var(--border);
-      cursor: pointer;
-      transition: background 0.12s;
-    }
-    .stage-row:last-child { border-bottom: none; }
-    .stage-row:hover { background: var(--bg3); }
-    .stage-row-name {
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-dim);
-    }
-    .state-badge {
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 3px 9px;
-      border: 1px solid;
-      transition: all 0.12s;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .state-badge::before {
-      content: '●';
-      font-size: 7px;
-    }
-    .state-pending { color: var(--text-dim); border-color: var(--border2); }
-    .state-inprogress { color: var(--yellow); border-color: var(--yellow); background: rgba(251,191,36,0.08); }
-    .state-done { color: var(--green); border-color: var(--green); background: rgba(74,222,128,0.08); }
-    .state-blocked { color: var(--red); border-color: var(--red); background: rgba(239,68,68,0.08); }
+  .proj-dir { font-size: 12px; color: var(--muted); min-width: 150px; }
+  .proj-piezas { font-size: 11px; color: var(--muted2); min-width: 60px; text-align: center; }
 
-    /* Add piece form */
-    .add-piece-form {
-      display: flex;
-      gap: 8px;
-      padding: 0 16px 12px;
-    }
-    .add-piece-form.hidden { display: none; }
-    .input-field {
-      flex: 1;
-      background: var(--bg);
-      border: 1px solid var(--border2);
-      color: var(--text-bright);
-      padding: 8px 12px;
-      font-size: 11px;
-      font-family: 'DM Mono', monospace;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    .input-field:focus { border-color: var(--accent); }
-    .input-field::placeholder { color: var(--text-dim); }
-    .btn-confirm {
-      background: var(--accent);
-      color: #0c0c0c;
-      font-family: 'Bebas Neue', cursive;
-      font-size: 0.9rem;
-      letter-spacing: 2px;
-      padding: 8px 14px;
-      transition: opacity 0.15s;
-    }
-    .btn-confirm:hover { opacity: 0.85; }
-    .btn-cancel {
-      color: var(--text-dim);
-      border: 1px solid var(--border2);
-      padding: 8px 12px;
-      font-size: 10px;
-      letter-spacing: 1px;
-      transition: all 0.15s;
-    }
-    .btn-cancel:hover { color: var(--text); border-color: var(--border2); }
+  .proj-date { font-size: 12px; min-width: 70px; text-align: right; font-weight: 500; }
+  .proj-date.urgent { color: var(--red); }
+  .proj-date.soon { color: var(--yellow); }
+  .proj-date.ok { color: var(--green); }
+  .proj-date.normal { color: var(--muted); font-weight: 400; }
 
-    /* ── NOTES ── */
-    .notes-section {
-      border-top: 1px solid var(--border);
-      padding: 16px 24px;
-    }
-    .notes-input-wrap {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      margin-bottom: 14px;
-    }
-    .notes-input {
-      flex: 1;
-      background: var(--bg);
-      border: 1px solid var(--border2);
-      color: var(--text-bright);
-      padding: 8px 12px;
-      font-size: 11px;
-      font-family: 'DM Mono', monospace;
-      outline: none;
-      resize: none;
-      height: 36px;
-      transition: border-color 0.15s;
-    }
-    .notes-input:focus { border-color: var(--accent); height: 72px; }
-    .note-item {
-      border-left: 2px solid var(--border2);
-      padding: 8px 0 8px 12px;
-      margin-bottom: 8px;
-    }
-    .note-text { font-size: 11px; color: var(--text); line-height: 1.5; margin-bottom: 4px; }
-    .note-time { font-size: 9px; color: var(--text-dim); letter-spacing: 1px; }
+  .proj-arrow { color: var(--muted2); font-size: 18px; transition: transform .15s; }
+  .proj-row:hover .proj-arrow { transform: translateX(3px); color: var(--ink); }
 
-    /* ── MODAL NEW PROJECT ── */
-    #modal-new {
-      width: 480px;
-      max-width: 100vw;
-      height: 100vh;
-      background: var(--bg2);
-      border-left: 1px solid var(--border2);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    #modal-new.hidden { display: none; }
-    .new-form-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 24px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .new-form-title {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 1.4rem;
-      letter-spacing: 5px;
-      color: var(--text-bright);
-    }
-    .new-form-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-label {
-      font-size: 9px;
-      color: var(--text-dim);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-    .form-input, .form-select {
-      background: var(--bg);
-      border: 1px solid var(--border2);
-      color: var(--text-bright);
-      padding: 10px 12px;
-      font-size: 12px;
-      font-family: 'DM Mono', monospace;
-      outline: none;
-      width: 100%;
-      transition: border-color 0.15s;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-    .form-input:focus, .form-select:focus { border-color: var(--accent); }
-    .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23555' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
-    .form-select option { background: var(--bg2); }
-    .form-footer {
-      padding: 16px 24px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-      flex-shrink: 0;
-    }
-    .btn-submit {
-      background: var(--accent);
-      color: #0c0c0c;
-      font-family: 'Bebas Neue', cursive;
-      font-size: 1rem;
-      letter-spacing: 3px;
-      padding: 10px 24px;
-      transition: opacity 0.15s;
-    }
-    .btn-submit:hover { opacity: 0.85; }
+  /* ================================ DETAIL ================================ */
+  .detail-wrap { max-width: 900px; margin: 0 auto; padding: 28px 36px; }
 
-    /* ── TOAST ── */
-    #toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--accent);
-      color: #0c0c0c;
-      font-family: 'Bebas Neue', cursive;
-      font-size: 1rem;
-      letter-spacing: 3px;
-      padding: 10px 24px;
-      z-index: 999;
-      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
-      pointer-events: none;
-    }
-    #toast.show { transform: translateX(-50%) translateY(0); }
+  /* BREADCRUMB */
+  .breadcrumb { font-size: 12px; color: var(--muted); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+  .bc-link { cursor: pointer; transition: color .15s; }
+  .bc-link:hover { color: var(--ink); }
+  .bc-sep { color: var(--muted2); }
+  .bc-current { color: var(--ink); font-weight: 500; }
 
-    /* ── EMPTY STATE ── */
-    .empty-col {
-      padding: 24px 16px;
-      text-align: center;
-      color: var(--text-dim);
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
+  /* PROJECT TITLE */
+  .proj-title-block { padding-bottom: 18px; margin-bottom: 24px; border-bottom: 2px solid var(--ink); }
+  .proj-title-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 10px; }
+  .proj-title-client { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 4px; line-height: 1; }
+  .proj-title-name { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .proj-title-meta { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 
-    /* ── DIARIO & TODO SECTIONS ── */
-    .main-section { display: none !important; }
-    .main-section.active { display: block !important; }
-    #board.active { display: grid !important; }
+  .meta-tag { font-size: 11px; padding: 5px 12px; border: 1px solid var(--rule); color: var(--muted); background: var(--soft); }
+  .meta-tag.status-post { background: var(--orange-light); color: var(--orange); border-color: #f5c8a8; }
+  .meta-tag.date-soon { background: var(--yellow-light); color: var(--yellow); border-color: #f0dc80; }
+  .meta-tag.date-urgent { background: var(--red-light); color: var(--red); border-color: #f5c0bc; }
 
-    .section-page {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 32px 28px;
-    }
-    .section-page-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 28px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
-    }
-    .section-page-title {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
-      letter-spacing: 6px;
-      color: var(--text-bright);
-    }
-    .section-page-title span { color: var(--accent); }
+  .proj-title-bottom { display: flex; gap: 24px; }
+  .proj-stat { font-size: 12px; color: var(--muted); }
+  .proj-stat b { color: var(--ink); font-weight: 500; }
 
-    /* ── DIARIO ── */
-    .diario-entry {
-      border: 1px solid var(--border);
-      background: var(--bg2);
-      margin-bottom: 12px;
-    }
-    .diario-entry-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 18px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg3);
-      cursor: pointer;
-    }
-    .diario-entry-header:hover { background: var(--bg4); }
-    .diario-entry-meta { display: flex; align-items: center; gap: 14px; }
-    .diario-date {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 1rem;
-      letter-spacing: 3px;
-      color: var(--accent);
-    }
-    .diario-title-text {
-      font-size: 11px;
-      color: var(--text);
-      letter-spacing: 1px;
-    }
-    .diario-entry-body { padding: 16px 18px; display: none; }
-    .diario-entry-body.open { display: block; }
-    .diario-text {
-      font-size: 12px;
-      color: var(--text);
-      line-height: 1.8;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    .diario-entry-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-    }
-    .btn-icon {
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 1px;
-      padding: 4px 8px;
-      border: 1px solid var(--border);
-      transition: all 0.15s;
-    }
-    .btn-icon:hover { color: var(--text); border-color: var(--border2); }
-    .btn-icon.danger:hover { color: var(--red); border-color: var(--red); }
+  /* TABS */
+  .detail-tabs {
+    display: flex; gap: 0; margin-bottom: 24px;
+    border-bottom: 2px solid var(--rule);
+  }
 
-    /* New entry form */
-    .diario-new-form {
-      border: 1px solid var(--border2);
-      background: var(--bg2);
-      padding: 18px;
-      margin-bottom: 20px;
-    }
-    .diario-new-form.hidden { display: none; }
-    .diario-form-row {
-      display: grid;
-      grid-template-columns: 180px 1fr;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .diario-textarea {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border2);
-      color: var(--text-bright);
-      padding: 10px 12px;
-      font-size: 12px;
-      font-family: 'DM Mono', monospace;
-      outline: none;
-      resize: vertical;
-      min-height: 120px;
-      line-height: 1.7;
-      transition: border-color 0.15s;
-    }
-    .diario-textarea:focus { border-color: var(--accent); }
-    .diario-form-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-      margin-top: 10px;
-    }
+  .detail-tab {
+    font-size: 12px; letter-spacing: 0.5px; padding: 10px 20px;
+    color: var(--muted); cursor: pointer; transition: all .15s;
+    border-bottom: 2px solid transparent; margin-bottom: -2px;
+  }
 
-    /* ── TODO ── */
-    .todo-toolbar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .todo-filter-btn {
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      border: 1px solid transparent;
-      padding: 4px 10px;
-      transition: all 0.15s;
-    }
-    .todo-filter-btn:hover { color: var(--text); border-color: var(--border2); }
-    .todo-filter-btn.active { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
-    .todo-count-label { margin-left: auto; font-size: 10px; color: var(--text-dim); letter-spacing: 2px; }
+  .detail-tab:hover { color: var(--ink); }
+  .detail-tab.active { color: var(--ink); font-weight: 600; border-bottom-color: var(--ink); }
 
-    /* New todo form */
-    .todo-new-form {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-      align-items: flex-start;
-    }
-    .todo-new-form.hidden { display: none; }
-    .todo-new-inputs {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .todo-new-row { display: flex; gap: 8px; }
-    .todo-priority-select {
-      background: var(--bg);
-      border: 1px solid var(--border2);
-      color: var(--text-bright);
-      padding: 8px 10px;
-      font-size: 11px;
-      font-family: 'DM Mono', monospace;
-      outline: none;
-      width: 110px;
-      transition: border-color 0.15s;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-    .todo-priority-select:focus { border-color: var(--accent); }
-    .todo-date-input {
-      background: var(--bg);
-      border: 1px solid var(--border2);
-      color: var(--text-bright);
-      padding: 8px 10px;
-      font-size: 11px;
-      font-family: 'DM Mono', monospace;
-      outline: none;
-      flex: 1;
-      transition: border-color 0.15s;
-    }
-    .todo-date-input:focus { border-color: var(--accent); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
 
-    /* Todo list */
-    .todo-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      background: var(--bg2);
-      margin-bottom: 6px;
-      transition: opacity 0.2s;
-    }
-    .todo-item.completed { opacity: 0.45; }
-    .todo-item.overdue { border-left: 3px solid var(--red); }
-    .todo-check {
-      width: 16px;
-      height: 16px;
-      border: 1px solid var(--border2);
-      flex-shrink: 0;
-      cursor: pointer;
-      margin-top: 1px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-    }
-    .todo-check:hover { border-color: var(--accent); }
-    .todo-check.checked {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-    .todo-check.checked::after {
-      content: '✓';
-      font-size: 10px;
-      color: #0c0c0c;
-      font-weight: bold;
-    }
-    .todo-body { flex: 1; min-width: 0; }
-    .todo-text {
-      font-size: 12px;
-      color: var(--text-bright);
-      line-height: 1.4;
-      margin-bottom: 5px;
-    }
-    .todo-item.completed .todo-text {
-      text-decoration: line-through;
-      color: var(--text-dim);
-    }
-    .todo-meta-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .priority-badge {
-      font-size: 9px;
-      letter-spacing: 2px;
-      padding: 2px 6px;
-      text-transform: uppercase;
-    }
-    .priority-alta { color: var(--red); border: 1px solid var(--red); background: rgba(239,68,68,0.08); }
-    .priority-media { color: var(--yellow); border: 1px solid var(--yellow); background: rgba(251,191,36,0.08); }
-    .priority-baja { color: var(--text-dim); border: 1px solid var(--border2); }
-    .todo-date-label { font-size: 10px; color: var(--text-dim); }
-    .todo-date-label.overdue { color: var(--red); }
-    .overdue-badge {
-      font-size: 9px;
-      color: var(--red);
-      letter-spacing: 2px;
-      padding: 2px 6px;
-      border: 1px solid var(--red);
-      background: rgba(239,68,68,0.08);
-    }
-    .btn-remove-todo {
-      font-size: 14px;
-      color: var(--text-dim);
-      padding: 0 4px;
-      flex-shrink: 0;
-      margin-top: 1px;
-      transition: color 0.15s;
-    }
-    .btn-remove-todo:hover { color: var(--red); }
+  /* ================================ PIEZAS ================================ */
+  .pieces-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .section-title { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-      #board { grid-template-columns: repeat(2, 1fr); }
-      .column { min-height: auto; }
-    }
-    @media (max-width: 540px) {
-      #board { grid-template-columns: 1fr; }
-      #modal-detail, #modal-new { width: 100vw; }
-      #header { padding: 0 16px; }
-      #filter-bar { padding: 10px 16px; overflow-x: auto; }
-      .section-page { padding: 20px 16px; }
-      .diario-form-row { grid-template-columns: 1fr; }
-    }
-  </style>
+  .piece-card { border: 1px solid var(--rule); background: var(--white); margin-bottom: 6px; overflow: hidden; }
+
+  .piece-summary {
+    display: flex; align-items: center; padding: 16px 18px;
+    cursor: pointer; gap: 16px; transition: background .1s; user-select: none;
+  }
+  .piece-summary:hover { background: var(--soft); }
+  .piece-summary.is-open { background: var(--soft); border-bottom: 1px solid var(--rule); }
+
+  .piece-left { flex: 1; min-width: 0; }
+  .piece-title { font-weight: 600; font-size: 15px; }
+  .piece-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+  .stage-pills { display: flex; gap: 3px; align-items: center; }
+  .stage-pill { height: 6px; width: 26px; border-radius: 3px; background: var(--rule); }
+  .stage-pill.done { background: var(--green-mid); }
+  .stage-pill.wip { background: var(--yellow-mid); }
+  .stage-pill.rev { background: var(--blue-mid); }
+  .stage-pill.blocked { background: var(--red); }
+
+  .piece-pct { font-size: 12px; font-weight: 600; min-width: 38px; text-align: right; }
+  .piece-date { font-size: 12px; min-width: 70px; text-align: right; font-weight: 500; }
+  .piece-date.soon { color: var(--yellow); }
+  .piece-date.urgent { color: var(--red); }
+  .piece-date.ok { color: var(--green); }
+  .piece-date.normal { color: var(--muted); font-weight: 400; }
+
+  .piece-chevron { color: var(--muted2); font-size: 18px; transition: transform .2s; flex-shrink: 0; }
+  .piece-chevron.open { transform: rotate(90deg); }
+
+  .piece-detail { display: none; padding: 18px; background: var(--soft); }
+  .piece-detail.open { display: block; }
+
+  .stages-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+
+  .stages-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-bottom: 0; }
+
+  .stage-card {
+    background: var(--white); border: 1px solid var(--rule); padding: 8px 4px;
+    text-align: center; cursor: pointer; transition: all .15s; user-select: none;
+  }
+  .stage-card:hover { border-color: #aaa; }
+  .stage-card.done { background: var(--green-light); border-color: #a8ddb8; }
+  .stage-card.wip { background: var(--yellow-light); border-color: #e8d060; }
+  .stage-card.rev { background: var(--blue-light); border-color: #90b0f0; }
+  .stage-card.blocked { background: var(--red-light); border-color: #f0a8a0; }
+
+  .stage-card-name { font-size: 8px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+  .stage-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rule); margin: 0 auto 5px; }
+  .stage-card.done .stage-dot { background: var(--green-mid); }
+  .stage-card.wip .stage-dot { background: var(--yellow-mid); }
+  .stage-card.rev .stage-dot { background: var(--blue-mid); }
+  .stage-card.blocked .stage-dot { background: var(--red); }
+  .stage-card-status { font-size: 9px; color: var(--muted2); }
+  .stage-card.done .stage-card-status { color: var(--green); }
+  .stage-card.wip .stage-card-status { color: var(--yellow); }
+  .stage-card.rev .stage-card-status { color: var(--blue); }
+  .stage-card.blocked .stage-card-status { color: var(--red); }
+
+  /* NOTES */
+  .notes-wrap { border-top: 1px solid var(--rule); padding-top: 14px; margin-top: 14px; }
+  .note-input {
+    width: 100%; border: 1px solid var(--rule); background: var(--white);
+    font-family: 'Inter', sans-serif; font-size: 12px; padding: 10px 14px;
+    outline: none; color: var(--ink); resize: none; min-height: 56px;
+    line-height: 1.6; transition: border-color .15s; margin-top: 8px;
+  }
+  .note-input:focus { border-color: var(--ink); }
+  .note-input::placeholder { color: var(--muted2); }
+
+  .history { margin-top: 10px; }
+  .history-row { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--rule); font-size: 12px; }
+  .history-row:last-child { border-bottom: none; }
+  .history-who { font-weight: 600; min-width: 70px; flex-shrink: 0; }
+  .history-what { color: var(--muted); flex: 1; }
+  .history-when { color: var(--muted2); font-size: 11px; white-space: nowrap; }
+
+  /* ================================ TIMING ================================ */
+  .timing-section { }
+
+  .timing-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .month-nav { display: flex; align-items: center; gap: 12px; }
+  .month-name { font-size: 13px; font-weight: 600; min-width: 100px; text-align: center; }
+  .nav-btn { width: 28px; height: 28px; border: 1px solid var(--rule); background: var(--white); cursor: pointer; font-size: 14px; color: var(--muted); display: flex; align-items: center; justify-content: center; transition: all .15s; }
+  .nav-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+  .gantt-wrap { background: var(--white); border: 1px solid var(--rule); overflow-x: auto; margin-bottom: 0; }
+
+  .gantt-table { width: 100%; border-collapse: collapse; min-width: 780px; }
+
+  .gantt-table .week-header th {
+    background: var(--ink); color: var(--white); font-size: 9px; letter-spacing: 2px;
+    text-transform: uppercase; font-weight: 400; padding: 8px 0; text-align: center;
+    border-right: 1px solid #333;
+  }
+  .gantt-table .week-header th:first-child { text-align: left; padding-left: 14px; width: 130px; }
+
+  .gantt-table .day-header th {
+    font-size: 9px; color: var(--muted); padding: 5px 0; text-align: center;
+    border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+    background: var(--soft); font-weight: 400;
+  }
+  .gantt-table .day-header th:first-child { text-align: left; padding-left: 14px; border-right: 2px solid var(--rule); }
+  .gantt-table .day-header th.today { background: var(--ink); color: var(--white); }
+  .gantt-table .day-header th.weekend { background: #f0eee9; color: var(--muted2); }
+
+  .gantt-table tbody tr { border-bottom: 1px solid var(--rule); }
+  .gantt-table tbody tr:hover { background: var(--soft); }
+
+  .gantt-table tbody td {
+    padding: 0; height: 34px; border-right: 1px solid var(--rule); vertical-align: middle;
+  }
+  .gantt-table tbody td:first-child { padding: 0 10px 0 14px; border-right: 2px solid var(--rule); min-width: 130px; }
+  .gantt-table tbody td.weekend { background: #faf9f7; }
+  .gantt-table tbody td.today-col { background: #fff8f0; }
+
+  .row-label { font-size: 12px; font-weight: 500; }
+  .row-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+  .bar {
+    height: 18px; border-radius: 2px; width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px; letter-spacing: 0.5px; font-weight: 600;
+    white-space: nowrap; overflow: hidden; padding: 0 4px; transition: opacity .15s;
+  }
+  .bar:hover { opacity: 0.8; }
+  .bar-rodaje { background: #111; color: #fff; }
+  .bar-offline { background: var(--blue-light); color: var(--blue); border: 1px solid #b0c8f0; }
+  .bar-color { background: var(--orange-light); color: var(--orange); border: 1px solid #f5c8a8; }
+  .bar-audio { background: var(--green-light); color: var(--green); border: 1px solid #a8ddb8; }
+  .bar-vfx { background: var(--purple-light); color: var(--purple); border: 1px solid #c8a8f0; }
+  .bar-revision { background: var(--yellow-light); color: var(--yellow); border: 1px solid #e8d060; }
+
+  .milestone { width: 10px; height: 10px; border-radius: 50%; margin: 0 auto; }
+  .ms-rodaje { background: var(--ink); }
+  .ms-entrega { background: var(--red); }
+  .ms-ok { background: var(--green); }
+
+  .gantt-legend {
+    display: flex; gap: 14px; flex-wrap: wrap; padding: 10px 14px;
+    background: var(--white); border: 1px solid var(--rule); border-top: none; align-items: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--muted); }
+  .legend-dot { width: 12px; height: 7px; border-radius: 2px; }
+
+  /* TIMING NOTES */
+  .timing-notes { margin-top: 12px; background: var(--white); border: 1px solid var(--rule); padding: 14px 16px; }
+  .timing-notes-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .t-note-row { display: flex; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--rule); font-size: 12px; align-items: flex-start; }
+  .t-note-row:last-child { border-bottom: none; }
+  .t-note-date { font-weight: 600; min-width: 64px; flex-shrink: 0; }
+  .t-note-text { color: var(--muted); flex: 1; line-height: 1.4; }
+  .t-note-who { color: var(--muted2); font-size: 11px; }
+
+  /* FECHAS IMPORTANTES */
+  .fechas-section { border-top: 1px solid var(--rule); padding-top: 14px; margin-top: 14px; }
+  .fechas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 8px; }
+  .fecha-item {
+    background: var(--white); border: 1px solid var(--rule); padding: 8px 10px;
+    cursor: pointer; transition: all .15s;
+  }
+  .fecha-item:hover { border-color: #aaa; }
+  .fecha-item.agencia { border-left: 3px solid var(--blue-mid); }
+  .fecha-item.cliente { border-left: 3px solid var(--orange-mid); }
+  .fecha-item.aprobacion { border-left: 3px solid var(--green-mid); }
+  .fecha-tipo { font-size: 8px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+  .fecha-item.agencia .fecha-tipo { color: var(--blue); }
+  .fecha-item.cliente .fecha-tipo { color: var(--orange); }
+  .fecha-item.aprobacion .fecha-tipo { color: var(--green); }
+  .fecha-val { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .fecha-nota { font-size: 10px; color: var(--muted); }
+  .fecha-add {
+    background: none; border: 1px dashed var(--rule); color: var(--muted2);
+    font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: 1px;
+    padding: 8px 10px; cursor: pointer; transition: all .15s; width: 100%;
+    text-transform: uppercase; text-align: left;
+  }
+  .fecha-add:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* DAY BY DAY */
+  .daybyday-section { display: flex; flex-direction: column; gap: 20px; }
+
+  .dbd-block { }
+  .dbd-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+
+  .dbd-list { display: flex; flex-direction: column; gap: 2px; }
+
+  .dbd-day {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+
+  .dbd-day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: var(--soft);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .dbd-day-date { font-size: 12px; font-weight: 600; }
+  .dbd-day-label { font-size: 11px; color: var(--muted); }
+
+  .dbd-entries { }
+
+  .dbd-entry {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+    transition: background .1s;
+  }
+
+  .dbd-entry:last-child { border-bottom: none; }
+  .dbd-entry:hover { background: var(--soft); }
+
+  .dbd-entry.highlight-agencia { border-left: 3px solid var(--blue-mid); }
+  .dbd-entry.highlight-cliente { border-left: 3px solid var(--orange-mid); }
+  .dbd-entry.highlight-aprobacion { border-left: 3px solid var(--green-mid); }
+
+  .dbd-entry-time { font-size: 11px; color: var(--muted); min-width: 52px; padding-top: 1px; font-weight: 500; }
+  .dbd-entry-info { flex: 1; }
+  .dbd-entry-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .dbd-entry-note { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+  .dbd-entry-tag {
+    font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+    padding: 3px 8px; border: 1px solid; white-space: nowrap;
+    align-self: flex-start; margin-top: 2px;
+  }
+
+  .dbd-entry-tag.offline { border-color: #b0c8f0; color: var(--blue); background: var(--blue-light); }
+  .dbd-entry-tag.color { border-color: #f5c8a8; color: var(--orange); background: var(--orange-light); }
+  .dbd-entry-tag.audio { border-color: #a8ddb8; color: var(--green); background: var(--green-light); }
+  .dbd-entry-tag.entrega { border-color: #111; color: #111; background: #f5f5f5; }
+  .dbd-entry-tag.agencia { border-color: #b0c8f0; color: var(--blue); background: var(--blue-light); }
+  .dbd-entry-tag.cliente-tag { border-color: #f5c8a8; color: var(--orange); background: var(--orange-light); }
+  .dbd-entry-tag.aprobacion-tag { border-color: #a8ddb8; color: var(--green); background: var(--green-light); }
+
+</style>
 </head>
 <body>
 
-<!-- ── HEADER ── -->
-<header id="header">
-  <div class="header-left">
-    <div class="logo">RBO</div>
-    <div class="header-divider"></div>
-    <div class="header-titles">
-      <span class="header-title-main">REBOLUCION</span>
-      <span class="header-title-sub">POST-PRODUCTION TRACKER</span>
-    </div>
-  </div>
+<div class="demo">⚡ PREVIEW COMPLETO — Board + Piezas + Timing</div>
+
+<header>
+  <div class="logo" onclick="showBoard()">REBOLUCION</div>
   <div class="header-right">
-    <nav class="header-nav">
-      <button class="nav-btn active" data-view="board">BOARD</button>
-      <button class="nav-btn" data-view="diario">DIARIO</button>
-      <button class="nav-btn" data-view="todo">TO-DO</button>
-    </nav>
-    <div class="header-divider"></div>
-    <span id="project-count"></span>
-    <button id="btn-new-project">+ NUEVO PROYECTO</button>
+    <div class="header-date">JUE 27 MAR 2026</div>
+    <button class="btn ink">+ Nuevo proyecto</button>
   </div>
 </header>
 
-<!-- ── FILTER BAR ── -->
-<div id="filter-bar">
-  <span class="filter-label">VER:</span>
-  <button class="filter-btn active" data-filter="all">TODOS</button>
-  <button class="filter-btn" data-filter="MX">MX</button>
-  <button class="filter-btn" data-filter="MIAMI">MIAMI</button>
-  <button class="filter-btn" data-filter="Spot">SPOTS</button>
-  <button class="filter-btn" data-filter="Film">FILMS</button>
-  <button class="filter-btn" data-filter="Digital">DIGITAL</button>
-</div>
-
-<!-- ── BOARD ── -->
-<div id="board" class="main-section active">
-  <div class="column" data-stage="preproduccion">
-    <div class="column-header">
-      <span class="column-title">PRE-PRODUCCIÓN</span>
-      <span class="column-count">0</span>
-    </div>
-    <div class="column-cards"></div>
-  </div>
-  <div class="column" data-stage="produccion">
-    <div class="column-header">
-      <span class="column-title">PRODUCCIÓN</span>
-      <span class="column-count">0</span>
-    </div>
-    <div class="column-cards"></div>
-  </div>
-  <div class="column" data-stage="postproduccion">
-    <div class="column-header">
-      <span class="column-title">POST-PRODUCCIÓN</span>
-      <span class="column-count">0</span>
-    </div>
-    <div class="column-cards"></div>
-  </div>
-  <div class="column" data-stage="entrega">
-    <div class="column-header">
-      <span class="column-title">ENTREGA</span>
-      <span class="column-count">0</span>
-    </div>
-    <div class="column-cards"></div>
-  </div>
-</div>
-
-<!-- ── DIARIO ── -->
-<div id="section-diario" class="main-section">
-  <div class="section-page">
-    <div class="section-page-header">
-      <span class="section-page-title">DIARIO <span>DE PRODUCCIÓN</span></span>
-      <button id="btn-new-entry" class="btn-add-piece">+ NUEVA ENTRADA</button>
+<!-- ================================ BOARD ================================ -->
+<div id="boardView" class="active">
+  <div class="board-wrap">
+    <div class="board-top">
+      <div class="board-title">Proyectos activos — Marzo 2026</div>
+      <span style="font-size:11px;color:var(--muted2)">6 proyectos</span>
     </div>
 
-    <!-- New entry form -->
-    <div class="diario-new-form hidden" id="diario-new-form">
-      <div class="diario-form-row">
-        <div class="form-group">
-          <label class="form-label">Fecha</label>
-          <input type="date" class="form-input" id="de-date">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Título (opcional)</label>
-          <input type="text" class="form-input" id="de-title" placeholder="ej: Rodaje día 1 Tecate" autocomplete="off">
-        </div>
+    <div class="status-group">
+      <div class="group-label">
+        <div class="group-dot" style="background:var(--orange-mid)"></div>
+        <div class="group-name">Post-producción</div>
+        <div class="group-count">1</div>
       </div>
-      <textarea class="diario-textarea" id="de-text" placeholder="Escribí el registro del día…"></textarea>
-      <div class="diario-form-actions">
-        <button class="btn-cancel" id="de-cancel">CANCELAR</button>
-        <button class="btn-submit" id="de-save">GUARDAR ENTRADA</button>
+      <div class="proj-row" onclick="showDetail('santaclara')">
+        <div class="proj-info"><div class="proj-client">Santa Clara</div><div class="proj-name">Lechitas + Chopeo</div></div>
+        <div class="proj-dir">Vellas · MX</div>
+        <div class="proj-piezas">7 piezas</div>
+        <div class="proj-date soon">10 ABR</div>
+        <div class="proj-arrow">›</div>
       </div>
     </div>
 
-    <!-- Entries list -->
-    <div id="diario-list"></div>
-  </div>
-</div>
-
-<!-- ── TO-DO ── -->
-<div id="section-todo" class="main-section">
-  <div class="section-page">
-    <div class="section-page-header">
-      <span class="section-page-title">TO-DO <span>LIST</span></span>
-      <button id="btn-new-todo" class="btn-add-piece">+ NUEVA TAREA</button>
-    </div>
-
-    <!-- New task form -->
-    <div class="todo-new-form hidden" id="todo-new-form">
-      <div class="todo-new-inputs">
-        <input type="text" class="input-field" id="td-text" placeholder="Descripción de la tarea…" autocomplete="off">
-        <div class="todo-new-row">
-          <select class="todo-priority-select" id="td-priority">
-            <option value="alta">⬆ ALTA</option>
-            <option value="media" selected>— MEDIA</option>
-            <option value="baja">⬇ BAJA</option>
-          </select>
-          <input type="date" class="todo-date-input" id="td-date">
-          <button class="btn-confirm" id="td-save">OK</button>
-          <button class="btn-cancel" id="td-cancel">✕</button>
-        </div>
+    <div class="status-group">
+      <div class="group-label">
+        <div class="group-dot" style="background:var(--yellow-mid)"></div>
+        <div class="group-name">Producción</div>
+        <div class="group-count">3</div>
+      </div>
+      <div class="proj-row" onclick="showDetail('tecate')">
+        <div class="proj-info"><div class="proj-client">Tecate</div><div class="proj-name">Verano 2026</div></div>
+        <div class="proj-dir">Armano Bo · MX</div>
+        <div class="proj-piezas">3 piezas</div>
+        <div class="proj-date urgent">28 MAR</div>
+        <div class="proj-arrow">›</div>
+      </div>
+      <div class="proj-row" onclick="showDetail('popeyes')">
+        <div class="proj-info"><div class="proj-client">Popeye's</div><div class="proj-name">Crispy Season</div></div>
+        <div class="proj-dir">L. Furiolo · MX</div>
+        <div class="proj-piezas">2 piezas</div>
+        <div class="proj-date normal">2 ABR</div>
+        <div class="proj-arrow">›</div>
+      </div>
+      <div class="proj-row" onclick="showDetail('epson')">
+        <div class="proj-info"><div class="proj-client">Epson</div><div class="proj-name">Print the Future</div></div>
+        <div class="proj-dir">Roi Ricci · Miami</div>
+        <div class="proj-piezas">2 piezas</div>
+        <div class="proj-date normal">5 ABR</div>
+        <div class="proj-arrow">›</div>
       </div>
     </div>
 
-    <!-- Filters -->
-    <div class="todo-toolbar">
-      <button class="todo-filter-btn active" data-tf="all">TODAS</button>
-      <button class="todo-filter-btn" data-tf="pending">PENDIENTES</button>
-      <button class="todo-filter-btn" data-tf="overdue">ATRASADAS</button>
-      <span class="todo-count-label" id="todo-count"></span>
+    <div class="status-group">
+      <div class="group-label">
+        <div class="group-dot" style="background:var(--blue-mid)"></div>
+        <div class="group-name">Pre-producción</div>
+        <div class="group-count">1</div>
+      </div>
+      <div class="proj-row" onclick="showDetail('toyota')">
+        <div class="proj-info"><div class="proj-client">Toyota</div><div class="proj-name">Lanzamiento SUV</div></div>
+        <div class="proj-dir">Por asignar · MX</div>
+        <div class="proj-piezas">1 pieza</div>
+        <div class="proj-date normal">10 MAY</div>
+        <div class="proj-arrow">›</div>
+      </div>
     </div>
 
-    <!-- Tasks list -->
-    <div id="todo-list"></div>
+    <div class="status-group">
+      <div class="group-label">
+        <div class="group-dot" style="background:var(--green-mid)"></div>
+        <div class="group-name">Entregado</div>
+        <div class="group-count">1</div>
+      </div>
+      <div class="proj-row" onclick="showDetail('intermiami')">
+        <div class="proj-info"><div class="proj-client">Inter Miami</div><div class="proj-name">Season Opener 2025</div></div>
+        <div class="proj-dir">Seba Lopez · Miami</div>
+        <div class="proj-piezas">1 pieza</div>
+        <div class="proj-date ok">✓ Listo</div>
+        <div class="proj-arrow">›</div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ── MODAL OVERLAY ── -->
-<div id="modal-overlay" class="hidden">
+<!-- ================================ DETAIL ================================ -->
+<div id="detailView">
+  <div class="detail-wrap">
 
-  <!-- DETAIL MODAL -->
-  <div id="modal-detail" class="hidden">
-    <div class="modal-header">
-      <div class="modal-header-left">
-        <span class="modal-client" id="md-client"></span>
-        <span class="modal-name" id="md-name"></span>
-      </div>
-      <div class="modal-header-right">
-        <span class="division-badge" id="md-division"></span>
-        <button class="btn-close" id="btn-close-detail">✕</button>
-      </div>
+    <div class="breadcrumb">
+      <span class="bc-link" onclick="showBoard()">Proyectos</span>
+      <span class="bc-sep">›</span>
+      <span class="bc-current" id="bc-name">Santa Clara</span>
     </div>
 
-    <!-- Stage selector -->
-    <div class="modal-stage-bar" id="modal-stage-bar">
-      <button class="stage-btn" data-stage="preproduccion">PRE<br>PRODUCCIÓN</button>
-      <button class="stage-btn" data-stage="produccion">PRODUCCIÓN</button>
-      <button class="stage-btn" data-stage="postproduccion">POST<br>PRODUCCIÓN</button>
-      <button class="stage-btn" data-stage="entrega">ENTREGA</button>
-    </div>
-
-    <div class="modal-body" id="modal-body">
-      <!-- Info grid -->
-      <div class="modal-info" id="md-info-grid"></div>
-
-      <!-- Pieces -->
-      <div class="section-header">
-        <span class="section-title">PIEZAS</span>
-        <button class="btn-add-piece" id="btn-add-piece">+ AGREGAR PIEZA</button>
-      </div>
-      <div id="pieces-list"></div>
-      <div class="add-piece-form hidden" id="add-piece-form">
-        <input type="text" class="input-field" id="new-piece-name" placeholder="ej: Spot 30&quot; / Cutdown 15&quot;" maxlength="60">
-        <button class="btn-confirm" id="confirm-add-piece">OK</button>
-        <button class="btn-cancel" id="cancel-add-piece">✕</button>
-      </div>
-
-      <!-- Notes -->
-      <div class="notes-section">
-        <span class="section-title">NOTAS INTERNAS</span>
-        <div class="notes-input-wrap">
-          <textarea class="notes-input" id="note-input" placeholder="Escribí una nota y presioná Enter…" rows="1"></textarea>
+    <div class="proj-title-block">
+      <div class="proj-title-top">
+        <div>
+          <div class="proj-title-client" id="d-client">Santa Clara</div>
+          <div class="proj-title-name" id="d-sub">Lechitas + Chopeo · Vellas · MX</div>
         </div>
-        <div id="notes-list"></div>
+        <div class="proj-title-meta" id="d-meta"></div>
+      </div>
+      <div class="proj-title-bottom">
+        <div class="proj-stat">Rodaje: <b id="d-rodaje">10 Mar</b></div>
+        <div class="proj-stat">Piezas: <b id="d-piezas">4</b></div>
+        <div class="proj-stat">Avance post: <b id="d-avance" style="color:var(--orange)">54%</b></div>
       </div>
     </div>
+
+    <!-- TABS -->
+    <div class="detail-tabs">
+      <div class="detail-tab active" onclick="switchTab('piezas', this)">Piezas</div>
+      <div class="detail-tab" onclick="switchTab('timing', this)">Timing</div>
+      <div class="detail-tab" onclick="switchTab('daybyday', this)">Day by Day</div>
+    </div>
+
+    <!-- TAB: PIEZAS -->
+    <div class="tab-panel active" id="tab-piezas">
+      <div class="pieces-header">
+        <div class="section-title">Piezas del proyecto</div>
+        <button class="btn">+ Agregar pieza</button>
+      </div>
+
+      <!-- HERO -->
+      <div class="piece-card">
+        <div class="piece-summary is-open" onclick="togglePiece(this)">
+          <div class="piece-left">
+            <div class="piece-title">Hero</div>
+            <div class="piece-sub">60s · TV + Digital + Cine + Pantallas</div>
+          </div>
+          <div class="stage-pills">
+            <div class="stage-pill done"></div>
+            <div class="stage-pill wip"></div>
+            <div class="stage-pill"></div>
+            <div class="stage-pill done"></div>
+            <div class="stage-pill"></div>
+            <div class="stage-pill"></div>
+          </div>
+          <div class="piece-pct" style="color:var(--orange)">50%</div>
+          <div class="piece-date soon">18 Jul</div>
+          <div class="piece-chevron open">›</div>
+        </div>
+        <div class="piece-detail open">
+          <div class="stages-label">Etapas · click para cambiar estado</div>
+          <div class="stages-grid">
+            <div class="stage-card done" onclick="cycleStage(this)"><div class="stage-card-name">Offline</div><div class="stage-dot"></div><div class="stage-card-status">✓ Listo</div></div>
+            <div class="stage-card wip" onclick="cycleStage(this)"><div class="stage-card-name">Color</div><div class="stage-dot"></div><div class="stage-card-status">En curso</div></div>
+            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Audio</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
+            <div class="stage-card done" onclick="cycleStage(this)"><div class="stage-card-name">VFX</div><div class="stage-dot"></div><div class="stage-card-status">✓ Listo</div></div>
+            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Versiones</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
+            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Máster</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
+          </div>
+
+          <div class="notes-wrap">
+            <div class="stages-label">Notas</div>
+            <textarea class="note-input" placeholder="Agregar nota..."></textarea>
+            <div class="history">
+              <div class="history-row"><div class="history-who">Mariano</div><div class="history-what">Color → En curso</div><div class="history-when">Hoy 14:32</div></div>
+              <div class="history-row"><div class="history-who">Vellas</div><div class="history-what">Offline → Aprobado · "Quedó muy bien"</div><div class="history-when">Ayer 11:20</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEASER -->
+      <div class="piece-card">
+        <div class="piece-summary" onclick="togglePiece(this)">
+          <div class="piece-left"><div class="piece-title">Teaser</div><div class="piece-sub">10s · TV + Digital + Pantallas</div></div>
+          <div class="stage-pills">
+            <div class="stage-pill done"></div><div class="stage-pill done"></div>
+            <div class="stage-pill wip"></div><div class="stage-pill done"></div>
+            <div class="stage-pill"></div><div class="stage-pill"></div>
+          </div>
+          <div class="piece-pct" style="color:var(--orange)">66%</div>
+          <div class="piece-date soon">18 Jul</div>
+          <div class="piece-chevron">›</div>
+        </div>
+        <div class="piece-detail">
+          <div class="stages-label">Etapas · click para cambiar estado</div>
+          <div class="stages-grid">
+            <div class="stage-card done" onclick="cycleStage(this)"><div class="stage-card-name">Offline</div><div class="stage-dot"></div><div class="stage-card-status">✓ Listo</div></div>
+            <div class="stage-card done" onclick="cycleStage(this)"><div class="stage-card-name">Color</div><div class="stage-dot"></div><div class="stage-card-status">✓ Listo</div></div>
+            <div class="stage-card wip" onclick="cycleStage(this)"><div class="stage-card-name">Audio</div><div class="stage-dot"></div><div class="stage-card-status">En curso</div></div>
+            <div class="stage-card done" onclick="cycleStage(this)"><div class="stage-card-name">VFX</div><div class="stage-dot"></div><div class="stage-card-status">✓ Listo</div></div>
+            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Versiones</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
+            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Máster</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
+          </div>
+
+          <div class="notes-wrap">
+            <div class="stages-label">Notas</div>
+            <textarea class="note-input" placeholder="Agregar nota..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIFT -->
+      <div class="piece-card">
+        <div class="piece-summary" onclick="togglePiece(this)">
+          <div class="piece-left"><div class="piece-title">Lift 30"</div><div class="piece-sub">30s · TV + Digital + Pantallas</div></div>
+          <div class="stage-pills">
+            <div class="stage-pill rev"></div><div class="stage-pill"></div>
+            <div class="stage-pill"></div><div class="stage-pill"></div>
+            <div class="stage-pill"></div><div class="stage-pill"></div>
+          </div>
+          <div class="piece-pct" style="color:var(--muted)">16%</div>
+          <div class="piece-date normal">—</div>
+          <div class="piece-chevron">›</div>
+        </div>
+        <div class="piece-detail">
+          <div class="stages-label">Etapas · click para cambiar estado</div>
+          <div class="stages-grid">
+            <div class="stage-card rev" onclick="cycleStage(this)"><div class="stage-card-name">Offline</div><div class="stage-dot"></div><div class="stage-card-status">Revisión</div></div>
+            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Color</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
+            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Audio</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
+            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">VFX</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
+            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Versiones</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
+            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Máster</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHOPEO -->
+      <div class="piece-card">
+        <div class="piece-summary" onclick="togglePiece(this)">
+          <div class="piece-left"><div class="piece-title">Chopeo</div><div class="piece-sub">15s · TV + Digital + Pantallas</div></div>
+          <div class="stage-pills">
+            <div class="stage-pill done"></div><div class="stage-pill done"></div>
+            <div class="stage-pill"></div><div class="stage-pill"></div>
+            <div class="stage-pill"></div><div class="stage-pill"></div>
+          </div>
+          <div class="piece-pct" style="color:var(--muted)">33%</div>
+          <div class="piece-date soon">10 Abr</div>
+          <div class="piece-chevron">›</div>
+        </div>
+        <div class="piece-detail">
+          <div class="stages-label">Etapas · click para cambiar estado</div>
+          <div class="stages-grid">
+            <div class="stage-card done" onclick="cycleStage(this)"><div class="stage-card-name">Offline</div><div class="stage-dot"></div><div class="stage-card-status">✓ Listo</div></div>
+            <div class="stage-card done" onclick="cycleStage(this)"><div class="stage-card-name">Color</div><div class="stage-dot"></div><div class="stage-card-status">✓ Listo</div></div>
+            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Audio</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
+            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">VFX</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
+            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Versiones</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
+            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Máster</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB: TIMING -->
+    <div class="tab-panel" id="tab-timing">
+      <div class="timing-section">
+        <div class="timing-top">
+          <div class="section-title">Calendario de producción</div>
+          <div class="month-nav">
+            <button class="nav-btn">‹</button>
+            <div class="month-name">Abril 2026</div>
+            <button class="nav-btn">›</button>
+          </div>
+        </div>
+
+        <div class="gantt-wrap">
+          <table class="gantt-table">
+            <thead>
+              <tr class="week-header">
+                <th>Pieza</th>
+                <th colspan="7">Semana 1 · 1–7</th>
+                <th colspan="7">Semana 2 · 8–14</th>
+                <th colspan="7">Semana 3 · 15–21</th>
+                <th colspan="7">Semana 4 · 22–28</th>
+                <th colspan="2">29–30</th>
+              </tr>
+              <tr class="day-header">
+                <th></th>
+                <th class="weekend">Ma</th><th>Ma</th><th>Mi</th><th>J</th><th>V</th><th class="weekend">S</th><th class="weekend">D</th>
+                <th>L</th><th class="today">Ma</th><th>Mi</th><th>J</th><th>V</th><th class="weekend">S</th><th class="weekend">D</th>
+                <th>L</th><th>Ma</th><th>Mi</th><th>J</th><th>V</th><th class="weekend">S</th><th class="weekend">D</th>
+                <th>L</th><th>Ma</th><th>Mi</th><th>J</th><th>V</th><th class="weekend">S</th><th class="weekend">D</th>
+                <th>L</th><th>Ma</th>
+              </tr>
+              <tr class="day-header" style="border-bottom:2px solid var(--rule)">
+                <th style="color:var(--ink);font-size:10px;padding-left:14px">HOY ↓</th>
+                <th class="weekend">1</th><th>2</th><th>3</th><th>4</th><th>5</th><th class="weekend">6</th><th class="weekend">7</th>
+                <th>8</th><th class="today">9</th><th>10</th><th>11</th><th>12</th><th class="weekend">13</th><th class="weekend">14</th>
+                <th>15</th><th>16</th><th>17</th><th>18</th><th>19</th><th class="weekend">20</th><th class="weekend">21</th>
+                <th>22</th><th>23</th><th>24</th><th>25</th><th>26</th><th class="weekend">27</th><th class="weekend">28</th>
+                <th>29</th><th>30</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="row-label">🎬 Rodaje</div></td>
+                <td class="weekend"></td>
+                <td style="padding:0 2px"><div class="bar bar-rodaje" style="border-radius:2px 0 0 2px">RODAJE</div></td>
+                <td style="padding:0 2px"><div class="bar bar-rodaje" style="border-radius:0 2px 2px 0"></div></td>
+                <td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td><td class="today-col"></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td><td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td><td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td><td></td>
+              </tr>
+              <tr>
+                <td><div class="row-label">Hero</div><div class="row-sub">60s</div></td>
+                <td class="weekend"></td><td></td>
+                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:2px 0 0 2px">Offline</div></td>
+                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:0 2px 2px 0"></div></td>
+                <td></td><td class="weekend"></td><td class="weekend"></td>
+                <td style="padding:0 2px"><div class="bar bar-color" style="border-radius:2px 0 0 2px">Color</div></td>
+                <td class="today-col" style="padding:0 2px"><div class="bar bar-color" style="border-radius:0"></div></td>
+                <td style="padding:0 2px"><div class="bar bar-color" style="border-radius:0 2px 2px 0"></div></td>
+                <td style="padding:0 2px"><div class="bar bar-vfx" style="border-radius:2px 0 0 2px">VFX</div></td>
+                <td style="padding:0 2px"><div class="bar bar-vfx" style="border-radius:0 2px 2px 0"></div></td>
+                <td class="weekend"></td><td class="weekend"></td>
+                <td style="padding:0 2px"><div class="bar bar-audio" style="border-radius:2px 0 0 2px">Audio</div></td>
+                <td style="padding:0 2px"><div class="bar bar-audio" style="border-radius:0"></div></td>
+                <td style="padding:0 2px"><div class="bar bar-audio" style="border-radius:0 2px 2px 0"></div></td>
+                <td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td style="padding:0 2px"><div class="bar bar-revision" style="border-radius:2px 0 0 2px">Rev</div></td>
+                <td style="padding:0 2px"><div class="bar bar-revision" style="border-radius:0 2px 2px 0"></div></td>
+                <td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td><td></td>
+              </tr>
+              <tr>
+                <td><div class="row-label">Teaser</div><div class="row-sub">10s</div></td>
+                <td class="weekend"></td><td></td>
+                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:2px 0 0 2px">Offline</div></td>
+                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:0 2px 2px 0"></div></td>
+                <td></td><td class="weekend"></td><td class="weekend"></td>
+                <td style="padding:0 2px"><div class="bar bar-color" style="border-radius:2px 0 0 2px">Color</div></td>
+                <td class="today-col" style="padding:0 2px"><div class="bar bar-color" style="border-radius:0 2px 2px 0"></div></td>
+                <td style="padding:0 2px"><div class="bar bar-audio" style="border-radius:2px 0 0 2px">Audio</div></td>
+                <td style="padding:0 2px"><div class="bar bar-audio" style="border-radius:0 2px 2px 0"></div></td>
+                <td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td><td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td style="padding:0 2px"><div class="bar bar-revision" style="border-radius:2px">Rev</div></td>
+                <td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td><td></td>
+              </tr>
+              <tr>
+                <td><div class="row-label">Lift 30"</div><div class="row-sub">30s</div></td>
+                <td class="weekend"></td><td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td><td class="today-col"></td><td></td>
+                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:2px 0 0 2px">Offline</div></td>
+                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:0"></div></td>
+                <td class="weekend"></td><td class="weekend"></td>
+                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:0 2px 2px 0"></div></td>
+                <td style="padding:0 2px"><div class="bar bar-color" style="border-radius:2px 0 0 2px">Color</div></td>
+                <td style="padding:0 2px"><div class="bar bar-color" style="border-radius:0 2px 2px 0"></div></td>
+                <td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td><td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td><td></td>
+              </tr>
+              <tr>
+                <td><div class="row-label">Chopeo</div><div class="row-sub">15s</div></td>
+                <td class="weekend"></td><td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td><td class="today-col"></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:2px 0 0 2px">Offline</div></td>
+                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:0 2px 2px 0"></div></td>
+                <td style="padding:0 2px"><div class="bar bar-color" style="border-radius:2px 0 0 2px">Color</div></td>
+                <td style="padding:0 2px"><div class="bar bar-color" style="border-radius:0 2px 2px 0"></div></td>
+                <td></td><td class="weekend"></td><td class="weekend"></td>
+                <td style="padding:0 2px"><div class="bar bar-audio" style="border-radius:2px 0 0 2px">Audio</div></td>
+                <td style="padding:0 2px"><div class="bar bar-audio" style="border-radius:0 2px 2px 0"></div></td>
+                <td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td><td></td>
+              </tr>
+              <tr style="background:var(--soft)">
+                <td><div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);padding:8px 0">Hitos</div></td>
+                <td class="weekend"></td>
+                <td style="text-align:center"><div class="milestone ms-rodaje"></div></td>
+                <td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td>
+                <td class="today-col" style="text-align:center"><div style="font-size:7px;color:var(--red);font-weight:700;letter-spacing:1px">HOY</div></td>
+                <td style="text-align:center"><div class="milestone ms-entrega"></div></td>
+                <td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td><td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
+                <td></td><td></td><td></td>
+                <td style="text-align:center"><div class="milestone ms-ok"></div></td>
+                <td></td><td class="weekend"></td><td class="weekend"></td>
+                <td style="text-align:center"><div class="milestone ms-entrega"></div></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="gantt-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#111"></div>Rodaje</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--blue-light);border:1px solid #b0c8f0"></div>Offline</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--orange-light);border:1px solid #f5c8a8"></div>Color</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--green-light);border:1px solid #a8ddb8"></div>Audio</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--purple-light);border:1px solid #c8a8f0"></div>VFX</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--yellow-light);border:1px solid #e8d060"></div>Revisión</div>
+            <div style="margin-left:auto;display:flex;gap:12px">
+              <div class="legend-item"><div style="width:10px;height:10px;border-radius:50%;background:#111"></div>Inicio rodaje</div>
+              <div class="legend-item"><div style="width:10px;height:10px;border-radius:50%;background:var(--red)"></div>Entrega</div>
+              <div class="legend-item"><div style="width:10px;height:10px;border-radius:50%;background:var(--green)"></div>Aprobación</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timing-notes">
+          <div class="timing-notes-title">Notas de timing</div>
+          <div class="t-note-row">
+            <div class="t-note-date">9 Abr</div>
+            <div class="t-note-text">Color del Hero en proceso. Estudio Cromo confirma entrega el 10 por la tarde.</div>
+            <div class="t-note-who">Mariano</div>
+          </div>
+          <div class="t-note-row">
+            <div class="t-note-date">7 Abr</div>
+            <div class="t-note-text">Audio confirmado para el 15 y 16. Turno AM en Estudio del Sol.</div>
+            <div class="t-note-who">Mariano</div>
+          </div>
+          <div class="t-note-row">
+            <div class="t-note-date">3 Abr</div>
+            <div class="t-note-text">Offline del Teaser aprobado por Vellas. Pasa a color junto al Hero.</div>
+            <div class="t-note-who">Vellas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: DAY BY DAY -->
+    <div class="tab-panel" id="tab-daybyday">
+      <div class="daybyday-section">
+
+        <!-- FECHAS IMPORTANTES -->
+        <div class="dbd-block">
+          <div class="dbd-block-header">
+            <div class="section-title">Fechas importantes</div>
+            <button class="btn">+ Agregar fecha</button>
+          </div>
+          <div class="fechas-grid" style="margin-bottom:0">
+            <div class="fecha-item agencia">
+              <div class="fecha-tipo">Presentación Agencia</div>
+              <div class="fecha-val">12 Abr</div>
+              <div class="fecha-nota">Pre-producción con DDB</div>
+            </div>
+            <div class="fecha-item cliente">
+              <div class="fecha-tipo">Presentación Cliente</div>
+              <div class="fecha-val">18 Abr</div>
+              <div class="fecha-nota">Offline + color — Santa Clara</div>
+            </div>
+            <div class="fecha-item aprobacion">
+              <div class="fecha-tipo">Aprobación Final</div>
+              <div class="fecha-val">25 Abr</div>
+              <div class="fecha-nota">Máster aprobado para entrega</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AGENDA DÍA A DÍA -->
+        <div class="dbd-block">
+          <div class="dbd-block-header">
+            <div class="section-title">Agenda día a día</div>
+            <button class="btn">+ Agregar día</button>
+          </div>
+
+          <div class="dbd-list">
+
+            <div class="dbd-day">
+              <div class="dbd-day-header">
+                <div class="dbd-day-date">Lun 9 Abr · <span style="color:var(--red);font-weight:600">HOY</span></div>
+                <div class="dbd-day-label">Semana 2 de post</div>
+              </div>
+              <div class="dbd-entries">
+                <div class="dbd-entry">
+                  <div class="dbd-entry-time">09:00</div>
+                  <div class="dbd-entry-info">
+                    <div class="dbd-entry-title">Color Hero — Estudio Cromo</div>
+                    <div class="dbd-entry-note">Sesión AM. Confirmar con colorista.</div>
+                  </div>
+                  <div class="dbd-entry-tag color">Color</div>
+                </div>
+                <div class="dbd-entry">
+                  <div class="dbd-entry-time">14:00</div>
+                  <div class="dbd-entry-info">
+                    <div class="dbd-entry-title">Revisión offline Lift 30"</div>
+                    <div class="dbd-entry-note">Vellas envía corte para aprobación.</div>
+                  </div>
+                  <div class="dbd-entry-tag offline">Offline</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="dbd-day">
+              <div class="dbd-day-header">
+                <div class="dbd-day-date">Mar 10 Abr</div>
+                <div class="dbd-day-label"></div>
+              </div>
+              <div class="dbd-entries">
+                <div class="dbd-entry">
+                  <div class="dbd-entry-time">11:00</div>
+                  <div class="dbd-entry-info">
+                    <div class="dbd-entry-title">Entrega color Hero al cliente</div>
+                    <div class="dbd-entry-note">Subir a Frame.io para revisión agencia.</div>
+                  </div>
+                  <div class="dbd-entry-tag entrega">Entrega</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="dbd-day">
+              <div class="dbd-day-header">
+                <div class="dbd-day-date">Vie 12 Abr</div>
+                <div class="dbd-day-label" style="color:var(--blue);font-weight:500">Presentación Agencia</div>
+              </div>
+              <div class="dbd-entries">
+                <div class="dbd-entry highlight-agencia">
+                  <div class="dbd-entry-time">10:00</div>
+                  <div class="dbd-entry-info">
+                    <div class="dbd-entry-title">Presentación a DDB — Pre-producción</div>
+                    <div class="dbd-entry-note">Sala de reuniones. Llevar storyboard y ref. de casting.</div>
+                  </div>
+                  <div class="dbd-entry-tag agencia">Agencia</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="dbd-day">
+              <div class="dbd-day-header">
+                <div class="dbd-day-date">Lun 15 Abr</div>
+                <div class="dbd-day-label"></div>
+              </div>
+              <div class="dbd-entries">
+                <div class="dbd-entry">
+                  <div class="dbd-entry-time">09:00</div>
+                  <div class="dbd-entry-info">
+                    <div class="dbd-entry-title">Sesión audio Hero + Teaser</div>
+                    <div class="dbd-entry-note">Estudio del Sol. Turno AM de 9 a 13hs.</div>
+                  </div>
+                  <div class="dbd-entry-tag audio">Audio</div>
+                </div>
+                <div class="dbd-entry">
+                  <div class="dbd-entry-time">16:00</div>
+                  <div class="dbd-entry-info">
+                    <div class="dbd-entry-title">Offline Lift 30" — segunda versión</div>
+                    <div class="dbd-entry-note">Montaje ajustes por correcciones del cliente.</div>
+                  </div>
+                  <div class="dbd-entry-tag offline">Offline</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="dbd-day">
+              <div class="dbd-day-header">
+                <div class="dbd-day-date">Vie 18 Abr</div>
+                <div class="dbd-day-label" style="color:var(--orange);font-weight:500">Presentación Cliente</div>
+              </div>
+              <div class="dbd-entries">
+                <div class="dbd-entry highlight-cliente">
+                  <div class="dbd-entry-time">11:00</div>
+                  <div class="dbd-entry-info">
+                    <div class="dbd-entry-title">Presentación offline + color — Santa Clara</div>
+                    <div class="dbd-entry-note">Reunión en oficinas del cliente. Asisten Vellas + Mariano.</div>
+                  </div>
+                  <div class="dbd-entry-tag cliente-tag">Cliente</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="dbd-day">
+              <div class="dbd-day-header">
+                <div class="dbd-day-date">Jue 25 Abr</div>
+                <div class="dbd-day-label" style="color:var(--green);font-weight:500">Aprobación Final</div>
+              </div>
+              <div class="dbd-entries">
+                <div class="dbd-entry highlight-aprobacion">
+                  <div class="dbd-entry-time">Todo el día</div>
+                  <div class="dbd-entry-info">
+                    <div class="dbd-entry-title">Aprobación máster — Entrega final</div>
+                    <div class="dbd-entry-note">Deadline para aprobación antes de entrega a medios.</div>
+                  </div>
+                  <div class="dbd-entry-tag aprobacion-tag">Aprobación</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
   </div>
-
-  <!-- NEW PROJECT MODAL -->
-  <div id="modal-new" class="hidden">
-    <div class="new-form-header">
-      <span class="new-form-title">NUEVO PROYECTO</span>
-      <button class="btn-close" id="btn-close-new">✕</button>
-    </div>
-    <div class="new-form-body">
-      <div class="form-group">
-        <label class="form-label">Cliente *</label>
-        <input type="text" class="form-input" id="f-client" placeholder="COCA-COLA" autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Nombre del proyecto *</label>
-        <input type="text" class="form-input" id="f-name" placeholder="Verano 2026" autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Director</label>
-        <input type="text" class="form-input" id="f-director" placeholder="Nombre Apellido" autocomplete="off">
-      </div>
-      <div class="form-group-row">
-        <div class="form-group">
-          <label class="form-label">División *</label>
-          <select class="form-select" id="f-division">
-            <option value="MX">MX</option>
-            <option value="MIAMI">MIAMI</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Tipo</label>
-          <select class="form-select" id="f-type">
-            <option value="Spot">Spot</option>
-            <option value="Film">Film</option>
-            <option value="Digital">Digital</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group-row">
-        <div class="form-group">
-          <label class="form-label">Fecha de rodaje</label>
-          <input type="date" class="form-input" id="f-shoot">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Fecha de entrega</label>
-          <input type="date" class="form-input" id="f-delivery">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Etapa inicial</label>
-        <select class="form-select" id="f-stage">
-          <option value="preproduccion">Pre-producción</option>
-          <option value="produccion">Producción</option>
-          <option value="postproduccion">Post-producción</option>
-          <option value="entrega">Entrega</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-footer">
-      <button class="btn-cancel" id="btn-cancel-new">CANCELAR</button>
-      <button class="btn-submit" id="btn-submit-new">CREAR PROYECTO</button>
-    </div>
-  </div>
-
 </div>
-
-<!-- ── TOAST ── -->
-<div id="toast"></div>
 
 <script>
-// ── CONSTANTS ──────────────────────────────────────────────────────────────
-const STAGE_LABELS = {
-  offline:   'OFFLINE / MONTAJE',
-  color:     'COLOR / ETALONAJE',
-  audio:     'AUDIO / MIX',
-  vfx:       'VFX / MOTION',
-  versiones: 'VERSIONES / SUBS',
-  master:    'MÁSTER Y ENTREGA'
+const PROJECTS = {
+  santaclara: { client: 'Santa Clara', sub: 'Lechitas + Chopeo · Vellas · MX', rodaje: '10 Mar', piezas: '4', avance: '54%', avanceColor: 'var(--orange)', meta: [{ label: 'Post-producción', cls: 'status-post' }, { label: 'Entrega: 10 Abr', cls: 'date-soon' }] },
+  tecate: { client: 'Tecate', sub: 'Verano 2026 · Armano Bo · MX', rodaje: '28 Mar', piezas: '3', avance: '18%', avanceColor: 'var(--yellow)', meta: [{ label: 'Producción', cls: '' }, { label: 'Rodaje: 28 Mar', cls: 'date-urgent' }] },
+  popeyes: { client: "Popeye's", sub: 'Crispy Season · L. Furiolo · MX', rodaje: '2 Abr', piezas: '2', avance: '0%', avanceColor: 'var(--muted)', meta: [{ label: 'Producción', cls: '' }, { label: 'Rodaje: 2 Abr', cls: '' }] },
+  epson: { client: 'Epson', sub: 'Print the Future · Roi Ricci · Miami', rodaje: '5 Abr', piezas: '2', avance: '0%', avanceColor: 'var(--muted)', meta: [{ label: 'Producción', cls: '' }, { label: 'Rodaje: 5 Abr', cls: '' }] },
+  toyota: { client: 'Toyota', sub: 'Lanzamiento SUV · Por asignar · MX', rodaje: '—', piezas: '1', avance: '0%', avanceColor: 'var(--muted)', meta: [{ label: 'Pre-producción', cls: '' }] },
+  intermiami: { client: 'Inter Miami', sub: 'Season Opener 2025 · Seba Lopez · Miami', rodaje: '10 Ene', piezas: '1', avance: '100%', avanceColor: 'var(--green)', meta: [{ label: '✓ Entregado', cls: '' }] }
 };
-const STAGE_CYCLE = ['pending', 'inprogress', 'done', 'blocked'];
-const STATE_LABELS = { pending: 'PENDIENTE', inprogress: 'EN CURSO', done: 'LISTO', blocked: 'BLOQUEADO' };
-const STAGE_ACTIVE_CLASS = { preproduccion: 'active-pre', produccion: 'active-prod', postproduccion: 'active-post', entrega: 'active-entrega' };
 
-// ── DEMO DATA ──────────────────────────────────────────────────────────────
-const DEMO_DATA = [
-  {
-    id: 'tecate-001',
-    client: 'TECATE',
-    name: 'Verano 2026',
-    director: 'Armano Bo + Seba Lopez',
-    shootDate: '2026-03-28',
-    deliveryDate: '',
-    division: 'MX',
-    type: 'Spot',
-    stage: 'produccion',
-    tags: ['Spot'],
-    pieces: [
-      { id: 'p1', name: 'Spot 30"', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } },
-      { id: 'p2', name: 'Cutdown 15"', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } },
-      { id: 'p3', name: 'Digital 9:16', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } }
-    ],
-    notes: []
-  },
-  {
-    id: 'popeyes-001',
-    client: 'POPEYES',
-    name: 'Crispy Season',
-    director: 'Lautaro Furiolo',
-    shootDate: '2026-04-02',
-    deliveryDate: '',
-    division: 'MX',
-    type: 'Spot',
-    stage: 'produccion',
-    tags: ['Spot'],
-    pieces: [
-      { id: 'p1', name: 'Spot 30"', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } },
-      { id: 'p2', name: 'Cutdown 15"', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } }
-    ],
-    notes: []
-  },
-  {
-    id: 'santaclara-001',
-    client: 'SANTA CLARA',
-    name: 'Lechitas + Chopeo',
-    director: 'Vellas',
-    shootDate: '',
-    deliveryDate: '2026-04-10',
-    division: 'MX',
-    type: 'Spot',
-    stage: 'postproduccion',
-    tags: ['Spot'],
-    pieces: [
-      { id: 'p1', name: 'Lechitas 30"', stages: { offline: 'done', color: 'inprogress', audio: 'inprogress', vfx: 'pending', versiones: 'pending', master: 'pending' } },
-      { id: 'p2', name: 'Chopeo 30"', stages: { offline: 'done', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } }
-    ],
-    notes: [{ id: 'n1', text: 'Offline aprobado. Esperando grade con colorista.', timestamp: '2026-03-22T14:30:00' }]
-  },
-  {
-    id: 'epson-001',
-    client: 'EPSON',
-    name: 'Print the Future',
-    director: 'Roi Ricci',
-    shootDate: '2026-04-05',
-    deliveryDate: '',
-    division: 'MIAMI',
-    type: 'Spot',
-    stage: 'produccion',
-    tags: ['Spot'],
-    pieces: [
-      { id: 'p1', name: 'Spot 30"', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } },
-      { id: 'p2', name: 'Digital 1:1', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } }
-    ],
-    notes: []
-  },
-  {
-    id: 'intermiami-001',
-    client: 'INTER MIAMI',
-    name: 'Season Opener',
-    director: 'Seba Lopez',
-    shootDate: '',
-    deliveryDate: '2026-03-15',
-    division: 'MIAMI',
-    type: 'Spot',
-    stage: 'entrega',
-    tags: ['Spot'],
-    pieces: [
-      { id: 'p1', name: 'Hero Film 60"', stages: { offline: 'done', color: 'done', audio: 'done', vfx: 'done', versiones: 'done', master: 'done' } },
-      { id: 'p2', name: 'Cutdown 30"', stages: { offline: 'done', color: 'done', audio: 'done', vfx: 'done', versiones: 'done', master: 'done' } },
-      { id: 'p3', name: 'Digital 9:16', stages: { offline: 'done', color: 'done', audio: 'done', vfx: 'done', versiones: 'done', master: 'done' } }
-    ],
-    notes: [
-      { id: 'n1', text: 'Entregado al cliente. Aprobado por MLS.', timestamp: '2026-03-14T10:00:00' },
-      { id: 'n2', text: 'Versiones en inglés y español entregadas.', timestamp: '2026-03-15T09:15:00' }
-    ]
-  },
-  {
-    id: 'toyota-001',
-    client: 'TOYOTA',
-    name: 'Lanzamiento SUV',
-    director: 'Por asignar',
-    shootDate: '2026-04-15',
-    deliveryDate: '',
-    division: 'MX',
-    type: 'Spot',
-    stage: 'preproduccion',
-    tags: ['Spot'],
-    pieces: [
-      { id: 'p1', name: 'Spot 30"', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } }
-    ],
-    notes: []
-  }
+const STAGE_STATES = [
+  { cls: '', label: 'Pendiente' },
+  { cls: 'wip', label: 'En curso' },
+  { cls: 'rev', label: 'Revisión' },
+  { cls: 'done', label: '✓ Listo' },
+  { cls: 'blocked', label: 'Bloqueado' }
 ];
 
-// ── APP ────────────────────────────────────────────────────────────────────
-class ReboTracker {
-  constructor() {
-    this.projects = [];
-    this.filter = 'all';
-    this.activeProjectId = null;
-    this.init();
-  }
-
-  // ── DATA ────────────────────────────────────────────────────────────────
-  init() {
-    this.loadData();
-    this.bindEvents();
-    this.render();
-  }
-
-  loadData() {
-    try {
-      const saved = localStorage.getItem('rebo-projects');
-      this.projects = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEMO_DATA));
-    } catch {
-      this.projects = JSON.parse(JSON.stringify(DEMO_DATA));
-    }
-    if (!this.projects.length) this.projects = JSON.parse(JSON.stringify(DEMO_DATA));
-    this.save();
-  }
-
-  save() { localStorage.setItem('rebo-projects', JSON.stringify(this.projects)); }
-
-  getProject(id) { return this.projects.find(p => p.id === id); }
-
-  getFiltered() {
-    const f = this.filter;
-    if (f === 'all') return this.projects;
-    if (f === 'MX' || f === 'MIAMI') return this.projects.filter(p => p.division === f);
-    return this.projects.filter(p => p.type === f);
-  }
-
-  calcProgress(project) {
-    let total = 0, done = 0;
-    project.pieces.forEach(piece => {
-      Object.values(piece.stages).forEach(s => { total++; if (s === 'done') done++; });
-    });
-    return total ? Math.round((done / total) * 100) : 0;
-  }
-
-  uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
-
-  // ── FORMAT ──────────────────────────────────────────────────────────────
-  fmtDate(d) {
-    if (!d) return '—';
-    const [y,m,day] = d.split('-');
-    const months = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
-    return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
-  }
-
-  fmtTs(ts) {
-    const d = new Date(ts);
-    return d.toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' }) +
-           ' · ' + d.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
-  }
-
-  // ── RENDER BOARD ────────────────────────────────────────────────────────
-  render() {
-    const filtered = this.getFiltered();
-    const total = filtered.length;
-    document.getElementById('project-count').textContent = `${total} PROYECTO${total !== 1 ? 'S' : ''}`;
-
-    ['preproduccion','produccion','postproduccion','entrega'].forEach(stage => {
-      const col = document.querySelector(`.column[data-stage="${stage}"]`);
-      const cards = col.querySelector('.column-cards');
-      const count = col.querySelector('.column-count');
-      const projects = filtered.filter(p => p.stage === stage);
-      count.textContent = projects.length;
-      if (!projects.length) {
-        cards.innerHTML = '<div class="empty-col">Sin proyectos</div>';
-        return;
-      }
-      cards.innerHTML = projects.map(p => this.renderCard(p)).join('');
-      cards.querySelectorAll('.project-card').forEach(el => {
-        el.addEventListener('click', () => this.openDetail(el.dataset.id));
-      });
-    });
-  }
-
-  renderCard(p) {
-    const pct = this.calcProgress(p);
-    const div = p.division.toLowerCase();
-    const tags = (p.tags||[]).map(t => `<span class="tag">${t}</span>`).join('');
-    return `
-      <div class="project-card" data-id="${p.id}">
-        <div class="card-inner">
-          <div class="card-top">
-            <span class="card-client">${p.client}</span>
-            <span class="division-badge division-${div}">${p.division}</span>
-          </div>
-          <div class="card-name">${p.name}</div>
-          <div class="card-meta">
-            <div class="card-meta-row">
-              <span class="card-meta-label">DIR</span>
-              <span class="card-meta-val">${p.director || '—'}</span>
-            </div>
-            ${p.shootDate ? `<div class="card-meta-row"><span class="card-meta-label">RODAJE</span><span class="card-meta-val">${this.fmtDate(p.shootDate)}</span></div>` : ''}
-            ${p.deliveryDate ? `<div class="card-meta-row"><span class="card-meta-label">ENTREGA</span><span class="card-meta-val">${this.fmtDate(p.deliveryDate)}</span></div>` : ''}
-          </div>
-        </div>
-        <div class="card-progress-wrap">
-          <div class="card-progress-fill" style="width:${pct}%"></div>
-        </div>
-        <div class="card-inner">
-          <div class="card-bottom">
-            <div class="card-tags">${tags}</div>
-            <span class="card-progress-pct ${pct === 0 ? 'zero' : ''}">${pct > 0 ? pct + '%' : '—'}</span>
-          </div>
-        </div>
-      </div>`;
-  }
-
-  // ── DETAIL MODAL ─────────────────────────────────────────────────────────
-  openDetail(id) {
-    const p = this.getProject(id);
-    if (!p) return;
-    this.activeProjectId = id;
-    this.renderDetail(p);
-    document.getElementById('modal-overlay').classList.remove('hidden');
-    document.getElementById('modal-detail').classList.remove('hidden');
-    document.getElementById('modal-new').classList.add('hidden');
-  }
-
-  renderDetail(p) {
-    document.getElementById('md-client').textContent = p.client;
-    document.getElementById('md-name').textContent = p.name;
-    const divBadge = document.getElementById('md-division');
-    divBadge.textContent = p.division;
-    divBadge.className = `division-badge division-${p.division.toLowerCase()}`;
-
-    // Stage bar
-    document.querySelectorAll('.stage-btn').forEach(btn => {
-      btn.className = 'stage-btn';
-      if (btn.dataset.stage === p.stage) {
-        btn.classList.add(STAGE_ACTIVE_CLASS[p.stage]);
-      }
-    });
-
-    // Info grid
-    document.getElementById('md-info-grid').innerHTML = `
-      <div class="info-cell"><div class="info-label">DIRECTOR</div><div class="info-value">${p.director || '—'}</div></div>
-      <div class="info-cell"><div class="info-label">TIPO</div><div class="info-value">${p.type || '—'}</div></div>
-      <div class="info-cell"><div class="info-label">FECHA RODAJE</div><div class="info-value">${this.fmtDate(p.shootDate)}</div></div>
-      <div class="info-cell"><div class="info-label">FECHA ENTREGA</div><div class="info-value">${this.fmtDate(p.deliveryDate)}</div></div>
-      <div class="info-cell"><div class="info-label">PIEZAS</div><div class="info-value">${p.pieces.length}</div></div>
-      <div class="info-cell"><div class="info-label">PROGRESO POST</div><div class="info-value" style="color:var(--accent)">${this.calcProgress(p)}%</div></div>
-    `;
-
-    // Pieces
-    this.renderPieces(p);
-
-    // Notes
-    this.renderNotes(p);
-
-    // Reset add piece form
-    document.getElementById('add-piece-form').classList.add('hidden');
-    document.getElementById('new-piece-name').value = '';
-    document.getElementById('note-input').value = '';
-  }
-
-  renderPieces(p) {
-    const list = document.getElementById('pieces-list');
-    if (!p.pieces.length) {
-      list.innerHTML = '<div class="empty-col">Sin piezas — agregá una arriba</div>';
-      return;
-    }
-    list.innerHTML = p.pieces.map(piece => {
-      const doneCount = Object.values(piece.stages).filter(s => s === 'done').length;
-      const rows = Object.entries(STAGE_LABELS).map(([key, label]) => {
-        const state = piece.stages[key];
-        return `
-          <div class="stage-row" data-piece="${piece.id}" data-stage="${key}">
-            <span class="stage-row-name">${label}</span>
-            <span class="state-badge state-${state}">${STATE_LABELS[state]}</span>
-          </div>`;
-      }).join('');
-      return `
-        <div class="piece-block">
-          <div class="piece-header">
-            <span class="piece-name">${piece.name}</span>
-            <div class="piece-actions">
-              <span class="piece-progress-mini">${doneCount}/6</span>
-              <button class="btn-remove-piece" data-piece="${piece.id}" title="Eliminar pieza">✕</button>
-            </div>
-          </div>
-          <div class="stage-rows">${rows}</div>
-        </div>`;
-    }).join('');
-
-    // Bind stage click (cycle state)
-    list.querySelectorAll('.stage-row').forEach(row => {
-      row.addEventListener('click', () => {
-        const proj = this.getProject(this.activeProjectId);
-        const piece = proj.pieces.find(pc => pc.id === row.dataset.piece);
-        if (!piece) return;
-        const cur = piece.stages[row.dataset.stage];
-        const idx = STAGE_CYCLE.indexOf(cur);
-        piece.stages[row.dataset.stage] = STAGE_CYCLE[(idx + 1) % STAGE_CYCLE.length];
-        this.save();
-        this.renderPieces(proj);
-        this.render();
-        // update progress in detail
-        document.getElementById('md-info-grid').querySelector('.info-cell:last-child .info-value').textContent = this.calcProgress(proj) + '%';
-      });
-    });
-
-    // Bind remove piece
-    list.querySelectorAll('.btn-remove-piece').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const proj = this.getProject(this.activeProjectId);
-        if (proj.pieces.length <= 1) { this.toast('Debe haber al menos una pieza'); return; }
-        proj.pieces = proj.pieces.filter(pc => pc.id !== btn.dataset.piece);
-        this.save();
-        this.renderPieces(proj);
-        this.render();
-      });
-    });
-  }
-
-  renderNotes(p) {
-    const list = document.getElementById('notes-list');
-    if (!p.notes || !p.notes.length) { list.innerHTML = ''; return; }
-    list.innerHTML = [...p.notes].reverse().map(n => `
-      <div class="note-item">
-        <div class="note-text">${this.escHtml(n.text)}</div>
-        <div class="note-time">${this.fmtTs(n.timestamp)}</div>
-      </div>`).join('');
-  }
-
-  escHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  closeModals() {
-    document.getElementById('modal-overlay').classList.add('hidden');
-    document.getElementById('modal-detail').classList.add('hidden');
-    document.getElementById('modal-new').classList.add('hidden');
-    this.activeProjectId = null;
-  }
-
-  // ── EVENTS ───────────────────────────────────────────────────────────────
-  bindEvents() {
-    // Close on overlay click
-    document.getElementById('modal-overlay').addEventListener('click', e => {
-      if (e.target === document.getElementById('modal-overlay')) this.closeModals();
-    });
-
-    // Close buttons
-    document.getElementById('btn-close-detail').addEventListener('click', () => this.closeModals());
-    document.getElementById('btn-close-new').addEventListener('click', () => this.closeModals());
-    document.getElementById('btn-cancel-new').addEventListener('click', () => this.closeModals());
-
-    // New project button
-    document.getElementById('btn-new-project').addEventListener('click', () => {
-      document.getElementById('modal-overlay').classList.remove('hidden');
-      document.getElementById('modal-new').classList.remove('hidden');
-      document.getElementById('modal-detail').classList.add('hidden');
-    });
-
-    // Submit new project
-    document.getElementById('btn-submit-new').addEventListener('click', () => this.submitNewProject());
-
-    // Filters
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        this.filter = btn.dataset.filter;
-        this.render();
-      });
-    });
-
-    // Stage buttons in modal
-    document.querySelectorAll('.stage-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const proj = this.getProject(this.activeProjectId);
-        if (!proj) return;
-        proj.stage = btn.dataset.stage;
-        this.save();
-        // Update stage bar
-        document.querySelectorAll('.stage-btn').forEach(b => {
-          b.className = 'stage-btn';
-          if (b.dataset.stage === proj.stage) b.classList.add(STAGE_ACTIVE_CLASS[proj.stage]);
-        });
-        this.render();
-        this.toast('Etapa actualizada');
-      });
-    });
-
-    // Add piece
-    document.getElementById('btn-add-piece').addEventListener('click', () => {
-      document.getElementById('add-piece-form').classList.remove('hidden');
-      document.getElementById('new-piece-name').focus();
-    });
-    document.getElementById('confirm-add-piece').addEventListener('click', () => this.addPiece());
-    document.getElementById('cancel-add-piece').addEventListener('click', () => {
-      document.getElementById('add-piece-form').classList.add('hidden');
-      document.getElementById('new-piece-name').value = '';
-    });
-    document.getElementById('new-piece-name').addEventListener('keydown', e => {
-      if (e.key === 'Enter') this.addPiece();
-      if (e.key === 'Escape') document.getElementById('cancel-add-piece').click();
-    });
-
-    // Notes
-    document.getElementById('note-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        const val = document.getElementById('note-input').value.trim();
-        if (!val) return;
-        const proj = this.getProject(this.activeProjectId);
-        if (!proj) return;
-        if (!proj.notes) proj.notes = [];
-        proj.notes.push({ id: this.uid(), text: val, timestamp: new Date().toISOString() });
-        this.save();
-        document.getElementById('note-input').value = '';
-        this.renderNotes(proj);
-      }
-    });
-
-    // Escape key closes modal
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') this.closeModals();
-    });
-  }
-
-  addPiece() {
-    const val = document.getElementById('new-piece-name').value.trim();
-    if (!val) { this.toast('Escribí el nombre de la pieza'); return; }
-    const proj = this.getProject(this.activeProjectId);
-    if (!proj) return;
-    proj.pieces.push({
-      id: this.uid(),
-      name: val,
-      stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' }
-    });
-    this.save();
-    document.getElementById('add-piece-form').classList.add('hidden');
-    document.getElementById('new-piece-name').value = '';
-    this.renderPieces(proj);
-    this.render();
-    this.toast('Pieza agregada');
-  }
-
-  submitNewProject() {
-    const client = document.getElementById('f-client').value.trim().toUpperCase();
-    const name = document.getElementById('f-name').value.trim();
-    if (!client || !name) { this.toast('Cliente y proyecto son requeridos'); return; }
-
-    const newProj = {
-      id: this.uid(),
-      client,
-      name,
-      director: document.getElementById('f-director').value.trim() || 'Por asignar',
-      shootDate: document.getElementById('f-shoot').value || '',
-      deliveryDate: document.getElementById('f-delivery').value || '',
-      division: document.getElementById('f-division').value,
-      type: document.getElementById('f-type').value,
-      stage: document.getElementById('f-stage').value,
-      tags: [document.getElementById('f-type').value],
-      pieces: [
-        { id: this.uid(), name: 'Pieza principal', stages: { offline: 'pending', color: 'pending', audio: 'pending', vfx: 'pending', versiones: 'pending', master: 'pending' } }
-      ],
-      notes: []
-    };
-
-    this.projects.unshift(newProj);
-    this.save();
-    this.render();
-    this.closeModals();
-    this.toast('Proyecto creado');
-
-    // Clear form
-    ['f-client','f-name','f-director','f-shoot','f-delivery'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
-  }
-
-  toast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
-  }
+function showBoard() {
+  document.getElementById('boardView').classList.add('active');
+  document.getElementById('detailView').classList.remove('active');
+  window.scrollTo(0, 0);
 }
 
-// ── DIARIO ────────────────────────────────────────────────────────────────
-class Diario {
-  constructor(toast) {
-    this.toast = toast;
-    this.entries = [];
-    this.load();
-    this.bindEvents();
-    this.render();
-  }
-
-  load() {
-    try { this.entries = JSON.parse(localStorage.getItem('rebo-diario') || '[]'); } catch { this.entries = []; }
-  }
-  save() { localStorage.setItem('rebo-diario', JSON.stringify(this.entries)); }
-  uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,5); }
-
-  fmtDate(d) {
-    if (!d) return '—';
-    const [y,m,day] = d.split('-');
-    const months = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
-    return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
-  }
-
-  bindEvents() {
-    document.getElementById('btn-new-entry').addEventListener('click', () => {
-      const form = document.getElementById('diario-new-form');
-      form.classList.toggle('hidden');
-      if (!form.classList.contains('hidden')) {
-        // Default to today
-        document.getElementById('de-date').value = new Date().toISOString().slice(0,10);
-        document.getElementById('de-text').focus();
-      }
-    });
-    document.getElementById('de-cancel').addEventListener('click', () => {
-      document.getElementById('diario-new-form').classList.add('hidden');
-      this.clearForm();
-    });
-    document.getElementById('de-save').addEventListener('click', () => this.saveEntry());
-    document.getElementById('de-text').addEventListener('keydown', e => {
-      if (e.key === 'Enter' && e.ctrlKey) this.saveEntry();
-    });
-  }
-
-  clearForm() {
-    document.getElementById('de-date').value = '';
-    document.getElementById('de-title').value = '';
-    document.getElementById('de-text').value = '';
-  }
-
-  saveEntry() {
-    const date = document.getElementById('de-date').value;
-    const text = document.getElementById('de-text').value.trim();
-    if (!date) { this.toast('Seleccioná una fecha'); return; }
-    if (!text) { this.toast('Escribí algo en la entrada'); return; }
-    this.entries.unshift({
-      id: this.uid(),
-      date,
-      title: document.getElementById('de-title').value.trim(),
-      text,
-      createdAt: new Date().toISOString()
-    });
-    // Keep sorted by date desc
-    this.entries.sort((a, b) => b.date.localeCompare(a.date));
-    this.save();
-    this.clearForm();
-    document.getElementById('diario-new-form').classList.add('hidden');
-    this.render();
-    this.toast('Entrada guardada');
-  }
-
-  deleteEntry(id) {
-    this.entries = this.entries.filter(e => e.id !== id);
-    this.save();
-    this.render();
-    this.toast('Entrada eliminada');
-  }
-
-  render() {
-    const list = document.getElementById('diario-list');
-    if (!this.entries.length) {
-      list.innerHTML = '<div class="empty-col" style="padding:40px 0">Sin entradas — creá la primera arriba</div>';
-      return;
-    }
-    list.innerHTML = this.entries.map((entry, i) => `
-      <div class="diario-entry">
-        <div class="diario-entry-header" data-idx="${i}">
-          <div class="diario-entry-meta">
-            <span class="diario-date">${this.fmtDate(entry.date)}</span>
-            ${entry.title ? `<span class="diario-title-text">${this.escHtml(entry.title)}</span>` : ''}
-          </div>
-          <span style="color:var(--text-dim);font-size:10px">▼</span>
-        </div>
-        <div class="diario-entry-body" id="de-body-${entry.id}">
-          <div class="diario-text">${this.escHtml(entry.text)}</div>
-          <div class="diario-entry-actions">
-            <button class="btn-icon danger de-delete" data-id="${entry.id}">ELIMINAR</button>
-          </div>
-        </div>
-      </div>`).join('');
-
-    // Toggle expand
-    list.querySelectorAll('.diario-entry-header').forEach(h => {
-      h.addEventListener('click', () => {
-        const body = h.closest('.diario-entry').querySelector('.diario-entry-body');
-        body.classList.toggle('open');
-        h.querySelector('span:last-child').textContent = body.classList.contains('open') ? '▲' : '▼';
-      });
-    });
-    // Auto-open first
-    const first = list.querySelector('.diario-entry-body');
-    if (first) { first.classList.add('open'); list.querySelector('.diario-entry-header span:last-child').textContent = '▲'; }
-
-    // Delete
-    list.querySelectorAll('.de-delete').forEach(btn => {
-      btn.addEventListener('click', e => { e.stopPropagation(); this.deleteEntry(btn.dataset.id); });
-    });
-  }
-
-  escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function showDetail(id) {
+  const p = PROJECTS[id] || PROJECTS.santaclara;
+  document.getElementById('boardView').classList.remove('active');
+  document.getElementById('detailView').classList.add('active');
+  document.getElementById('bc-name').textContent = p.client;
+  document.getElementById('d-client').textContent = p.client;
+  document.getElementById('d-sub').textContent = p.sub;
+  document.getElementById('d-rodaje').textContent = p.rodaje;
+  document.getElementById('d-piezas').textContent = p.piezas;
+  const avEl = document.getElementById('d-avance');
+  avEl.textContent = p.avance;
+  avEl.style.color = p.avanceColor;
+  document.getElementById('d-meta').innerHTML = p.meta.map(m => `<span class="meta-tag ${m.cls}">${m.label}</span>`).join('');
+  // reset to piezas tab
+  switchTab('piezas', document.querySelector('.detail-tab'));
+  window.scrollTo(0, 0);
 }
 
-// ── TODO ──────────────────────────────────────────────────────────────────
-class Todo {
-  constructor(toast) {
-    this.toast = toast;
-    this.tasks = [];
-    this.filter = 'all';
-    this.load();
-    this.bindEvents();
-    this.render();
-  }
-
-  load() {
-    try { this.tasks = JSON.parse(localStorage.getItem('rebo-todo') || '[]'); } catch { this.tasks = []; }
-  }
-  save() { localStorage.setItem('rebo-todo', JSON.stringify(this.tasks)); }
-  uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,5); }
-
-  today() { return new Date().toISOString().slice(0,10); }
-
-  isOverdue(task) {
-    if (task.completed || !task.date) return false;
-    return task.date < this.today();
-  }
-
-  fmtDate(d) {
-    if (!d) return '';
-    const [y,m,day] = d.split('-');
-    const months = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
-    return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
-  }
-
-  bindEvents() {
-    document.getElementById('btn-new-todo').addEventListener('click', () => {
-      const form = document.getElementById('todo-new-form');
-      form.classList.toggle('hidden');
-      if (!form.classList.contains('hidden')) {
-        document.getElementById('td-date').value = this.today();
-        document.getElementById('td-text').focus();
-      }
-    });
-    document.getElementById('td-cancel').addEventListener('click', () => {
-      document.getElementById('todo-new-form').classList.add('hidden');
-      this.clearForm();
-    });
-    document.getElementById('td-save').addEventListener('click', () => this.addTask());
-    document.getElementById('td-text').addEventListener('keydown', e => {
-      if (e.key === 'Enter') this.addTask();
-      if (e.key === 'Escape') document.getElementById('td-cancel').click();
-    });
-
-    // Filters
-    document.querySelectorAll('.todo-filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.todo-filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        this.filter = btn.dataset.tf;
-        this.render();
-      });
-    });
-  }
-
-  clearForm() {
-    document.getElementById('td-text').value = '';
-    document.getElementById('td-priority').value = 'media';
-    document.getElementById('td-date').value = '';
-  }
-
-  addTask() {
-    const text = document.getElementById('td-text').value.trim();
-    if (!text) { this.toast('Escribí la tarea'); return; }
-    this.tasks.unshift({
-      id: this.uid(),
-      text,
-      priority: document.getElementById('td-priority').value,
-      date: document.getElementById('td-date').value,
-      completed: false,
-      createdAt: new Date().toISOString()
-    });
-    this.save();
-    this.clearForm();
-    document.getElementById('todo-new-form').classList.add('hidden');
-    this.render();
-    this.toast('Tarea agregada');
-  }
-
-  toggleTask(id) {
-    const t = this.tasks.find(t => t.id === id);
-    if (t) { t.completed = !t.completed; this.save(); this.render(); }
-  }
-
-  deleteTask(id) {
-    this.tasks = this.tasks.filter(t => t.id !== id);
-    this.save();
-    this.render();
-  }
-
-  getFiltered() {
-    let list = [...this.tasks];
-    // Sort: incomplete first, then by priority, then by date
-    const pOrder = { alta: 0, media: 1, baja: 2 };
-    list.sort((a, b) => {
-      if (a.completed !== b.completed) return a.completed ? 1 : -1;
-      if (this.isOverdue(a) !== this.isOverdue(b)) return this.isOverdue(a) ? -1 : 1;
-      if (pOrder[a.priority] !== pOrder[b.priority]) return pOrder[a.priority] - pOrder[b.priority];
-      if (a.date && b.date) return a.date.localeCompare(b.date);
-      return 0;
-    });
-    if (this.filter === 'pending') list = list.filter(t => !t.completed);
-    if (this.filter === 'overdue') list = list.filter(t => this.isOverdue(t));
-    return list;
-  }
-
-  render() {
-    const filtered = this.getFiltered();
-    const total = this.tasks.length;
-    const done = this.tasks.filter(t => t.completed).length;
-    const overdue = this.tasks.filter(t => this.isOverdue(t)).length;
-    document.getElementById('todo-count').textContent =
-      `${done}/${total} COMPLETADAS${overdue ? ` · ${overdue} ATRASADA${overdue > 1 ? 'S' : ''}` : ''}`;
-
-    const list = document.getElementById('todo-list');
-    if (!filtered.length) {
-      list.innerHTML = '<div class="empty-col" style="padding:40px 0">Sin tareas</div>';
-      return;
-    }
-
-    list.innerHTML = filtered.map(t => {
-      const overdue = this.isOverdue(t);
-      const classes = ['todo-item', t.completed ? 'completed' : '', overdue ? 'overdue' : ''].filter(Boolean).join(' ');
-      return `
-        <div class="${classes}" data-id="${t.id}">
-          <div class="todo-check ${t.completed ? 'checked' : ''}" data-id="${t.id}"></div>
-          <div class="todo-body">
-            <div class="todo-text">${this.escHtml(t.text)}</div>
-            <div class="todo-meta-row">
-              <span class="priority-badge priority-${t.priority}">${t.priority.toUpperCase()}</span>
-              ${t.date ? `<span class="todo-date-label ${overdue ? 'overdue' : ''}">${this.fmtDate(t.date)}</span>` : ''}
-              ${overdue ? '<span class="overdue-badge">ATRASADA</span>' : ''}
-            </div>
-          </div>
-          <button class="btn-remove-todo" data-id="${t.id}">✕</button>
-        </div>`;
-    }).join('');
-
-    list.querySelectorAll('.todo-check').forEach(el => {
-      el.addEventListener('click', () => this.toggleTask(el.dataset.id));
-    });
-    list.querySelectorAll('.btn-remove-todo').forEach(btn => {
-      btn.addEventListener('click', () => this.deleteTask(btn.dataset.id));
-    });
-  }
-
-  escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function switchTab(tab, btn) {
+  document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else document.querySelector('.detail-tab').classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
 }
 
-// ── NAVIGATION ────────────────────────────────────────────────────────────
-function initNav(app) {
-  const views = {
-    board: document.getElementById('board'),
-    diario: document.getElementById('section-diario'),
-    todo: document.getElementById('section-todo'),
-  };
-  const filterBar = document.getElementById('filter-bar');
-  const btnNewProject = document.getElementById('btn-new-project');
-  const projectCount = document.getElementById('project-count');
+function togglePiece(summary) {
+  const detail = summary.nextElementSibling;
+  const chevron = summary.querySelector('.piece-chevron');
+  const isOpen = detail.classList.contains('open');
+  detail.classList.toggle('open', !isOpen);
+  summary.classList.toggle('is-open', !isOpen);
+  chevron.classList.toggle('open', !isOpen);
+}
 
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const view = btn.dataset.view;
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      Object.values(views).forEach(el => el.classList.remove('active'));
-      views[view].classList.add('active');
-      // Show/hide board-specific UI
-      const isBoard = view === 'board';
-      filterBar.style.display = isBoard ? '' : 'none';
-      btnNewProject.style.display = isBoard ? '' : 'none';
-      projectCount.style.display = isBoard ? '' : 'none';
-    });
+function cycleStage(el) {
+  const cur = STAGE_STATES.findIndex(s => s.cls && el.classList.contains(s.cls));
+  const next = STAGE_STATES[(cur === -1 ? 0 : cur + 1) % STAGE_STATES.length];
+  STAGE_STATES.forEach(s => { if (s.cls) el.classList.remove(s.cls); });
+  if (next.cls) el.classList.add(next.cls);
+  el.querySelector('.stage-card-status').textContent = next.label;
+  syncPills(el);
+}
+
+function syncPills(card) {
+  const grid = card.closest('.stages-grid');
+  const detail = card.closest('.piece-detail');
+  const summary = detail.previousElementSibling;
+  const pills = summary.querySelectorAll('.stage-pill');
+  const cards = grid.querySelectorAll('.stage-card');
+  cards.forEach((c, i) => {
+    if (!pills[i]) return;
+    pills[i].className = 'stage-pill';
+    if (c.classList.contains('done')) pills[i].classList.add('done');
+    else if (c.classList.contains('wip')) pills[i].classList.add('wip');
+    else if (c.classList.contains('rev')) pills[i].classList.add('rev');
+    else if (c.classList.contains('blocked')) pills[i].classList.add('blocked');
   });
 }
 
-// ── BOOT ───────────────────────────────────────────────────────────────────
-const app = new ReboTracker();
-const toastFn = (msg) => app.toast(msg);
-const diario = new Diario(toastFn);
-const todo = new Todo(toastFn);
-initNav(app);
+// init board
+showBoard();
 </script>
 </body>
 </html>
