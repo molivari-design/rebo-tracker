@@ -726,7 +726,7 @@ function renderBoard() {
 }
 
 // ── DETAIL ──
-function showDetail(id) {
+async function showDetail(id) {
   const p = projects.find(x => x.id === id);
   if (!p) return;
   currentProjectId = id;
@@ -737,15 +737,17 @@ function showDetail(id) {
   document.getElementById('d-piezas').textContent = `${p.piezas.length}`;
   document.getElementById('d-entrega').textContent = p.entrega;
   document.getElementById('d-meta').innerHTML = `<span class="m-tag post">Post-producción</span><span class="m-tag soon">Entrega: ${p.entrega}</span>`;
-  loadDBD();
   renderPiezas(p);
   renderOffline(p);
   renderOnline(p);
   renderTiming();
-  renderFechas();
-  renderDBD();
   switchTab('piezas', document.querySelector('.tab'));
   showView('detailView');
+  setSyncStatus('syncing', 'Cargando...');
+  await Promise.all([loadDBD(), loadFechas()]);
+  renderFechas();
+  renderDBD();
+  setSyncStatus('ok', 'Listo');
 }
 
 function getCurrentProject() { return projects.find(x => x.id === currentProjectId); }
@@ -969,20 +971,24 @@ function renderTiming() {
   document.getElementById('calWrap').innerHTML = html;
 }
 
+// ── SHEETS CONFIG ──
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxH-w3FCy8oJFh3DA3mscRERYp_iisfTay8rxQpDOJUYPU5jOr3VBDW66OfQ-7JvNmu8g/exec';
+
+let fechasData = [];
+
 // ── DAY BY DAY ──
 function renderFechas() {
-  const defaults = DBD_BY_PROJECT[currentProjectId];
-  if (!defaults) {
+  if (!fechasData.length) {
     document.getElementById('fechasGrid').innerHTML = '<div style="padding:20px 0;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin fechas — se cargan junto con el timing</div>';
     return;
   }
-  document.getElementById('fechasGrid').innerHTML = defaults.fechas.map(f =>
+  document.getElementById('fechasGrid').innerHTML = fechasData.map(f =>
     `<div class="fi ${f.cls}"><div class="fi-tipo">${f.tipo}</div><div class="fi-val">${f.val}</div><div class="fi-nota">${f.nota}</div></div>`
   ).join('');
 }
 
 function renderDBD() {
-  if (!DBD_BY_PROJECT[currentProjectId] && !dbdData.length) {
+  if (!dbdData.length) {
     document.getElementById('dbdList').innerHTML = '<div style="padding:20px 0;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin agenda — se carga junto con el timing</div>';
     return;
   }
@@ -1060,14 +1066,76 @@ function updateEntry(dayId, entryId, field, value) {
   if (entry) { entry[field] = value; clearTimeout(saveTimer); saveTimer = setTimeout(saveDBD, 1500); }
 }
 
-function saveDBD() {
-  localStorage.setItem('dbd_' + currentProjectId, JSON.stringify(dbdData));
-  setSyncStatus('ok','Guardado');
+// ── SHEETS: FECHAS ──
+async function saveFechas() {
+  setSyncStatus('syncing', 'Guardando...');
+  const rows = fechasData.map(f => [f.tipo, f.val, f.nota, f.cls]);
+  localStorage.setItem('fechas_' + currentProjectId, JSON.stringify(fechasData));
+  try {
+    await fetch(SHEETS_URL, { method:'POST', body: JSON.stringify({ tab:'fechas_'+currentProjectId, data:rows }) });
+    setSyncStatus('ok', 'Guardado');
+  } catch(e) {
+    setSyncStatus('error', 'Sin conexión — guardado local');
+  }
 }
 
-function loadDBD() {
+async function loadFechas() {
+  try {
+    const res = await fetch(SHEETS_URL + '?tab=fechas_' + currentProjectId);
+    const rows = await res.json();
+    if (Array.isArray(rows) && rows.length) {
+      fechasData = rows.map(r => ({ tipo:r[0], val:r[1], nota:r[2], cls:r[3] }));
+      localStorage.setItem('fechas_' + currentProjectId, JSON.stringify(fechasData));
+      return;
+    }
+  } catch(e) {}
+  // fallback localStorage
+  const s = localStorage.getItem('fechas_' + currentProjectId);
+  if (s) { try { fechasData = JSON.parse(s); return; } catch(e){} }
+  // fallback defaults
+  fechasData = JSON.parse(JSON.stringify(DBD_BY_PROJECT[currentProjectId]?.fechas || []));
+}
+
+// ── SHEETS: DBD ──
+async function saveDBD() {
+  setSyncStatus('syncing', 'Guardando...');
+  const rows = [];
+  dbdData.forEach(day => {
+    if (!day.entries.length) {
+      rows.push([day.id, day.date, day.label, '', '', '', '', '', '']);
+    } else {
+      day.entries.forEach(e => rows.push([day.id, day.date, day.label, e.id, e.time, e.title, e.note, e.tag, e.hl]));
+    }
+  });
+  localStorage.setItem('dbd_' + currentProjectId, JSON.stringify(dbdData));
+  try {
+    await fetch(SHEETS_URL, { method:'POST', body: JSON.stringify({ tab:'dbd_'+currentProjectId, data:rows }) });
+    setSyncStatus('ok', 'Guardado');
+  } catch(e) {
+    setSyncStatus('error', 'Sin conexión — guardado local');
+  }
+}
+
+async function loadDBD() {
+  try {
+    const res = await fetch(SHEETS_URL + '?tab=dbd_' + currentProjectId);
+    const rows = await res.json();
+    if (Array.isArray(rows) && rows.length) {
+      dbdData = [];
+      rows.forEach(row => {
+        const [dayId, date, label, entryId, time, title, note, tag, hl] = row;
+        let day = dbdData.find(d => d.id === dayId);
+        if (!day) { day = { id:dayId, date, label, entries:[] }; dbdData.push(day); }
+        if (entryId) day.entries.push({ id:entryId, time, title, note, tag, hl });
+      });
+      localStorage.setItem('dbd_' + currentProjectId, JSON.stringify(dbdData));
+      return;
+    }
+  } catch(e) {}
+  // fallback localStorage
   const s = localStorage.getItem('dbd_' + currentProjectId);
   if (s) { try { dbdData = JSON.parse(s); return; } catch(e){} }
+  // fallback defaults
   dbdData = JSON.parse(JSON.stringify(DBD_BY_PROJECT[currentProjectId]?.dbd || []));
 }
 
