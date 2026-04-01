@@ -913,15 +913,24 @@ function cycleEstado(el, dataKey, stage, piezaId, projId) {
   savePiezaData();
 }
 
+// ── TIMING DATA: keyed by project id ──
+const TIMING_BY_PROJECT = { 1: TIMING_WEEKS };
+
 // ── TIMING — CALENDARIO SEMANAL ──
 function renderTiming() {
+  const weeks = TIMING_BY_PROJECT[currentProjectId];
+  if (!weeks || !weeks.length) {
+    document.getElementById('calWrap').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin timing — enviá el calendario a Mariano para cargarlo</div>';
+    return;
+  }
+
   const days = ['MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY','SUNDAY'];
   let html = `<div class="cal-header-row">
     <div class="cal-corner"><div class="cal-corner-name">LAUTARO</div><div class="cal-corner-sub">FURIOLO</div></div>
     ${days.map((d,i) => `<div class="cal-day-header${i>=5?' wk':''}"><div class="cal-day-name">${d}</div></div>`).join('')}
   </div>`;
 
-  TIMING_WEEKS.forEach(week => {
+  weeks.forEach(week => {
     html += `<div class="cal-week">
       <div class="cal-week-label">
         <div class="cal-week-dates">${week.dates}</div>
