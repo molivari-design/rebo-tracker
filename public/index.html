@@ -3,1092 +3,1117 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>REBOLUCION TRACKER</title>
-  <link rel="manifest" href="/manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Rebo Tracker">
-  <link rel="apple-touch-icon" href="/icon-192.png">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Post Tracker MEX — Popeye's</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Post Tracker MEX">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #ffffff;
-    --white: #ffffff;
-    --ink: #111111;
+    --bg: #fff;
+    --ink: #111;
     --rule: #e8e8e8;
+    --soft: #f8f8f8;
     --muted: #999;
     --muted2: #ccc;
-    --soft: #f8f8f8;
     --green: #1e7a3a;
-    --green-light: #edf7f1;
-    --green-mid: #2ecc71;
+    --green-l: #edf7f1;
+    --green-m: #2ecc71;
     --yellow: #9a6c00;
-    --yellow-light: #fdf8e8;
-    --yellow-mid: #f1c40f;
+    --yellow-l: #fdf8e8;
+    --yellow-m: #f1c40f;
     --orange: #b84e0e;
-    --orange-light: #fef3ec;
-    --orange-mid: #e8a87c;
+    --orange-l: #fef3ec;
+    --orange-m: #e8a87c;
     --red: #c0392b;
-    --red-light: #fef0ef;
+    --red-l: #fef0ef;
     --blue: #2252b8;
-    --blue-light: #eef2fc;
-    --blue-mid: #3498db;
+    --blue-l: #eef2fc;
+    --blue-m: #3498db;
     --purple: #6c3db8;
-    --purple-light: #f3eeff;
+    --purple-l: #f3eeff;
+    --blue-cal: #cce5ff;
+    --orange-cal: #ffe5cc;
+    --green-cal: #ccf0dd;
+    --yellow-cal: #fff9cc;
+    --pink-cal: #ffd6d6;
+    --gray-cal: #e8e8e8;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { background: #ffffff; }
-  body { background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; min-height: 100vh; font-size: 14px; }
-
-  .demo { background: #111; color: #e8ff47; text-align: center; padding: 8px; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; }
+  html, body { background: #fff; margin: 0; padding: 0; }
+  * { box-sizing: border-box; }
+  body { color: var(--ink); font-family: 'Inter', sans-serif; font-size: 14px; min-height: 100vh; }
 
   /* HEADER */
-  header {
-    background: var(--white);
-    border-bottom: 2px solid var(--ink);
-    padding: 0 36px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky; top: 0; z-index: 100;
-  }
+  header { background: #fff; border-bottom: 2px solid var(--ink); padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 4px; cursor: pointer; }
+  .logo em { font-style: normal; font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-left: 8px; font-weight: 400; }
 
-  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 5px; cursor: pointer; }
-  .header-right { display: flex; align-items: center; gap: 12px; }
-  .header-date { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
-
-  .btn {
-    font-size: 11px; letter-spacing: 0.5px; padding: 7px 16px;
-    border: 1px solid var(--rule); background: none; color: var(--muted);
-    cursor: pointer; transition: all .15s; font-family: 'Inter', sans-serif;
-  }
+  /* BTN */
+  .btn { font-size: 11px; padding: 6px 14px; border: 1px solid var(--rule); background: none; color: var(--muted); cursor: pointer; transition: all .15s; font-family: 'Inter', sans-serif; }
   .btn:hover { border-color: var(--ink); color: var(--ink); }
-  .btn.ink { background: var(--ink); color: var(--white); border-color: var(--ink); }
+  .btn.ink { background: var(--ink); color: #fff; border-color: var(--ink); }
   .btn.ink:hover { background: #333; }
+  .btn.sm { font-size: 10px; padding: 4px 10px; }
+  .btn.danger { border-color: #f5c0bc; color: var(--red); }
+  .btn.danger:hover { background: var(--red-l); border-color: var(--red); }
 
   /* VIEWS */
-  #boardView, #detailView { display: none; }
-  #boardView.active, #detailView.active { display: block; }
+  .view { display: none; }
+  .view.active { display: block; }
 
-  /* ================================ BOARD ================================ */
-  .board-wrap { max-width: 900px; margin: 0 auto; padding: 32px 36px; }
+  /* BOARD */
+  .wrap { max-width: 860px; margin: 0 auto; padding: 20px 24px; }
+  .board-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .sec-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
 
-  .board-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-  .board-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
+  .status-group { margin-bottom: 20px; }
+  .group-lbl { display: flex; align-items: center; gap: 8px; padding-bottom: 7px; border-bottom: 1px solid var(--rule); margin-bottom: 7px; }
+  .gdot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .gname { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  .gcnt { font-size: 11px; color: var(--muted2); margin-left: auto; }
 
-  .status-group { margin-bottom: 28px; }
-
-  .group-label {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--rule);
-  }
-  .group-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .group-name { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
-  .group-count { font-size: 11px; color: var(--muted2); margin-left: auto; }
-
-  .proj-row {
-    display: flex; align-items: center; padding: 14px 16px;
-    background: var(--white); border: 1px solid var(--rule);
-    margin-bottom: 4px; cursor: pointer; transition: all .15s; gap: 16px;
-  }
-  .proj-row:hover { border-color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-
+  .proj-row { display: flex; align-items: center; padding: 12px 14px; background: #fff; border: 1px solid var(--rule); margin-bottom: 4px; cursor: pointer; transition: all .15s; gap: 12px; }
+  .proj-row:hover { border-color: var(--ink); box-shadow: 0 1px 6px rgba(0,0,0,.06); }
   .proj-info { flex: 1; min-width: 0; }
-  .proj-client { font-weight: 600; font-size: 15px; line-height: 1.2; }
-  .proj-name { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-  .proj-dir { font-size: 12px; color: var(--muted); min-width: 150px; }
-  .proj-piezas { font-size: 11px; color: var(--muted2); min-width: 60px; text-align: center; }
-
-  .proj-date { font-size: 12px; min-width: 70px; text-align: right; font-weight: 500; }
-  .proj-date.urgent { color: var(--red); }
+  .proj-client { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .proj-dir { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .proj-piezas { font-size: 11px; color: var(--muted2); white-space: nowrap; flex-shrink: 0; }
+  .proj-date { font-size: 12px; white-space: nowrap; flex-shrink: 0; font-weight: 500; min-width: 56px; text-align: right; }
   .proj-date.soon { color: var(--yellow); }
+  .proj-date.urgent { color: var(--red); }
   .proj-date.ok { color: var(--green); }
   .proj-date.normal { color: var(--muted); font-weight: 400; }
+  .proj-arrow { color: var(--muted2); font-size: 16px; flex-shrink: 0; transition: transform .15s; }
+  .proj-row:hover .proj-arrow { transform: translateX(2px); color: var(--ink); }
 
-  .proj-arrow { color: var(--muted2); font-size: 18px; transition: transform .15s; }
-  .proj-row:hover .proj-arrow { transform: translateX(3px); color: var(--ink); }
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #fff; border: 1px solid var(--rule); padding: 22px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; }
+  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--rule); }
+  .form-field { margin-bottom: 12px; }
+  .form-lbl { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; display: block; }
+  .form-input, .form-select { width: 100%; border: 1px solid var(--rule); background: #fff; font-family: 'Inter', sans-serif; font-size: 13px; padding: 8px 11px; outline: none; color: var(--ink); transition: border-color .15s; }
+  .form-input:focus, .form-select:focus { border-color: var(--ink); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule); }
+  .modal-actions .btn { flex: 1; padding: 9px; font-size: 11px; text-align: center; }
 
-  /* ================================ DETAIL ================================ */
-  .detail-wrap { max-width: 900px; margin: 0 auto; padding: 28px 36px; }
+  /* PIEZA MODAL */
+  #piezaModal .modal { max-width: 400px; }
 
-  /* BREADCRUMB */
-  .breadcrumb { font-size: 12px; color: var(--muted); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-  .bc-link { cursor: pointer; transition: color .15s; }
-  .bc-link:hover { color: var(--ink); }
+  /* DETAIL */
+  .bc { font-size: 12px; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+  .bc-link { cursor: pointer; } .bc-link:hover { color: var(--ink); }
   .bc-sep { color: var(--muted2); }
-  .bc-current { color: var(--ink); font-weight: 500; }
+  .bc-cur { color: var(--ink); font-weight: 500; }
 
-  /* PROJECT TITLE */
-  .proj-title-block { padding-bottom: 18px; margin-bottom: 24px; border-bottom: 2px solid var(--ink); }
-  .proj-title-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 10px; }
-  .proj-title-client { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 4px; line-height: 1; }
-  .proj-title-name { font-size: 13px; color: var(--muted); margin-top: 4px; }
-  .proj-title-meta { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-
-  .meta-tag { font-size: 11px; padding: 5px 12px; border: 1px solid var(--rule); color: var(--muted); background: var(--soft); }
-  .meta-tag.status-post { background: var(--orange-light); color: var(--orange); border-color: #f5c8a8; }
-  .meta-tag.date-soon { background: var(--yellow-light); color: var(--yellow); border-color: #f0dc80; }
-  .meta-tag.date-urgent { background: var(--red-light); color: var(--red); border-color: #f5c0bc; }
-
-  .proj-title-bottom { display: flex; gap: 24px; }
-  .proj-stat { font-size: 12px; color: var(--muted); }
-  .proj-stat b { color: var(--ink); font-weight: 500; }
+  .ptitle-block { padding-bottom: 14px; margin-bottom: 16px; border-bottom: 2px solid var(--ink); }
+  .ptitle-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 8px; }
+  .ptitle-client { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; line-height: 1; }
+  .ptitle-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .ptitle-meta { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; flex-shrink: 0; }
+  .m-tag { font-size: 10px; padding: 4px 9px; border: 1px solid var(--rule); color: var(--muted); white-space: nowrap; }
+  .m-tag.post { background: var(--orange-l); color: var(--orange); border-color: #f5c8a8; }
+  .m-tag.soon { background: var(--yellow-l); color: var(--yellow); border-color: #f0dc80; }
+  .ptitle-bottom { display: flex; gap: 18px; flex-wrap: wrap; }
+  .pstat { font-size: 12px; color: var(--muted); }
+  .pstat b { color: var(--ink); font-weight: 500; }
 
   /* TABS */
-  .detail-tabs {
-    display: flex; gap: 0; margin-bottom: 24px;
-    border-bottom: 2px solid var(--rule);
-  }
-
-  .detail-tab {
-    font-size: 12px; letter-spacing: 0.5px; padding: 10px 20px;
-    color: var(--muted); cursor: pointer; transition: all .15s;
-    border-bottom: 2px solid transparent; margin-bottom: -2px;
-  }
-
-  .detail-tab:hover { color: var(--ink); }
-  .detail-tab.active { color: var(--ink); font-weight: 600; border-bottom-color: var(--ink); }
-
+  .tabs { display: flex; border-bottom: 1px solid var(--rule); margin-bottom: 16px; overflow-x: auto; }
+  .tab { font-size: 12px; padding: 9px 16px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; transition: all .15s; }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--ink); font-weight: 600; border-bottom-color: var(--ink); }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
-  /* ================================ PIEZAS ================================ */
-  .pieces-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .section-title { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  /* PIEZAS */
+  .ph { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .empty-piezas { text-align: center; padding: 40px 20px; border: 1px dashed var(--rule); color: var(--muted); }
+  .empty-piezas p { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
 
-  .piece-card { border: 1px solid var(--rule); background: var(--white); margin-bottom: 6px; overflow: hidden; }
+  .piece-card { border: 1px solid var(--rule); background: #fff; margin-bottom: 4px; overflow: hidden; }
+  .piece-sum { display: flex; align-items: center; padding: 11px 14px; cursor: pointer; gap: 12px; transition: background .1s; user-select: none; }
+  .piece-sum:hover, .piece-sum.open { background: var(--soft); }
+  .piece-sum.open { border-bottom: 1px solid var(--rule); }
+  .p-left { flex: 1; min-width: 0; }
+  .p-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .p-dur { font-size: 11px; color: var(--muted); }
+  .fmt-dots { display: flex; gap: 3px; align-items: center; flex-shrink: 0; }
+  .fdot { width: 8px; height: 8px; border-radius: 50%; background: var(--rule); flex-shrink: 0; }
+  .fdot.done { background: var(--green-m); }
+  .fdot.wip { background: var(--yellow-m); }
+  .fdot.rev { background: var(--blue-m); }
+  .fdot.adj { background: var(--orange-m); }
+  .p-date { font-size: 11px; min-width: 54px; text-align: right; font-weight: 500; flex-shrink: 0; }
+  .p-date.soon { color: var(--yellow); }
+  .p-date.urgent { color: var(--red); }
+  .p-date.ok { color: var(--green); }
+  .p-date.normal { color: var(--muted); font-weight: 400; }
+  .p-chev { color: var(--muted2); font-size: 16px; transition: transform .2s; flex-shrink: 0; }
+  .p-chev.open { transform: rotate(90deg); }
+  .p-detail { display: none; padding: 14px; background: var(--soft); }
+  .p-detail.open { display: block; }
+  .dl { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; margin-top: 12px; }
+  .dl:first-child { margin-top: 0; }
 
-  .piece-summary {
-    display: flex; align-items: center; padding: 16px 18px;
-    cursor: pointer; gap: 16px; transition: background .1s; user-select: none;
-  }
-  .piece-summary:hover { background: var(--soft); }
-  .piece-summary.is-open { background: var(--soft); border-bottom: 1px solid var(--rule); }
+  .fmt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+  .fmt-item { background: #fff; border: 1px solid var(--rule); padding: 8px 5px; text-align: center; cursor: pointer; transition: all .15s; }
+  .fmt-item:hover { border-color: #aaa; }
+  .fmt-item.done { background: var(--green-l); border-color: #a8ddb8; }
+  .fmt-item.wip { background: var(--yellow-l); border-color: #e8d060; }
+  .fmt-item.rev { background: var(--blue-l); border-color: #90b0f0; }
+  .fmt-item.adj { background: var(--orange-l); border-color: #f5c8a8; }
+  .fmt-ratio { font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 3px; }
+  .fmt-item.done .fmt-ratio { color: var(--green); }
+  .fmt-item.wip .fmt-ratio { color: var(--yellow); }
+  .fmt-item.rev .fmt-ratio { color: var(--blue); }
+  .fmt-item.adj .fmt-ratio { color: var(--orange); }
+  .fmt-st { font-size: 9px; color: var(--muted2); }
+  .fmt-item.done .fmt-st { color: var(--green); }
+  .fmt-item.wip .fmt-st { color: var(--yellow); }
+  .fmt-item.rev .fmt-st { color: var(--blue); }
+  .fmt-item.adj .fmt-st { color: var(--orange); }
 
-  .piece-left { flex: 1; min-width: 0; }
-  .piece-title { font-weight: 600; font-size: 15px; }
-  .piece-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .vo-box { display: inline-flex; align-items: center; gap: 7px; background: #fff; border: 1px solid var(--rule); padding: 7px 12px; cursor: pointer; transition: all .15s; }
+  .vo-box:hover { border-color: #aaa; }
+  .vo-box.on { background: var(--green-l); border-color: #a8ddb8; }
+  .vo-chk { width: 15px; height: 15px; border: 1.5px solid var(--muted2); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 9px; flex-shrink: 0; }
+  .vo-box.on .vo-chk { background: var(--green); border-color: var(--green); color: #fff; }
+  .vo-lbl { font-size: 11px; color: var(--muted); }
+  .vo-box.on .vo-lbl { color: var(--green); font-weight: 500; }
 
-  .stage-pills { display: flex; gap: 3px; align-items: center; }
-  .stage-pill { height: 6px; width: 26px; border-radius: 3px; background: var(--rule); }
-  .stage-pill.done { background: var(--green-mid); }
-  .stage-pill.wip { background: var(--yellow-mid); }
-  .stage-pill.rev { background: var(--blue-mid); }
-  .stage-pill.blocked { background: var(--red); }
+  .txt-input { width: 100%; border: 1px solid var(--rule); background: #fff; font-family: 'Inter', sans-serif; font-size: 12px; padding: 8px 11px; outline: none; color: var(--ink); resize: none; line-height: 1.5; transition: border-color .15s; }
+  .txt-input:focus { border-color: var(--ink); }
+  .txt-input::placeholder { color: var(--muted2); }
 
-  .piece-pct { font-size: 12px; font-weight: 600; min-width: 38px; text-align: right; }
-  .piece-date { font-size: 12px; min-width: 70px; text-align: right; font-weight: 500; }
-  .piece-date.soon { color: var(--yellow); }
-  .piece-date.urgent { color: var(--red); }
-  .piece-date.ok { color: var(--green); }
-  .piece-date.normal { color: var(--muted); font-weight: 400; }
+  .piece-actions { display: flex; justify-content: flex-end; margin-top: 10px; }
 
-  .piece-chevron { color: var(--muted2); font-size: 18px; transition: transform .2s; flex-shrink: 0; }
-  .piece-chevron.open { transform: rotate(90deg); }
+  /* OFFLINE / ONLINE */
+  .ESTADO_OPTS = ['—','En curso','Rev Agencia','Ajustes','Rev Cliente','Aprobado']; */
+  .stage-status-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .sst-item { background: #fff; border: 1px solid var(--rule); padding: 10px 12px; cursor: pointer; transition: all .15s; user-select: none; }
+  .sst-item:hover { border-color: #aaa; }
+  .sst-item.en-curso { background: var(--yellow-l); border-color: #e8d060; }
+  .sst-item.rev-agencia { background: var(--blue-l); border-color: #90b0f0; }
+  .sst-item.ajustes { background: var(--orange-l); border-color: #f5c8a8; }
+  .sst-item.rev-cliente { background: var(--purple-l); border-color: #c8a8f0; }
+  .sst-item.aprobado { background: var(--green-l); border-color: #a8ddb8; }
+  .sst-name { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .sst-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--rule); margin-bottom: 5px; }
+  .sst-item.en-curso .sst-dot { background: var(--yellow-m); }
+  .sst-item.rev-agencia .sst-dot { background: var(--blue-m); }
+  .sst-item.ajustes .sst-dot { background: var(--orange-m); }
+  .sst-item.rev-cliente .sst-dot { background: #9b59b6; }
+  .sst-item.aprobado .sst-dot { background: var(--green-m); }
+  .sst-label { font-size: 9px; color: var(--muted2); }
+  .sst-item.en-curso .sst-label { color: var(--yellow); }
+  .sst-item.rev-agencia .sst-label { color: var(--blue); }
+  .sst-item.ajustes .sst-label { color: var(--orange); }
+  .sst-item.rev-cliente .sst-label { color: #9b59b6; }
+  .sst-item.aprobado .sst-label { color: var(--green); }
 
-  .piece-detail { display: none; padding: 18px; background: var(--soft); }
-  .piece-detail.open { display: block; }
+  .estado-wrap { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--rule); padding: 8px 12px; }
+  .estado-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--rule); flex-shrink: 0; }
+  .estado-sel { border: none; background: none; font-family: 'Inter', sans-serif; font-size: 12px; color: var(--ink); outline: none; cursor: pointer; flex: 1; }
 
-  .stages-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  /* ══════════════════════════════════════
+     TIMING — CALENDARIO SEMANAL
+  ══════════════════════════════════════ */
+  .cal-wrap { overflow-x: auto; border: 1px solid var(--rule); }
+  .cal-header-row { display: flex; align-items: stretch; border-bottom: 2px solid var(--ink); }
+  .cal-corner { min-width: 80px; max-width: 80px; background: var(--ink); display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 8px 6px; flex-shrink: 0; }
+  .cal-corner-name { font-family: 'Bebas Neue', sans-serif; font-size: 11px; letter-spacing: 2px; color: #fff; }
+  .cal-corner-sub { font-size: 8px; color: #888; letter-spacing: 1px; margin-top: 2px; }
+  .cal-day-header { flex: 1; text-align: center; padding: 6px 4px; border-left: 1px solid var(--rule); background: var(--soft); }
+  .cal-day-name { font-size: 9px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+  .cal-day-header.wk { background: #f4f4f4; }
+  .cal-day-header.wk .cal-day-name { color: var(--muted2); }
 
-  .stages-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-bottom: 0; }
+  .cal-week { display: flex; border-bottom: 1px solid var(--rule); min-height: 80px; }
+  .cal-week:last-child { border-bottom: none; }
+  .cal-week-label { min-width: 80px; max-width: 80px; background: var(--soft); border-right: 2px solid var(--rule); padding: 8px 6px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: flex-start; }
+  .cal-week-dates { font-size: 9px; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 3px; }
+  .cal-week-num { font-family: 'Bebas Neue', sans-serif; font-size: 13px; color: var(--muted2); }
 
-  .stage-card {
-    background: var(--white); border: 1px solid var(--rule); padding: 8px 4px;
-    text-align: center; cursor: pointer; transition: all .15s; user-select: none;
-  }
-  .stage-card:hover { border-color: #aaa; }
-  .stage-card.done { background: var(--green-light); border-color: #a8ddb8; }
-  .stage-card.wip { background: var(--yellow-light); border-color: #e8d060; }
-  .stage-card.rev { background: var(--blue-light); border-color: #90b0f0; }
-  .stage-card.blocked { background: var(--red-light); border-color: #f0a8a0; }
+  .cal-day-cell { flex: 1; border-left: 1px solid var(--rule); padding: 4px; min-height: 80px; vertical-align: top; position: relative; }
+  .cal-day-cell.wk { background: #fafafa; }
+  .cal-day-cell.today { background: #fffbf0; }
+  .cal-day-num { font-size: 9px; color: var(--muted2); margin-bottom: 3px; text-align: right; }
 
-  .stage-card-name { font-size: 8px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
-  .stage-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rule); margin: 0 auto 5px; }
-  .stage-card.done .stage-dot { background: var(--green-mid); }
-  .stage-card.wip .stage-dot { background: var(--yellow-mid); }
-  .stage-card.rev .stage-dot { background: var(--blue-mid); }
-  .stage-card.blocked .stage-dot { background: var(--red); }
-  .stage-card-status { font-size: 9px; color: var(--muted2); }
-  .stage-card.done .stage-card-status { color: var(--green); }
-  .stage-card.wip .stage-card-status { color: var(--yellow); }
-  .stage-card.rev .stage-card-status { color: var(--blue); }
-  .stage-card.blocked .stage-card-status { color: var(--red); }
+  /* EVENTOS EN EL CALENDARIO */
+  .cal-event { border-radius: 2px; padding: 3px 5px; margin-bottom: 2px; font-size: 9px; line-height: 1.3; font-weight: 500; }
+  .cal-event.shoot { background: #111; color: #fff; }
+  .cal-event.edit { background: var(--blue-cal); color: #1a3a6a; }
+  .cal-event.cc { background: var(--orange-cal); color: #7a3a10; }
+  .cal-event.audio { background: var(--green-cal); color: #1a5a2a; }
+  .cal-event.online { background: var(--purple-l); color: #4a1a8a; }
+  .cal-event.rev { background: var(--yellow-cal); color: #7a5a00; }
+  .cal-event.entrega { background: #111; color: #e8ff47; }
+  .cal-event.aprobacion { background: var(--green-cal); color: #1a5a2a; font-weight: 700; }
+  .cal-event.feriado { background: var(--yellow-m); color: #7a5a00; }
+  .cal-event.musical { background: #e8d6ff; color: #4a1a8a; }
+  .cal-event.foto { background: #ffd6f0; color: #7a1a5a; }
+  .cal-event.ppm { background: #d6f0ff; color: #1a5a7a; }
+  .cal-event.ensayo { background: #d6ffe8; color: #1a5a3a; }
+  .cal-event.backs { background: #f0d6ff; color: #5a1a8a; }
 
-  /* NOTES */
-  .notes-wrap { border-top: 1px solid var(--rule); padding-top: 14px; margin-top: 14px; }
-  .note-input {
-    width: 100%; border: 1px solid var(--rule); background: var(--white);
-    font-family: 'Inter', sans-serif; font-size: 12px; padding: 10px 14px;
-    outline: none; color: var(--ink); resize: none; min-height: 56px;
-    line-height: 1.6; transition: border-color .15s; margin-top: 8px;
-  }
-  .note-input:focus { border-color: var(--ink); }
-  .note-input::placeholder { color: var(--muted2); }
-
-  .history { margin-top: 10px; }
-  .history-row { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--rule); font-size: 12px; }
-  .history-row:last-child { border-bottom: none; }
-  .history-who { font-weight: 600; min-width: 70px; flex-shrink: 0; }
-  .history-what { color: var(--muted); flex: 1; }
-  .history-when { color: var(--muted2); font-size: 11px; white-space: nowrap; }
-
-  /* ================================ TIMING ================================ */
-  .timing-section { }
-
-  .timing-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  .month-nav { display: flex; align-items: center; gap: 12px; }
-  .month-name { font-size: 13px; font-weight: 600; min-width: 100px; text-align: center; }
-  .nav-btn { width: 28px; height: 28px; border: 1px solid var(--rule); background: var(--white); cursor: pointer; font-size: 14px; color: var(--muted); display: flex; align-items: center; justify-content: center; transition: all .15s; }
-  .nav-btn:hover { border-color: var(--ink); color: var(--ink); }
-
-  .gantt-wrap { background: var(--white); border: 1px solid var(--rule); overflow-x: auto; margin-bottom: 0; }
-
-  .gantt-table { width: 100%; border-collapse: collapse; min-width: 780px; }
-
-  .gantt-table .week-header th {
-    background: var(--ink); color: var(--white); font-size: 9px; letter-spacing: 2px;
-    text-transform: uppercase; font-weight: 400; padding: 8px 0; text-align: center;
-    border-right: 1px solid #333;
-  }
-  .gantt-table .week-header th:first-child { text-align: left; padding-left: 14px; width: 130px; }
-
-  .gantt-table .day-header th {
-    font-size: 9px; color: var(--muted); padding: 5px 0; text-align: center;
-    border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
-    background: var(--soft); font-weight: 400;
-  }
-  .gantt-table .day-header th:first-child { text-align: left; padding-left: 14px; border-right: 2px solid var(--rule); }
-  .gantt-table .day-header th.today { background: var(--ink); color: var(--white); }
-  .gantt-table .day-header th.weekend { background: #f0eee9; color: var(--muted2); }
-
-  .gantt-table tbody tr { border-bottom: 1px solid var(--rule); }
-  .gantt-table tbody tr:hover { background: var(--soft); }
-
-  .gantt-table tbody td {
-    padding: 0; height: 34px; border-right: 1px solid var(--rule); vertical-align: middle;
-  }
-  .gantt-table tbody td:first-child { padding: 0 10px 0 14px; border-right: 2px solid var(--rule); min-width: 130px; }
-  .gantt-table tbody td.weekend { background: #faf9f7; }
-  .gantt-table tbody td.today-col { background: #fff8f0; }
-
-  .row-label { font-size: 12px; font-weight: 500; }
-  .row-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
-
-  .bar {
-    height: 18px; border-radius: 2px; width: 100%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 8px; letter-spacing: 0.5px; font-weight: 600;
-    white-space: nowrap; overflow: hidden; padding: 0 4px; transition: opacity .15s;
-  }
-  .bar:hover { opacity: 0.8; }
-  .bar-rodaje { background: #111; color: #fff; }
-  .bar-offline { background: var(--blue-light); color: var(--blue); border: 1px solid #b0c8f0; }
-  .bar-color { background: var(--orange-light); color: var(--orange); border: 1px solid #f5c8a8; }
-  .bar-audio { background: var(--green-light); color: var(--green); border: 1px solid #a8ddb8; }
-  .bar-vfx { background: var(--purple-light); color: var(--purple); border: 1px solid #c8a8f0; }
-  .bar-revision { background: var(--yellow-light); color: var(--yellow); border: 1px solid #e8d060; }
-
-  .milestone { width: 10px; height: 10px; border-radius: 50%; margin: 0 auto; }
-  .ms-rodaje { background: var(--ink); }
-  .ms-entrega { background: var(--red); }
-  .ms-ok { background: var(--green); }
-
-  .gantt-legend {
-    display: flex; gap: 14px; flex-wrap: wrap; padding: 10px 14px;
-    background: var(--white); border: 1px solid var(--rule); border-top: none; align-items: center;
-  }
-  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--muted); }
-  .legend-dot { width: 12px; height: 7px; border-radius: 2px; }
-
-  /* TIMING NOTES */
-  .timing-notes { margin-top: 12px; background: var(--white); border: 1px solid var(--rule); padding: 14px 16px; }
-  .timing-notes-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-  .t-note-row { display: flex; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--rule); font-size: 12px; align-items: flex-start; }
-  .t-note-row:last-child { border-bottom: none; }
-  .t-note-date { font-weight: 600; min-width: 64px; flex-shrink: 0; }
-  .t-note-text { color: var(--muted); flex: 1; line-height: 1.4; }
-  .t-note-who { color: var(--muted2); font-size: 11px; }
-
-  /* FECHAS IMPORTANTES */
-  .fechas-section { border-top: 1px solid var(--rule); padding-top: 14px; margin-top: 14px; }
-  .fechas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 8px; }
-  .fecha-item {
-    background: var(--white); border: 1px solid var(--rule); padding: 8px 10px;
-    cursor: pointer; transition: all .15s;
-  }
-  .fecha-item:hover { border-color: #aaa; }
-  .fecha-item.agencia { border-left: 3px solid var(--blue-mid); }
-  .fecha-item.cliente { border-left: 3px solid var(--orange-mid); }
-  .fecha-item.aprobacion { border-left: 3px solid var(--green-mid); }
-  .fecha-tipo { font-size: 8px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
-  .fecha-item.agencia .fecha-tipo { color: var(--blue); }
-  .fecha-item.cliente .fecha-tipo { color: var(--orange); }
-  .fecha-item.aprobacion .fecha-tipo { color: var(--green); }
-  .fecha-val { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
-  .fecha-nota { font-size: 10px; color: var(--muted); }
-  .fecha-add {
-    background: none; border: 1px dashed var(--rule); color: var(--muted2);
-    font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: 1px;
-    padding: 8px 10px; cursor: pointer; transition: all .15s; width: 100%;
-    text-transform: uppercase; text-align: left;
-  }
-  .fecha-add:hover { border-color: var(--ink); color: var(--ink); }
+  /* CAL LEGEND */
+  .cal-legend { display: flex; gap: 10px; flex-wrap: wrap; padding: 8px 10px; border: 1px solid var(--rule); border-top: none; background: #fff; }
+  .cal-li { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--muted); }
+  .cal-ld { width: 12px; height: 8px; border-radius: 2px; }
 
   /* DAY BY DAY */
-  .daybyday-section { display: flex; flex-direction: column; gap: 20px; }
+  .dbd-sec { display: flex; flex-direction: column; gap: 14px; }
+  .dbd-bh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .f-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 0; }
+  .fi { background: #fff; border: 1px solid var(--rule); padding: 8px 9px; cursor: pointer; }
+  .fi:hover { border-color: #aaa; }
+  .fi.ag { border-left: 3px solid var(--blue-m); }
+  .fi.cl { border-left: 3px solid var(--orange-m); }
+  .fi.ap { border-left: 3px solid var(--green-m); }
+  .fi-tipo { font-size: 8px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
+  .fi.ag .fi-tipo { color: var(--blue); }
+  .fi.cl .fi-tipo { color: var(--orange); }
+  .fi.ap .fi-tipo { color: var(--green); }
+  .fi-val { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .fi-nota { font-size: 10px; color: var(--muted); }
 
-  .dbd-block { }
-  .dbd-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-
-  .dbd-list { display: flex; flex-direction: column; gap: 2px; }
-
-  .dbd-day {
-    background: var(--white);
-    border: 1px solid var(--rule);
-    overflow: hidden;
-    margin-bottom: 6px;
-  }
-
-  .dbd-day-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 16px;
-    background: var(--soft);
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .dbd-day-date { font-size: 12px; font-weight: 600; }
-  .dbd-day-label { font-size: 11px; color: var(--muted); }
-
+  .dbd-list { display: flex; flex-direction: column; gap: 4px; }
+  .dbd-day { background: #fff; border: 1px solid var(--rule); overflow: hidden; }
+  .dbd-dh { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--soft); border-bottom: 1px solid var(--rule); gap: 8px; }
+  .dbd-date { font-size: 12px; font-weight: 600; }
   .dbd-entries { }
-
-  .dbd-entry {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--rule);
-    transition: background .1s;
-  }
-
+  .dbd-entry { display: flex; align-items: flex-start; gap: 10px; padding: 9px 12px; border-bottom: 1px solid var(--rule); }
   .dbd-entry:last-child { border-bottom: none; }
   .dbd-entry:hover { background: var(--soft); }
+  .dbd-entry.hl-ag { border-left: 3px solid var(--blue-m); }
+  .dbd-entry.hl-cl { border-left: 3px solid var(--orange-m); }
+  .dbd-entry.hl-ap { border-left: 3px solid var(--green-m); }
+  .dbd-time-input { border: none; border-bottom: 1px solid var(--rule); background: none; font-family: 'Inter', sans-serif; font-size: 10px; color: var(--muted); outline: none; width: 50px; padding: 1px 2px; flex-shrink: 0; }
+  .dbd-info { flex: 1; }
+  .dbd-title-input { width: 100%; border: none; border-bottom: 1px solid var(--rule); background: none; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; outline: none; color: var(--ink); padding: 1px 0; margin-bottom: 4px; }
+  .dbd-note-input { width: 100%; border: none; border-bottom: 1px solid var(--rule); background: none; font-family: 'Inter', sans-serif; font-size: 11px; outline: none; color: var(--muted); padding: 1px 0; }
+  .dbd-tag { font-size: 8px; letter-spacing: 1px; text-transform: uppercase; padding: 2px 6px; border: 1px solid; white-space: nowrap; align-self: flex-start; margin-top: 3px; flex-shrink: 0; }
+  .dbd-tag.shoot { border-color: #111; color: #111; }
+  .dbd-tag.edit { border-color: #b0c8f0; color: var(--blue); }
+  .dbd-tag.cc { border-color: #f5c8a8; color: var(--orange); }
+  .dbd-tag.audio { border-color: #a8ddb8; color: var(--green); }
+  .dbd-tag.online { border-color: #c8a8f0; color: var(--purple); }
+  .dbd-tag.entrega { border-color: var(--ink); color: var(--ink); }
+  .dbd-tag.agencia { border-color: #b0c8f0; color: var(--blue); }
+  .dbd-tag.cliente { border-color: #f5c8a8; color: var(--orange); }
+  .dbd-tag.aprobacion { border-color: #a8ddb8; color: var(--green); }
 
-  .dbd-entry.highlight-agencia { border-left: 3px solid var(--blue-mid); }
-  .dbd-entry.highlight-cliente { border-left: 3px solid var(--orange-mid); }
-  .dbd-entry.highlight-aprobacion { border-left: 3px solid var(--green-mid); }
+  /* SYNC */
+  .sync-bar { font-size: 10px; color: var(--muted); letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-m); }
+  .sync-dot.syncing { background: var(--yellow-m); animation: pulse 1s infinite; }
+  .sync-dot.error { background: var(--red); }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
 
-  .dbd-entry-time { font-size: 11px; color: var(--muted); min-width: 52px; padding-top: 1px; font-weight: 500; }
-  .dbd-entry-info { flex: 1; }
-  .dbd-entry-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
-  .dbd-entry-note { font-size: 11px; color: var(--muted); line-height: 1.4; }
-
-  .dbd-entry-tag {
-    font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
-    padding: 3px 8px; border: 1px solid; white-space: nowrap;
-    align-self: flex-start; margin-top: 2px;
+  @media (max-width: 600px) {
+    header { padding: 0 14px; }
+    .wrap { padding: 14px; }
+    .proj-piezas { display: none; }
+    .form-row { grid-template-columns: 1fr; }
+    .stage-status-grid { grid-template-columns: 1fr 1fr; }
+    .f-grid { grid-template-columns: 1fr 1fr; }
+    .cal-week-label { min-width: 60px; max-width: 60px; }
+    .cal-corner { min-width: 60px; max-width: 60px; }
   }
-
-  .dbd-entry-tag.offline { border-color: #b0c8f0; color: var(--blue); background: var(--blue-light); }
-  .dbd-entry-tag.color { border-color: #f5c8a8; color: var(--orange); background: var(--orange-light); }
-  .dbd-entry-tag.audio { border-color: #a8ddb8; color: var(--green); background: var(--green-light); }
-  .dbd-entry-tag.entrega { border-color: #111; color: #111; background: #f5f5f5; }
-  .dbd-entry-tag.agencia { border-color: #b0c8f0; color: var(--blue); background: var(--blue-light); }
-  .dbd-entry-tag.cliente-tag { border-color: #f5c8a8; color: var(--orange); background: var(--orange-light); }
-  .dbd-entry-tag.aprobacion-tag { border-color: #a8ddb8; color: var(--green); background: var(--green-light); }
-
 </style>
 </head>
 <body>
 
-<div class="demo">⚡ PREVIEW COMPLETO — Board + Piezas + Timing</div>
-
 <header>
-  <div class="logo" onclick="showBoard()">REBOLUCION</div>
-  <div class="header-right">
-    <div class="header-date">JUE 27 MAR 2026</div>
-    <button class="btn ink">+ Nuevo proyecto</button>
+  <div class="logo" onclick="showBoard()">POST TRACKER <em>MEX</em></div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="sync-bar" id="syncBar" style="display:none">
+      <div class="sync-dot" id="syncDot"></div>
+      <span id="syncText">Guardado</span>
+    </div>
+    <button class="btn ink" onclick="openModal('proyecto')">+ Nuevo proyecto</button>
   </div>
 </header>
 
-<!-- ================================ BOARD ================================ -->
-<div id="boardView" class="active">
-  <div class="board-wrap">
-    <div class="board-top">
-      <div class="board-title">Proyectos activos — Marzo 2026</div>
-      <span style="font-size:11px;color:var(--muted2)">6 proyectos</span>
+<!-- MODAL PROYECTO -->
+<div class="modal-overlay" id="modalProyecto" onclick="closeModalOutside(event,'modalProyecto')">
+  <div class="modal">
+    <div class="modal-title">NUEVO PROYECTO</div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-lbl">Cliente</label><input class="form-input" id="f-cliente" type="text" placeholder="ej. Tecate"></div>
+      <div class="form-field"><label class="form-lbl">Director</label><input class="form-input" id="f-director" type="text" placeholder="ej. Armano Bo"></div>
     </div>
-
-    <div class="status-group">
-      <div class="group-label">
-        <div class="group-dot" style="background:var(--orange-mid)"></div>
-        <div class="group-name">Post-producción</div>
-        <div class="group-count">1</div>
-      </div>
-      <div class="proj-row" onclick="showDetail('santaclara')">
-        <div class="proj-info"><div class="proj-client">Santa Clara</div><div class="proj-name">Lechitas + Chopeo</div></div>
-        <div class="proj-dir">Vellas · MX</div>
-        <div class="proj-piezas">7 piezas</div>
-        <div class="proj-date soon">10 ABR</div>
-        <div class="proj-arrow">›</div>
-      </div>
+    <div class="form-field"><label class="form-lbl">Nombre del proyecto</label><input class="form-input" id="f-nombre" type="text" placeholder="ej. GUT Mexico"></div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-lbl">Fecha de rodaje</label><input class="form-input" id="f-rodaje" type="date"></div>
+      <div class="form-field"><label class="form-lbl">Fecha de entrega</label><input class="form-input" id="f-entrega" type="date"></div>
     </div>
-
-    <div class="status-group">
-      <div class="group-label">
-        <div class="group-dot" style="background:var(--yellow-mid)"></div>
-        <div class="group-name">Producción</div>
-        <div class="group-count">3</div>
-      </div>
-      <div class="proj-row" onclick="showDetail('tecate')">
-        <div class="proj-info"><div class="proj-client">Tecate</div><div class="proj-name">Verano 2026</div></div>
-        <div class="proj-dir">Armano Bo · MX</div>
-        <div class="proj-piezas">3 piezas</div>
-        <div class="proj-date urgent">28 MAR</div>
-        <div class="proj-arrow">›</div>
-      </div>
-      <div class="proj-row" onclick="showDetail('popeyes')">
-        <div class="proj-info"><div class="proj-client">Popeye's</div><div class="proj-name">Crispy Season</div></div>
-        <div class="proj-dir">L. Furiolo · MX</div>
-        <div class="proj-piezas">2 piezas</div>
-        <div class="proj-date normal">2 ABR</div>
-        <div class="proj-arrow">›</div>
-      </div>
-      <div class="proj-row" onclick="showDetail('epson')">
-        <div class="proj-info"><div class="proj-client">Epson</div><div class="proj-name">Print the Future</div></div>
-        <div class="proj-dir">Roi Ricci · Miami</div>
-        <div class="proj-piezas">2 piezas</div>
-        <div class="proj-date normal">5 ABR</div>
-        <div class="proj-arrow">›</div>
+    <div class="form-row">
+      <div class="form-field">
+        <label class="form-lbl">Estado</label>
+        <select class="form-select" id="f-estado">
+          <option value="pre">Pre-producción</option>
+          <option value="prod">Producción</option>
+          <option value="post" selected>Post-producción</option>
+          <option value="done">Entregado</option>
+        </select>
       </div>
     </div>
-
-    <div class="status-group">
-      <div class="group-label">
-        <div class="group-dot" style="background:var(--blue-mid)"></div>
-        <div class="group-name">Pre-producción</div>
-        <div class="group-count">1</div>
-      </div>
-      <div class="proj-row" onclick="showDetail('toyota')">
-        <div class="proj-info"><div class="proj-client">Toyota</div><div class="proj-name">Lanzamiento SUV</div></div>
-        <div class="proj-dir">Por asignar · MX</div>
-        <div class="proj-piezas">1 pieza</div>
-        <div class="proj-date normal">10 MAY</div>
-        <div class="proj-arrow">›</div>
-      </div>
-    </div>
-
-    <div class="status-group">
-      <div class="group-label">
-        <div class="group-dot" style="background:var(--green-mid)"></div>
-        <div class="group-name">Entregado</div>
-        <div class="group-count">1</div>
-      </div>
-      <div class="proj-row" onclick="showDetail('intermiami')">
-        <div class="proj-info"><div class="proj-client">Inter Miami</div><div class="proj-name">Season Opener 2025</div></div>
-        <div class="proj-dir">Seba Lopez · Miami</div>
-        <div class="proj-piezas">1 pieza</div>
-        <div class="proj-date ok">✓ Listo</div>
-        <div class="proj-arrow">›</div>
-      </div>
+    <div class="modal-actions">
+      <button class="btn ink" onclick="saveProject()">GUARDAR</button>
+      <button class="btn" onclick="closeModal('modalProyecto')">CANCELAR</button>
     </div>
   </div>
 </div>
 
-<!-- ================================ DETAIL ================================ -->
-<div id="detailView">
-  <div class="detail-wrap">
+<!-- MODAL PIEZA -->
+<div class="modal-overlay" id="piezaModal" onclick="closeModalOutside(event,'piezaModal')">
+  <div class="modal">
+    <div class="modal-title">NUEVA PIEZA</div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-lbl">Nombre</label><input class="form-input" id="p-nombre" type="text" placeholder="ej. HERO MEX"></div>
+      <div class="form-field"><label class="form-lbl">Duración</label><input class="form-input" id="p-dur" type="text" placeholder="ej. 30s"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-lbl">Fecha de entrega</label><input class="form-input" id="p-fecha" type="text" placeholder="ej. 18 Jul"></div>
+      <div class="form-field"><label class="form-lbl">Link al guión</label><input class="form-input" id="p-guion" type="text" placeholder="https://..."></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ink" onclick="savePieza()">AGREGAR PIEZA</button>
+      <button class="btn" onclick="closeModal('piezaModal')">CANCELAR</button>
+    </div>
+  </div>
+</div>
 
-    <div class="breadcrumb">
+<!-- BOARD -->
+<div class="view active" id="boardView">
+  <div class="wrap">
+    <div class="board-top"><div class="sec-title">Proyectos activos</div></div>
+    <div id="boardContent"></div>
+  </div>
+</div>
+
+<!-- DETAIL -->
+<div class="view" id="detailView">
+  <div class="wrap">
+    <div class="bc">
       <span class="bc-link" onclick="showBoard()">Proyectos</span>
       <span class="bc-sep">›</span>
-      <span class="bc-current" id="bc-name">Santa Clara</span>
+      <span class="bc-cur" id="bc-name"></span>
     </div>
-
-    <div class="proj-title-block">
-      <div class="proj-title-top">
+    <div class="ptitle-block">
+      <div class="ptitle-top">
         <div>
-          <div class="proj-title-client" id="d-client">Santa Clara</div>
-          <div class="proj-title-name" id="d-sub">Lechitas + Chopeo · Vellas · MX</div>
+          <div class="ptitle-client" id="d-client"></div>
+          <div class="ptitle-sub" id="d-sub"></div>
         </div>
-        <div class="proj-title-meta" id="d-meta"></div>
+        <div class="ptitle-meta" id="d-meta"></div>
       </div>
-      <div class="proj-title-bottom">
-        <div class="proj-stat">Rodaje: <b id="d-rodaje">10 Mar</b></div>
-        <div class="proj-stat">Piezas: <b id="d-piezas">4</b></div>
-        <div class="proj-stat">Avance post: <b id="d-avance" style="color:var(--orange)">54%</b></div>
+      <div class="ptitle-bottom">
+        <div class="pstat">Rodaje: <b id="d-rodaje"></b></div>
+        <div class="pstat">Piezas: <b id="d-piezas"></b></div>
+        <div class="pstat">Entrega: <b id="d-entrega"></b></div>
       </div>
     </div>
 
-    <!-- TABS -->
-    <div class="detail-tabs">
-      <div class="detail-tab active" onclick="switchTab('piezas', this)">Piezas</div>
-      <div class="detail-tab" onclick="switchTab('timing', this)">Timing</div>
-      <div class="detail-tab" onclick="switchTab('daybyday', this)">Day by Day</div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('piezas',this)">Piezas</div>
+      <div class="tab" onclick="switchTab('offline',this)">Offline</div>
+      <div class="tab" onclick="switchTab('online',this)">Online</div>
+      <div class="tab" onclick="switchTab('timing',this)">Timing</div>
+      <div class="tab" onclick="switchTab('daybyday',this)">Day by Day</div>
     </div>
 
-    <!-- TAB: PIEZAS -->
+    <!-- PIEZAS -->
     <div class="tab-panel active" id="tab-piezas">
-      <div class="pieces-header">
-        <div class="section-title">Piezas del proyecto</div>
-        <button class="btn">+ Agregar pieza</button>
+      <div class="ph">
+        <div class="sec-title">Piezas del proyecto</div>
+        <button class="btn sm ink" onclick="openModal('pieza')">+ Agregar pieza</button>
       </div>
-
-      <!-- HERO -->
-      <div class="piece-card">
-        <div class="piece-summary is-open" onclick="togglePiece(this)">
-          <div class="piece-left">
-            <div class="piece-title">Hero</div>
-            <div class="piece-sub">60s · TV + Digital + Cine + Pantallas</div>
-          </div>
-          <div class="stage-pills">
-            <div class="stage-pill done"></div>
-            <div class="stage-pill wip"></div>
-            <div class="stage-pill"></div>
-            <div class="stage-pill done"></div>
-            <div class="stage-pill"></div>
-            <div class="stage-pill"></div>
-          </div>
-          <div class="piece-pct" style="color:var(--orange)">50%</div>
-          <div class="piece-date soon">18 Jul</div>
-          <div class="piece-chevron open">›</div>
-        </div>
-        <div class="piece-detail open">
-          <div class="stages-label">Etapas · click para cambiar estado</div>
-          <div class="stages-grid">
-            <div class="stage-card done" onclick="cycleStage(this)"><div class="stage-card-name">Offline</div><div class="stage-dot"></div><div class="stage-card-status">✓ Listo</div></div>
-            <div class="stage-card wip" onclick="cycleStage(this)"><div class="stage-card-name">Color</div><div class="stage-dot"></div><div class="stage-card-status">En curso</div></div>
-            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Audio</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
-            <div class="stage-card done" onclick="cycleStage(this)"><div class="stage-card-name">VFX</div><div class="stage-dot"></div><div class="stage-card-status">✓ Listo</div></div>
-            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Versiones</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
-            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Máster</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
-          </div>
-
-          <div class="notes-wrap">
-            <div class="stages-label">Notas</div>
-            <textarea class="note-input" placeholder="Agregar nota..."></textarea>
-            <div class="history">
-              <div class="history-row"><div class="history-who">Mariano</div><div class="history-what">Color → En curso</div><div class="history-when">Hoy 14:32</div></div>
-              <div class="history-row"><div class="history-who">Vellas</div><div class="history-what">Offline → Aprobado · "Quedó muy bien"</div><div class="history-when">Ayer 11:20</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- TEASER -->
-      <div class="piece-card">
-        <div class="piece-summary" onclick="togglePiece(this)">
-          <div class="piece-left"><div class="piece-title">Teaser</div><div class="piece-sub">10s · TV + Digital + Pantallas</div></div>
-          <div class="stage-pills">
-            <div class="stage-pill done"></div><div class="stage-pill done"></div>
-            <div class="stage-pill wip"></div><div class="stage-pill done"></div>
-            <div class="stage-pill"></div><div class="stage-pill"></div>
-          </div>
-          <div class="piece-pct" style="color:var(--orange)">66%</div>
-          <div class="piece-date soon">18 Jul</div>
-          <div class="piece-chevron">›</div>
-        </div>
-        <div class="piece-detail">
-          <div class="stages-label">Etapas · click para cambiar estado</div>
-          <div class="stages-grid">
-            <div class="stage-card done" onclick="cycleStage(this)"><div class="stage-card-name">Offline</div><div class="stage-dot"></div><div class="stage-card-status">✓ Listo</div></div>
-            <div class="stage-card done" onclick="cycleStage(this)"><div class="stage-card-name">Color</div><div class="stage-dot"></div><div class="stage-card-status">✓ Listo</div></div>
-            <div class="stage-card wip" onclick="cycleStage(this)"><div class="stage-card-name">Audio</div><div class="stage-dot"></div><div class="stage-card-status">En curso</div></div>
-            <div class="stage-card done" onclick="cycleStage(this)"><div class="stage-card-name">VFX</div><div class="stage-dot"></div><div class="stage-card-status">✓ Listo</div></div>
-            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Versiones</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
-            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Máster</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
-          </div>
-
-          <div class="notes-wrap">
-            <div class="stages-label">Notas</div>
-            <textarea class="note-input" placeholder="Agregar nota..."></textarea>
-          </div>
-        </div>
-      </div>
-
-      <!-- LIFT -->
-      <div class="piece-card">
-        <div class="piece-summary" onclick="togglePiece(this)">
-          <div class="piece-left"><div class="piece-title">Lift 30"</div><div class="piece-sub">30s · TV + Digital + Pantallas</div></div>
-          <div class="stage-pills">
-            <div class="stage-pill rev"></div><div class="stage-pill"></div>
-            <div class="stage-pill"></div><div class="stage-pill"></div>
-            <div class="stage-pill"></div><div class="stage-pill"></div>
-          </div>
-          <div class="piece-pct" style="color:var(--muted)">16%</div>
-          <div class="piece-date normal">—</div>
-          <div class="piece-chevron">›</div>
-        </div>
-        <div class="piece-detail">
-          <div class="stages-label">Etapas · click para cambiar estado</div>
-          <div class="stages-grid">
-            <div class="stage-card rev" onclick="cycleStage(this)"><div class="stage-card-name">Offline</div><div class="stage-dot"></div><div class="stage-card-status">Revisión</div></div>
-            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Color</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
-            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Audio</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
-            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">VFX</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
-            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Versiones</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
-            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Máster</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CHOPEO -->
-      <div class="piece-card">
-        <div class="piece-summary" onclick="togglePiece(this)">
-          <div class="piece-left"><div class="piece-title">Chopeo</div><div class="piece-sub">15s · TV + Digital + Pantallas</div></div>
-          <div class="stage-pills">
-            <div class="stage-pill done"></div><div class="stage-pill done"></div>
-            <div class="stage-pill"></div><div class="stage-pill"></div>
-            <div class="stage-pill"></div><div class="stage-pill"></div>
-          </div>
-          <div class="piece-pct" style="color:var(--muted)">33%</div>
-          <div class="piece-date soon">10 Abr</div>
-          <div class="piece-chevron">›</div>
-        </div>
-        <div class="piece-detail">
-          <div class="stages-label">Etapas · click para cambiar estado</div>
-          <div class="stages-grid">
-            <div class="stage-card done" onclick="cycleStage(this)"><div class="stage-card-name">Offline</div><div class="stage-dot"></div><div class="stage-card-status">✓ Listo</div></div>
-            <div class="stage-card done" onclick="cycleStage(this)"><div class="stage-card-name">Color</div><div class="stage-dot"></div><div class="stage-card-status">✓ Listo</div></div>
-            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Audio</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
-            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">VFX</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
-            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Versiones</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
-            <div class="stage-card" onclick="cycleStage(this)"><div class="stage-card-name">Máster</div><div class="stage-dot"></div><div class="stage-card-status">Pendiente</div></div>
-          </div>
-        </div>
-      </div>
-
+      <div id="piezasList"></div>
     </div>
 
-    <!-- TAB: TIMING -->
+    <!-- OFFLINE -->
+    <div class="tab-panel" id="tab-offline">
+      <div class="ph" style="margin-bottom:14px">
+        <div class="sec-title">Estado Offline</div>
+      </div>
+      <div id="offlineList"></div>
+    </div>
+
+    <!-- ONLINE -->
+    <div class="tab-panel" id="tab-online">
+      <div class="ph" style="margin-bottom:14px">
+        <div class="sec-title">Estado Online</div>
+      </div>
+      <div id="onlineList"></div>
+    </div>
+
+    <!-- TIMING -->
     <div class="tab-panel" id="tab-timing">
-      <div class="timing-section">
-        <div class="timing-top">
-          <div class="section-title">Calendario de producción</div>
-          <div class="month-nav">
-            <button class="nav-btn">‹</button>
-            <div class="month-name">Abril 2026</div>
-            <button class="nav-btn">›</button>
-          </div>
-        </div>
-
-        <div class="gantt-wrap">
-          <table class="gantt-table">
-            <thead>
-              <tr class="week-header">
-                <th>Pieza</th>
-                <th colspan="7">Semana 1 · 1–7</th>
-                <th colspan="7">Semana 2 · 8–14</th>
-                <th colspan="7">Semana 3 · 15–21</th>
-                <th colspan="7">Semana 4 · 22–28</th>
-                <th colspan="2">29–30</th>
-              </tr>
-              <tr class="day-header">
-                <th></th>
-                <th class="weekend">Ma</th><th>Ma</th><th>Mi</th><th>J</th><th>V</th><th class="weekend">S</th><th class="weekend">D</th>
-                <th>L</th><th class="today">Ma</th><th>Mi</th><th>J</th><th>V</th><th class="weekend">S</th><th class="weekend">D</th>
-                <th>L</th><th>Ma</th><th>Mi</th><th>J</th><th>V</th><th class="weekend">S</th><th class="weekend">D</th>
-                <th>L</th><th>Ma</th><th>Mi</th><th>J</th><th>V</th><th class="weekend">S</th><th class="weekend">D</th>
-                <th>L</th><th>Ma</th>
-              </tr>
-              <tr class="day-header" style="border-bottom:2px solid var(--rule)">
-                <th style="color:var(--ink);font-size:10px;padding-left:14px">HOY ↓</th>
-                <th class="weekend">1</th><th>2</th><th>3</th><th>4</th><th>5</th><th class="weekend">6</th><th class="weekend">7</th>
-                <th>8</th><th class="today">9</th><th>10</th><th>11</th><th>12</th><th class="weekend">13</th><th class="weekend">14</th>
-                <th>15</th><th>16</th><th>17</th><th>18</th><th>19</th><th class="weekend">20</th><th class="weekend">21</th>
-                <th>22</th><th>23</th><th>24</th><th>25</th><th>26</th><th class="weekend">27</th><th class="weekend">28</th>
-                <th>29</th><th>30</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><div class="row-label">🎬 Rodaje</div></td>
-                <td class="weekend"></td>
-                <td style="padding:0 2px"><div class="bar bar-rodaje" style="border-radius:2px 0 0 2px">RODAJE</div></td>
-                <td style="padding:0 2px"><div class="bar bar-rodaje" style="border-radius:0 2px 2px 0"></div></td>
-                <td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td><td class="today-col"></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td><td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td><td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td><td></td>
-              </tr>
-              <tr>
-                <td><div class="row-label">Hero</div><div class="row-sub">60s</div></td>
-                <td class="weekend"></td><td></td>
-                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:2px 0 0 2px">Offline</div></td>
-                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:0 2px 2px 0"></div></td>
-                <td></td><td class="weekend"></td><td class="weekend"></td>
-                <td style="padding:0 2px"><div class="bar bar-color" style="border-radius:2px 0 0 2px">Color</div></td>
-                <td class="today-col" style="padding:0 2px"><div class="bar bar-color" style="border-radius:0"></div></td>
-                <td style="padding:0 2px"><div class="bar bar-color" style="border-radius:0 2px 2px 0"></div></td>
-                <td style="padding:0 2px"><div class="bar bar-vfx" style="border-radius:2px 0 0 2px">VFX</div></td>
-                <td style="padding:0 2px"><div class="bar bar-vfx" style="border-radius:0 2px 2px 0"></div></td>
-                <td class="weekend"></td><td class="weekend"></td>
-                <td style="padding:0 2px"><div class="bar bar-audio" style="border-radius:2px 0 0 2px">Audio</div></td>
-                <td style="padding:0 2px"><div class="bar bar-audio" style="border-radius:0"></div></td>
-                <td style="padding:0 2px"><div class="bar bar-audio" style="border-radius:0 2px 2px 0"></div></td>
-                <td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td style="padding:0 2px"><div class="bar bar-revision" style="border-radius:2px 0 0 2px">Rev</div></td>
-                <td style="padding:0 2px"><div class="bar bar-revision" style="border-radius:0 2px 2px 0"></div></td>
-                <td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td><td></td>
-              </tr>
-              <tr>
-                <td><div class="row-label">Teaser</div><div class="row-sub">10s</div></td>
-                <td class="weekend"></td><td></td>
-                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:2px 0 0 2px">Offline</div></td>
-                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:0 2px 2px 0"></div></td>
-                <td></td><td class="weekend"></td><td class="weekend"></td>
-                <td style="padding:0 2px"><div class="bar bar-color" style="border-radius:2px 0 0 2px">Color</div></td>
-                <td class="today-col" style="padding:0 2px"><div class="bar bar-color" style="border-radius:0 2px 2px 0"></div></td>
-                <td style="padding:0 2px"><div class="bar bar-audio" style="border-radius:2px 0 0 2px">Audio</div></td>
-                <td style="padding:0 2px"><div class="bar bar-audio" style="border-radius:0 2px 2px 0"></div></td>
-                <td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td><td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td style="padding:0 2px"><div class="bar bar-revision" style="border-radius:2px">Rev</div></td>
-                <td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td><td></td>
-              </tr>
-              <tr>
-                <td><div class="row-label">Lift 30"</div><div class="row-sub">30s</div></td>
-                <td class="weekend"></td><td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td><td class="today-col"></td><td></td>
-                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:2px 0 0 2px">Offline</div></td>
-                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:0"></div></td>
-                <td class="weekend"></td><td class="weekend"></td>
-                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:0 2px 2px 0"></div></td>
-                <td style="padding:0 2px"><div class="bar bar-color" style="border-radius:2px 0 0 2px">Color</div></td>
-                <td style="padding:0 2px"><div class="bar bar-color" style="border-radius:0 2px 2px 0"></div></td>
-                <td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td><td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td><td></td>
-              </tr>
-              <tr>
-                <td><div class="row-label">Chopeo</div><div class="row-sub">15s</div></td>
-                <td class="weekend"></td><td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td><td class="today-col"></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:2px 0 0 2px">Offline</div></td>
-                <td style="padding:0 2px"><div class="bar bar-offline" style="border-radius:0 2px 2px 0"></div></td>
-                <td style="padding:0 2px"><div class="bar bar-color" style="border-radius:2px 0 0 2px">Color</div></td>
-                <td style="padding:0 2px"><div class="bar bar-color" style="border-radius:0 2px 2px 0"></div></td>
-                <td></td><td class="weekend"></td><td class="weekend"></td>
-                <td style="padding:0 2px"><div class="bar bar-audio" style="border-radius:2px 0 0 2px">Audio</div></td>
-                <td style="padding:0 2px"><div class="bar bar-audio" style="border-radius:0 2px 2px 0"></div></td>
-                <td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td><td></td>
-              </tr>
-              <tr style="background:var(--soft)">
-                <td><div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);padding:8px 0">Hitos</div></td>
-                <td class="weekend"></td>
-                <td style="text-align:center"><div class="milestone ms-rodaje"></div></td>
-                <td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td>
-                <td class="today-col" style="text-align:center"><div style="font-size:7px;color:var(--red);font-weight:700;letter-spacing:1px">HOY</div></td>
-                <td style="text-align:center"><div class="milestone ms-entrega"></div></td>
-                <td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td><td></td><td></td><td></td><td></td><td class="weekend"></td><td class="weekend"></td>
-                <td></td><td></td><td></td>
-                <td style="text-align:center"><div class="milestone ms-ok"></div></td>
-                <td></td><td class="weekend"></td><td class="weekend"></td>
-                <td style="text-align:center"><div class="milestone ms-entrega"></div></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="gantt-legend">
-            <div class="legend-item"><div class="legend-dot" style="background:#111"></div>Rodaje</div>
-            <div class="legend-item"><div class="legend-dot" style="background:var(--blue-light);border:1px solid #b0c8f0"></div>Offline</div>
-            <div class="legend-item"><div class="legend-dot" style="background:var(--orange-light);border:1px solid #f5c8a8"></div>Color</div>
-            <div class="legend-item"><div class="legend-dot" style="background:var(--green-light);border:1px solid #a8ddb8"></div>Audio</div>
-            <div class="legend-item"><div class="legend-dot" style="background:var(--purple-light);border:1px solid #c8a8f0"></div>VFX</div>
-            <div class="legend-item"><div class="legend-dot" style="background:var(--yellow-light);border:1px solid #e8d060"></div>Revisión</div>
-            <div style="margin-left:auto;display:flex;gap:12px">
-              <div class="legend-item"><div style="width:10px;height:10px;border-radius:50%;background:#111"></div>Inicio rodaje</div>
-              <div class="legend-item"><div style="width:10px;height:10px;border-radius:50%;background:var(--red)"></div>Entrega</div>
-              <div class="legend-item"><div style="width:10px;height:10px;border-radius:50%;background:var(--green)"></div>Aprobación</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="timing-notes">
-          <div class="timing-notes-title">Notas de timing</div>
-          <div class="t-note-row">
-            <div class="t-note-date">9 Abr</div>
-            <div class="t-note-text">Color del Hero en proceso. Estudio Cromo confirma entrega el 10 por la tarde.</div>
-            <div class="t-note-who">Mariano</div>
-          </div>
-          <div class="t-note-row">
-            <div class="t-note-date">7 Abr</div>
-            <div class="t-note-text">Audio confirmado para el 15 y 16. Turno AM en Estudio del Sol.</div>
-            <div class="t-note-who">Mariano</div>
-          </div>
-          <div class="t-note-row">
-            <div class="t-note-date">3 Abr</div>
-            <div class="t-note-text">Offline del Teaser aprobado por Vellas. Pasa a color junto al Hero.</div>
-            <div class="t-note-who">Vellas</div>
-          </div>
-        </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div class="sec-title">Calendario de producción — Popeye's GUT Mexico</div>
       </div>
+      <div class="cal-wrap" id="calWrap"></div>
     </div>
 
-    <!-- TAB: DAY BY DAY -->
+    <!-- DAY BY DAY -->
     <div class="tab-panel" id="tab-daybyday">
-      <div class="daybyday-section">
-
-        <!-- FECHAS IMPORTANTES -->
-        <div class="dbd-block">
-          <div class="dbd-block-header">
-            <div class="section-title">Fechas importantes</div>
-            <button class="btn">+ Agregar fecha</button>
+      <div class="dbd-sec">
+        <div>
+          <div class="dbd-bh">
+            <div class="sec-title">Fechas importantes</div>
+            <button class="btn sm" onclick="addFecha()">+ Agregar</button>
           </div>
-          <div class="fechas-grid" style="margin-bottom:0">
-            <div class="fecha-item agencia">
-              <div class="fecha-tipo">Presentación Agencia</div>
-              <div class="fecha-val">12 Abr</div>
-              <div class="fecha-nota">Pre-producción con DDB</div>
-            </div>
-            <div class="fecha-item cliente">
-              <div class="fecha-tipo">Presentación Cliente</div>
-              <div class="fecha-val">18 Abr</div>
-              <div class="fecha-nota">Offline + color — Santa Clara</div>
-            </div>
-            <div class="fecha-item aprobacion">
-              <div class="fecha-tipo">Aprobación Final</div>
-              <div class="fecha-val">25 Abr</div>
-              <div class="fecha-nota">Máster aprobado para entrega</div>
-            </div>
+          <div class="f-grid" id="fechasGrid">
+            <div class="fi ag"><div class="fi-tipo">PPM Agencia y Cliente</div><div class="fi-val">18 Mar</div><div class="fi-nota">8:00–11:00 am MX</div></div>
+            <div class="fi cl"><div class="fi-tipo">Copias Cliente</div><div class="fi-val">30 Mar</div><div class="fi-nota">14:00 hs</div></div>
+            <div class="fi ag"><div class="fi-tipo">Aprobación CC Tasty</div><div class="fi-val">8 Abr</div><div class="fi-nota">Horario PM</div></div>
+            <div class="fi ap"><div class="fi-tipo">Aprobación Online Lifts</div><div class="fi-val">13 Abr</div><div class="fi-nota">12:00 pm</div></div>
+            <div class="fi cl"><div class="fi-tipo">Aprobación Online Tasty</div><div class="fi-val">15 Abr</div><div class="fi-nota">12:00 pm</div></div>
+            <div class="fi ap"><div class="fi-tipo">Entrega Final Lifts</div><div class="fi-val">19 Abr</div><div class="fi-nota">EOD</div></div>
           </div>
         </div>
-
-        <!-- AGENDA DÍA A DÍA -->
-        <div class="dbd-block">
-          <div class="dbd-block-header">
-            <div class="section-title">Agenda día a día</div>
-            <button class="btn">+ Agregar día</button>
+        <div>
+          <div class="dbd-bh">
+            <div class="sec-title">Agenda día a día</div>
+            <button class="btn sm" onclick="addDia()">+ Agregar día</button>
           </div>
-
-          <div class="dbd-list">
-
-            <div class="dbd-day">
-              <div class="dbd-day-header">
-                <div class="dbd-day-date">Lun 9 Abr · <span style="color:var(--red);font-weight:600">HOY</span></div>
-                <div class="dbd-day-label">Semana 2 de post</div>
-              </div>
-              <div class="dbd-entries">
-                <div class="dbd-entry">
-                  <div class="dbd-entry-time">09:00</div>
-                  <div class="dbd-entry-info">
-                    <div class="dbd-entry-title">Color Hero — Estudio Cromo</div>
-                    <div class="dbd-entry-note">Sesión AM. Confirmar con colorista.</div>
-                  </div>
-                  <div class="dbd-entry-tag color">Color</div>
-                </div>
-                <div class="dbd-entry">
-                  <div class="dbd-entry-time">14:00</div>
-                  <div class="dbd-entry-info">
-                    <div class="dbd-entry-title">Revisión offline Lift 30"</div>
-                    <div class="dbd-entry-note">Vellas envía corte para aprobación.</div>
-                  </div>
-                  <div class="dbd-entry-tag offline">Offline</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="dbd-day">
-              <div class="dbd-day-header">
-                <div class="dbd-day-date">Mar 10 Abr</div>
-                <div class="dbd-day-label"></div>
-              </div>
-              <div class="dbd-entries">
-                <div class="dbd-entry">
-                  <div class="dbd-entry-time">11:00</div>
-                  <div class="dbd-entry-info">
-                    <div class="dbd-entry-title">Entrega color Hero al cliente</div>
-                    <div class="dbd-entry-note">Subir a Frame.io para revisión agencia.</div>
-                  </div>
-                  <div class="dbd-entry-tag entrega">Entrega</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="dbd-day">
-              <div class="dbd-day-header">
-                <div class="dbd-day-date">Vie 12 Abr</div>
-                <div class="dbd-day-label" style="color:var(--blue);font-weight:500">Presentación Agencia</div>
-              </div>
-              <div class="dbd-entries">
-                <div class="dbd-entry highlight-agencia">
-                  <div class="dbd-entry-time">10:00</div>
-                  <div class="dbd-entry-info">
-                    <div class="dbd-entry-title">Presentación a DDB — Pre-producción</div>
-                    <div class="dbd-entry-note">Sala de reuniones. Llevar storyboard y ref. de casting.</div>
-                  </div>
-                  <div class="dbd-entry-tag agencia">Agencia</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="dbd-day">
-              <div class="dbd-day-header">
-                <div class="dbd-day-date">Lun 15 Abr</div>
-                <div class="dbd-day-label"></div>
-              </div>
-              <div class="dbd-entries">
-                <div class="dbd-entry">
-                  <div class="dbd-entry-time">09:00</div>
-                  <div class="dbd-entry-info">
-                    <div class="dbd-entry-title">Sesión audio Hero + Teaser</div>
-                    <div class="dbd-entry-note">Estudio del Sol. Turno AM de 9 a 13hs.</div>
-                  </div>
-                  <div class="dbd-entry-tag audio">Audio</div>
-                </div>
-                <div class="dbd-entry">
-                  <div class="dbd-entry-time">16:00</div>
-                  <div class="dbd-entry-info">
-                    <div class="dbd-entry-title">Offline Lift 30" — segunda versión</div>
-                    <div class="dbd-entry-note">Montaje ajustes por correcciones del cliente.</div>
-                  </div>
-                  <div class="dbd-entry-tag offline">Offline</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="dbd-day">
-              <div class="dbd-day-header">
-                <div class="dbd-day-date">Vie 18 Abr</div>
-                <div class="dbd-day-label" style="color:var(--orange);font-weight:500">Presentación Cliente</div>
-              </div>
-              <div class="dbd-entries">
-                <div class="dbd-entry highlight-cliente">
-                  <div class="dbd-entry-time">11:00</div>
-                  <div class="dbd-entry-info">
-                    <div class="dbd-entry-title">Presentación offline + color — Santa Clara</div>
-                    <div class="dbd-entry-note">Reunión en oficinas del cliente. Asisten Vellas + Mariano.</div>
-                  </div>
-                  <div class="dbd-entry-tag cliente-tag">Cliente</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="dbd-day">
-              <div class="dbd-day-header">
-                <div class="dbd-day-date">Jue 25 Abr</div>
-                <div class="dbd-day-label" style="color:var(--green);font-weight:500">Aprobación Final</div>
-              </div>
-              <div class="dbd-entries">
-                <div class="dbd-entry highlight-aprobacion">
-                  <div class="dbd-entry-time">Todo el día</div>
-                  <div class="dbd-entry-info">
-                    <div class="dbd-entry-title">Aprobación máster — Entrega final</div>
-                    <div class="dbd-entry-note">Deadline para aprobación antes de entrega a medios.</div>
-                  </div>
-                  <div class="dbd-entry-tag aprobacion-tag">Aprobación</div>
-                </div>
-              </div>
-            </div>
-
-          </div>
+          <div class="dbd-list" id="dbdList"></div>
         </div>
-
       </div>
     </div>
-
 
   </div>
 </div>
 
 <script>
-const PROJECTS = {
-  santaclara: { client: 'Santa Clara', sub: 'Lechitas + Chopeo · Vellas · MX', rodaje: '10 Mar', piezas: '4', avance: '54%', avanceColor: 'var(--orange)', meta: [{ label: 'Post-producción', cls: 'status-post' }, { label: 'Entrega: 10 Abr', cls: 'date-soon' }] },
-  tecate: { client: 'Tecate', sub: 'Verano 2026 · Armano Bo · MX', rodaje: '28 Mar', piezas: '3', avance: '18%', avanceColor: 'var(--yellow)', meta: [{ label: 'Producción', cls: '' }, { label: 'Rodaje: 28 Mar', cls: 'date-urgent' }] },
-  popeyes: { client: "Popeye's", sub: 'Crispy Season · L. Furiolo · MX', rodaje: '2 Abr', piezas: '2', avance: '0%', avanceColor: 'var(--muted)', meta: [{ label: 'Producción', cls: '' }, { label: 'Rodaje: 2 Abr', cls: '' }] },
-  epson: { client: 'Epson', sub: 'Print the Future · Roi Ricci · Miami', rodaje: '5 Abr', piezas: '2', avance: '0%', avanceColor: 'var(--muted)', meta: [{ label: 'Producción', cls: '' }, { label: 'Rodaje: 5 Abr', cls: '' }] },
-  toyota: { client: 'Toyota', sub: 'Lanzamiento SUV · Por asignar · MX', rodaje: '—', piezas: '1', avance: '0%', avanceColor: 'var(--muted)', meta: [{ label: 'Pre-producción', cls: '' }] },
-  intermiami: { client: 'Inter Miami', sub: 'Season Opener 2025 · Seba Lopez · Miami', rodaje: '10 Ene', piezas: '1', avance: '100%', avanceColor: 'var(--green)', meta: [{ label: '✓ Entregado', cls: '' }] }
-};
+// ── CONSTANTS ──
+const OFFLINE_STAGES = ['Edición','Locutor','Música','SFX'];
+const ONLINE_STAGES  = ['Color','VFX','Mix'];
+const ESTADO_OPTS    = ['—','En curso','Rev Agencia','Ajustes','Rev Cliente','Aprobado'];
+const ESTADO_CLS     = { '—':'', 'En curso':'en-curso', 'Rev Agencia':'rev-agencia', 'Ajustes':'ajustes', 'Rev Cliente':'rev-cliente', 'Aprobado':'aprobado' };
+const FMT_CYCLE      = [{ cls:'', lbl:'—' },{ cls:'wip', lbl:'En curso' },{ cls:'rev', lbl:'Rev' },{ cls:'adj', lbl:'Ajustes' },{ cls:'done', lbl:'Aprobado' }];
 
-const STAGE_STATES = [
-  { cls: '', label: 'Pendiente' },
-  { cls: 'wip', label: 'En curso' },
-  { cls: 'rev', label: 'Revisión' },
-  { cls: 'done', label: '✓ Listo' },
-  { cls: 'blocked', label: 'Bloqueado' }
+// ── STATE ──
+const PIEZAS_POPEYES = [
+  { id:101, nombre:'HERO Live Session MEX', dur:'13m',  fecha:'18 Jul', guion:'Doc Hero' },
+  { id:102, nombre:'HERO Live Session PR',  dur:'13m',  fecha:'18 Jul', guion:'' },
+  { id:103, nombre:'Teaser MEX',            dur:'10s',  fecha:'18 Jul', guion:'' },
+  { id:104, nombre:'Teaser PR',             dur:'10s',  fecha:'18 Jul', guion:'' },
+  { id:105, nombre:'HERO MEX',              dur:'30s',  fecha:'',       guion:'' },
+  { id:106, nombre:'HERO PR',               dur:'30s',  fecha:'',       guion:'' },
+  { id:107, nombre:'LIFT 1 MEX',            dur:'15s',  fecha:'',       guion:'' },
+  { id:108, nombre:'LIFT 1 PR',             dur:'15s',  fecha:'',       guion:'' },
+  { id:109, nombre:'LIFT 2 MEX',            dur:'15s',  fecha:'',       guion:'' },
+  { id:110, nombre:'LIFT 2 PR',             dur:'15s',  fecha:'25 Sept',guion:'' },
+  { id:111, nombre:'LIFT PR',               dur:'15s',  fecha:'',       guion:'' },
+  { id:112, nombre:'Promo SCAT MEX',        dur:'15s',  fecha:'',       guion:'' },
+  { id:113, nombre:'Promo SCAT PR',         dur:'15s',  fecha:'',       guion:'' },
+  { id:114, nombre:'Gráfica Sandwich',      dur:'N/A',  fecha:'',       guion:'' },
+  { id:115, nombre:'Gráfica None In',       dur:'N/A',  fecha:'',       guion:'' },
+  { id:116, nombre:'Radio MEX',             dur:'20s',  fecha:'',       guion:'' },
+  { id:117, nombre:'Radio PR',              dur:'15s',  fecha:'',       guion:'' },
 ];
 
-function showBoard() {
-  document.getElementById('boardView').classList.add('active');
-  document.getElementById('detailView').classList.remove('active');
-  window.scrollTo(0, 0);
+let projects = [{
+  id: 1,
+  cliente: "Popeye's", nombre: 'GUT', director: 'Lautaro Furiolo',
+  rodaje: '23 Mar 2025', entrega: '19 Abr 2025', estado: 'post',
+  piezas: PIEZAS_POPEYES
+}];
+
+// piezaData[projectId][piezaId] = { offline, online, formatos, vo, guion, comment }
+let piezaData = {};
+
+let currentProjectId = null;
+
+function getPiezaData(pid, piezaId) {
+  if (!piezaData[pid]) piezaData[pid] = {};
+  if (!piezaData[pid][piezaId]) {
+    piezaData[pid][piezaId] = {
+      offlineEstado: '—',
+      offlineStages: Object.fromEntries(OFFLINE_STAGES.map(s => [s,'—'])),
+      offlineComment: '',
+      onlineEstado: '—',
+      onlineStages: Object.fromEntries(ONLINE_STAGES.map(s => [s,'—'])),
+      onlineComment: '',
+      formatos: { '16:9':'—','4:5':'—','1:1':'—','9:16':'—' },
+      vo: true,
+      guion: '',
+      comment: ''
+    };
+  }
+  return piezaData[pid][piezaId];
 }
 
-function showDetail(id) {
-  const p = PROJECTS[id] || PROJECTS.santaclara;
-  document.getElementById('boardView').classList.remove('active');
-  document.getElementById('detailView').classList.add('active');
-  document.getElementById('bc-name').textContent = p.client;
-  document.getElementById('d-client').textContent = p.client;
-  document.getElementById('d-sub').textContent = p.sub;
-  document.getElementById('d-rodaje').textContent = p.rodaje;
-  document.getElementById('d-piezas').textContent = p.piezas;
-  const avEl = document.getElementById('d-avance');
-  avEl.textContent = p.avance;
-  avEl.style.color = p.avanceColor;
-  document.getElementById('d-meta').innerHTML = p.meta.map(m => `<span class="meta-tag ${m.cls}">${m.label}</span>`).join('');
-  // reset to piezas tab
-  switchTab('piezas', document.querySelector('.detail-tab'));
-  window.scrollTo(0, 0);
-}
+// ── TIMING DATA — Calendario real del PDF ──
+const TIMING_WEEKS = [
+  {
+    dates: '23–29 Feb', label: 'Sem 1',
+    days: [
+      { n:'23', day:'L', events:[] },
+      { n:'24', day:'Ma', events:[] },
+      { n:'25', day:'Mi', events:[] },
+      { n:'26', day:'J', events:[] },
+      { n:'27', day:'V', events:[{ type:'rev', text:'APROBACIÓN' }] },
+      { n:'28', day:'S', wk:true, events:[] },
+      { n:'1 Mar', day:'D', wk:true, events:[] },
+    ]
+  },
+  {
+    dates: '2–8 Mar', label: 'Sem 2',
+    days: [
+      { n:'2', day:'L', events:[] },
+      { n:'3', day:'Ma', events:[] },
+      { n:'4', day:'Mi', events:[{ type:'musical', text:'Producción Musical' }] },
+      { n:'5', day:'J', events:[] },
+      { n:'6', day:'V', events:[] },
+      { n:'7', day:'S', wk:true, events:[] },
+      { n:'8', day:'D', wk:true, events:[] },
+    ]
+  },
+  {
+    dates: '9–15 Mar', label: 'Sem 3',
+    days: [
+      { n:'9', day:'L', events:[] },
+      { n:'10', day:'Ma', events:[{ type:'musical', text:'Call música I Rebo+GUT 5:30pm' },{ type:'musical', text:'Call música I Rebo+GUT+Karina 6:00pm' }] },
+      { n:'11', day:'Mi', events:[{ type:'musical', text:'Producción Musical' }] },
+      { n:'12', day:'J', events:[] },
+      { n:'13', day:'V', events:[{ type:'rev', text:'Junta avances LOCACIONES' }] },
+      { n:'14', day:'S', wk:true, events:[] },
+      { n:'15', day:'D', wk:true, events:[] },
+    ]
+  },
+  {
+    dates: '16–22 Mar', label: 'Sem 4',
+    days: [
+      { n:'16', day:'L', events:[{ type:'feriado', text:'FERIADO' }] },
+      { n:'17', day:'Ma', events:[{ type:'ppm', text:'Pre PPM Agencia' }] },
+      { n:'18', day:'Mi', events:[{ type:'ppm', text:'PPM AGENCIA Y CLIENTE 8–11am' }] },
+      { n:'19', day:'J', events:[{ type:'ensayo', text:'ENSAYOS MÚSICOS' }] },
+      { n:'20', day:'V', events:[{ type:'ensayo', text:'ENSAYOS CON KARINA Y MÚSICOS' }] },
+      { n:'21', day:'S', wk:true, events:[{ type:'backs', text:'Envío BACKS IA (4/4) 12pm' },{ type:'backs', text:'Recepción FEEDBACK (4/4) 4pm' }] },
+      { n:'22', day:'D', wk:true, events:[{ type:'backs', text:'Envío ajustes (4/4) 11am' },{ type:'aprobacion', text:'APROBACIÓN (4/4) 2pm' }] },
+    ]
+  },
+  {
+    dates: '23–29 Mar', label: 'Sem 5',
+    days: [
+      { n:'23', day:'L', events:[{ type:'shoot', text:'SHOOT / SHOOTING FOTOS' }] },
+      { n:'24', day:'Ma', events:[{ type:'edit', text:'EDICIÓN / AUDIOS' }] },
+      { n:'25', day:'Mi', events:[{ type:'edit', text:'EDICIÓN / AUDIOS' }] },
+      { n:'26', day:'J', events:[{ type:'agencia', text:'COPIAS DE TRABAJO AGENCIA 12:00 hrs' },{ type:'edit', text:'Tasty Desk / Teaser / SCAT' }] },
+      { n:'27', day:'V', events:[{ type:'foto', text:'Envío FOTO PRODUCTO #1 Tenders y #2 Bone In' }] },
+      { n:'28', day:'S', wk:true, events:[] },
+      { n:'29', day:'D', wk:true, events:[] },
+    ]
+  },
+  {
+    dates: '30 Mar–5 Abr', label: 'Sem 6',
+    days: [
+      { n:'30', day:'L', events:[{ type:'cliente', text:'COPIAS TRABAJO CLIENTE 14:00 hs' },{ type:'edit', text:'Tasty/Teaser/SCAT + Lifts' }] },
+      { n:'31', day:'Ma', events:[{ type:'aprobacion', text:'Aprobación copias 18hs MIAMI' }] },
+      { n:'1', day:'Mi', events:[{ type:'cc', text:'CORRECCIÓN DE COLOR Tasty/Teaser/SCAT' }] },
+      { n:'2', day:'J', events:[{ type:'foto', text:'Feedback FOTO #1 Tenders y #2 Bone In' }] },
+      { n:'3', day:'V', events:[{ type:'feriado', text:'FERIADO SEMANA SANTA' }] },
+      { n:'4', day:'S', wk:true, events:[{ type:'feriado', text:'FERIADO SEMANA SANTA' }] },
+      { n:'5', day:'D', wk:true, events:[{ type:'feriado', text:'FERIADO SEMANA SANTA' }] },
+    ]
+  },
+  {
+    dates: '6–12 Abr', label: 'Sem 7',
+    days: [
+      { n:'6', day:'L', events:[{ type:'audio', text:'AUDIOS / RADIOS' },{ type:'aprobacion', text:'Aprobación audios y CC PM' }] },
+      { n:'7', day:'Ma', events:[{ type:'cc', text:'CORRECCIÓN DE COLOR Lifts' },{ type:'aprobacion', text:'Aprobación CC PM' }] },
+      { n:'8', day:'Mi', events:[{ type:'audio', text:'AUDIOS' },{ type:'aprobacion', text:'Aprobación audios PM' },{ type:'aprobacion', text:'Aprobación Online Tasty/Teaser/SCAT 12pm' }] },
+      { n:'9', day:'J', events:[{ type:'online', text:'ONLINE LIFTS 2x30" y 4x15"' },{ type:'entrega', text:'ENTREGA FORMATOS Tasty/Teaser/SCAT' }] },
+      { n:'10', day:'V', events:[{ type:'entrega', text:'ENTREGA FORMATOS Tasty/Teaser/SCAT' }] },
+      { n:'11', day:'S', wk:true, events:[] },
+      { n:'12', day:'D', wk:true, events:[] },
+    ]
+  },
+  {
+    dates: '13–19 Abr', label: 'Sem 8',
+    days: [
+      { n:'13', day:'L', events:[{ type:'aprobacion', text:'APROBACIÓN ONLINE LIFTS 12pm' },{ type:'entrega', text:'ENTREGA 16:9 LIFTS EOD' }] },
+      { n:'14', day:'Ma', events:[{ type:'entrega', text:'ENTREGA FORMATOS LIFTS 2x30" y 4x15"' }] },
+      { n:'15', day:'Mi', events:[{ type:'online', text:'ONLINE Tasty/Teaser/SCAT' },{ type:'aprobacion', text:'Aprobación Online Tasty/Teaser 12pm' }] },
+      { n:'16', day:'J', events:[] },
+      { n:'17', day:'V', events:[] },
+      { n:'18', day:'S', wk:true, events:[] },
+      { n:'19', day:'D', wk:true, events:[{ type:'entrega', text:'ENTREGA 16:9 LIFTS + Contenido extra EOD' }] },
+    ]
+  },
+];
 
-function switchTab(tab, btn) {
-  document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  else document.querySelector('.detail-tab').classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
-}
+// ── DIA A DIA DATA ──
+let dbdData = [
+  { id:'d1', date:'Lun 23 Mar', label:'Shoot', entries:[
+    { id:'e1', time:'Todo el día', title:'Shoot + Shooting Fotos', note:'Rodaje general. Selección 8 fotos.', tag:'shoot', hl:'' }
+  ]},
+  { id:'d2', date:'Jue 26 Mar', label:'Copias Agencia', entries:[
+    { id:'e2', time:'12:00', title:'Copias de trabajo Agencia — Presencial', note:'Tasty Desk 15" / Teaser 10" / SCAT 15"', tag:'agencia', hl:'hl-ag' }
+  ]},
+  { id:'d3', date:'Dom 30 Mar', label:'Copias Cliente', entries:[
+    { id:'e3', time:'14:00', title:'Copias de trabajo Cliente', note:'Tasty Desk 15" / Teaser 10" / SCAT 15" + LIFTS 2x30" y 4x15"', tag:'cliente', hl:'hl-cl' }
+  ]},
+  { id:'d4', date:'Mié 1 Abr', label:'', entries:[
+    { id:'e4', time:'TBC', title:'Corrección de Color', note:'Tasty Desk / Teaser / SCAT', tag:'cc', hl:'' }
+  ]},
+  { id:'d5', date:'Lun 6 Abr', label:'', entries:[
+    { id:'e5', time:'TBC', title:'Audios / Radios', note:'Horario TBC', tag:'audio', hl:'' },
+    { id:'e6', time:'PM', title:'Aprobación audios y CC', note:'', tag:'aprobacion', hl:'hl-ap' }
+  ]},
+  { id:'d6', date:'Mié 8 Abr', label:'Aprobación Online Tasty', entries:[
+    { id:'e7', time:'12:00', title:'Aprobación Online Tasty Desk / Teaser / SCAT', note:'', tag:'aprobacion', hl:'hl-ap' }
+  ]},
+  { id:'d7', date:'Jue 9 Abr', label:'', entries:[
+    { id:'e8', time:'Todo el día', title:'Online LIFTS 2x30" y 4x15" + Contenido extra', note:'', tag:'online', hl:'' },
+    { id:'e9', time:'EOD', title:'Entrega formatos Tasty / Teaser / SCAT', note:'', tag:'entrega', hl:'' }
+  ]},
+  { id:'d8', date:'Lun 13 Abr', label:'Aprobación Online Lifts', entries:[
+    { id:'e10', time:'12:00', title:'Aprobación Online LIFTS 2x30" y 4x15"', note:'', tag:'aprobacion', hl:'hl-ap' },
+    { id:'e11', time:'EOD', title:'Entrega 16:9 LIFTS + Contenido extra', note:'', tag:'entrega', hl:'' }
+  ]},
+  { id:'d9', date:'Mar 14 Abr', label:'', entries:[
+    { id:'e12', time:'Todo el día', title:'Entrega formatos LIFTS 2x30" y 4x15" + Contenido extra', note:'', tag:'entrega', hl:'' }
+  ]},
+  { id:'d10', date:'Dom 19 Abr', label:'Entrega Final', entries:[
+    { id:'e13', time:'EOD', title:'Entrega 16:9 LIFTS 2x30" y 4x15" + Contenido extra', note:'Entrega final.', tag:'entrega', hl:'hl-ap' }
+  ]},
+];
 
-function togglePiece(summary) {
-  const detail = summary.nextElementSibling;
-  const chevron = summary.querySelector('.piece-chevron');
-  const isOpen = detail.classList.contains('open');
-  detail.classList.toggle('open', !isOpen);
-  summary.classList.toggle('is-open', !isOpen);
-  chevron.classList.toggle('open', !isOpen);
-}
-
-function cycleStage(el) {
-  const cur = STAGE_STATES.findIndex(s => s.cls && el.classList.contains(s.cls));
-  const next = STAGE_STATES[(cur === -1 ? 0 : cur + 1) % STAGE_STATES.length];
-  STAGE_STATES.forEach(s => { if (s.cls) el.classList.remove(s.cls); });
-  if (next.cls) el.classList.add(next.cls);
-  el.querySelector('.stage-card-status').textContent = next.label;
-  syncPills(el);
-}
-
-function syncPills(card) {
-  const grid = card.closest('.stages-grid');
-  const detail = card.closest('.piece-detail');
-  const summary = detail.previousElementSibling;
-  const pills = summary.querySelectorAll('.stage-pill');
-  const cards = grid.querySelectorAll('.stage-card');
-  cards.forEach((c, i) => {
-    if (!pills[i]) return;
-    pills[i].className = 'stage-pill';
-    if (c.classList.contains('done')) pills[i].classList.add('done');
-    else if (c.classList.contains('wip')) pills[i].classList.add('wip');
-    else if (c.classList.contains('rev')) pills[i].classList.add('rev');
-    else if (c.classList.contains('blocked')) pills[i].classList.add('blocked');
+// ── BOARD ──
+function renderBoard() {
+  const groups = { pre:[], prod:[], post:[], done:[] };
+  projects.forEach(p => groups[p.estado].push(p));
+  const meta = {
+    post:{ name:'Post-producción', color:'#e8a87c' },
+    prod:{ name:'Producción', color:'#f1c40f' },
+    pre: { name:'Pre-producción', color:'#3498db' },
+    done:{ name:'Entregado', color:'#2ecc71' }
+  };
+  let html = '';
+  ['post','prod','pre','done'].forEach(s => {
+    if (!groups[s].length) return;
+    html += `<div class="status-group"><div class="group-lbl"><div class="gdot" style="background:${meta[s].color}"></div><div class="gname">${meta[s].name}</div><div class="gcnt">${groups[s].length}</div></div>`;
+    groups[s].forEach(p => {
+      const cnt = p.piezas.length;
+      html += `<div class="proj-row" onclick="showDetail(${p.id})">
+        <div class="proj-info"><div class="proj-client">${p.cliente}</div><div class="proj-dir">${p.director}</div></div>
+        <div class="proj-piezas">${cnt} pieza${cnt!==1?'s':''}</div>
+        <div class="proj-date soon">${p.entrega}</div>
+        <div class="proj-arrow">›</div>
+      </div>`;
+    });
+    html += '</div>';
   });
+  document.getElementById('boardContent').innerHTML = html || '<div style="padding:40px;text-align:center;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin proyectos — agregá uno</div>';
 }
 
-// init board
-showBoard();
+// ── DETAIL ──
+function showDetail(id) {
+  const p = projects.find(x => x.id === id);
+  if (!p) return;
+  currentProjectId = id;
+  document.getElementById('bc-name').textContent = p.cliente;
+  document.getElementById('d-client').textContent = p.cliente;
+  document.getElementById('d-sub').textContent = `${p.nombre} · ${p.director}`;
+  document.getElementById('d-rodaje').textContent = p.rodaje;
+  document.getElementById('d-piezas').textContent = `${p.piezas.length}`;
+  document.getElementById('d-entrega').textContent = p.entrega;
+  document.getElementById('d-meta').innerHTML = `<span class="m-tag post">Post-producción</span><span class="m-tag soon">Entrega: ${p.entrega}</span>`;
+  renderPiezas(p);
+  renderOffline(p);
+  renderOnline(p);
+  renderTiming();
+  renderDBD();
+  switchTab('piezas', document.querySelector('.tab'));
+  showView('detailView');
+}
+
+function getCurrentProject() { return projects.find(x => x.id === currentProjectId); }
+
+// ── PIEZAS ──
+function renderPiezas(p) {
+  const list = document.getElementById('piezasList');
+  if (!p.piezas.length) {
+    list.innerHTML = `<div class="empty-piezas">
+      <p>Sin piezas — agregá la primera</p>
+      <button class="btn ink sm" onclick="openModal('pieza')">+ Agregar pieza</button>
+    </div>`;
+    return;
+  }
+  list.innerHTML = p.piezas.map((pieza, i) => {
+    const d = getPiezaData(p.id, pieza.id);
+    const dots = ['16:9','4:5','1:1','9:16'].map(f => `<div class="fdot ${fmtCls(d.formatos[f])}"></div>`).join('');
+    return `<div class="piece-card" id="pc-${pieza.id}">
+      <div class="piece-sum${i===0?' open':''}" onclick="togglePiece(this)">
+        <div class="p-left"><div class="p-name">${pieza.nombre}</div><div class="p-dur">${pieza.dur}</div></div>
+        <div class="fmt-dots">${dots}</div>
+        <div class="p-date normal">${pieza.fecha||'—'}</div>
+        <div class="p-chev${i===0?' open':''}">›</div>
+      </div>
+      <div class="p-detail${i===0?' open':''}">
+        <div class="dl">Formatos</div>
+        <div class="fmt-grid">
+          ${['16:9','4:5','1:1','9:16'].map(f => {
+            const cls = fmtCls(d.formatos[f]);
+            return `<div class="fmt-item ${cls}" onclick="cycleFmt(this,'${f}',${pieza.id})">
+              <div class="fmt-ratio">${f}</div>
+              <div class="fmt-st">${d.formatos[f]||'—'}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="dl">Locutor (VO)</div>
+        <div class="vo-box${d.vo?' on':''}" onclick="toggleVO(this,${pieza.id})">
+          <div class="vo-chk">${d.vo?'✓':''}</div>
+          <div class="vo-lbl">Incluye locutor</div>
+        </div>
+        <div class="dl">Guión</div>
+        <input class="txt-input" type="text" value="${d.guion||''}" placeholder="Link al guión..." onchange="getPiezaData(${p.id},${pieza.id}).guion=this.value">
+        <div class="dl">Comentarios</div>
+        <textarea class="txt-input" style="min-height:48px" placeholder="Comentarios..." onchange="getPiezaData(${p.id},${pieza.id}).comment=this.value">${d.comment||''}</textarea>
+        <div class="piece-actions">
+          <button class="btn sm danger" onclick="deletePieza(${pieza.id})">Eliminar pieza</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function fmtCls(val) {
+  if (val==='Aprobado') return 'done';
+  if (val==='En curso') return 'wip';
+  if (val==='Rev') return 'rev';
+  if (val==='Ajustes') return 'adj';
+  return '';
+}
+
+function cycleFmt(el, fmt, piezaId) {
+  const p = getCurrentProject(); if (!p) return;
+  const d = getPiezaData(p.id, piezaId);
+  const cur = FMT_CYCLE.findIndex(f => f.cls && el.classList.contains(f.cls));
+  const next = FMT_CYCLE[(cur===-1?0:cur+1)%FMT_CYCLE.length];
+  FMT_CYCLE.forEach(f => { if(f.cls) el.classList.remove(f.cls); });
+  if (next.cls) el.classList.add(next.cls);
+  el.querySelector('.fmt-st').textContent = next.lbl;
+  d.formatos[fmt] = next.lbl;
+  const card = document.getElementById('pc-'+piezaId);
+  if (card) {
+    const dots = card.querySelectorAll('.fdot');
+    ['16:9','4:5','1:1','9:16'].forEach((f,i) => { dots[i].className = 'fdot ' + fmtCls(d.formatos[f]); });
+  }
+}
+
+function toggleVO(el, piezaId) {
+  const p = getCurrentProject(); if (!p) return;
+  el.classList.toggle('on');
+  const on = el.classList.contains('on');
+  el.querySelector('.vo-chk').textContent = on ? '✓' : '';
+  getPiezaData(p.id, piezaId).vo = on;
+}
+
+function togglePiece(sum) {
+  const det = sum.nextElementSibling;
+  const chev = sum.querySelector('.p-chev');
+  const open = det.classList.contains('open');
+  det.classList.toggle('open', !open);
+  sum.classList.toggle('open', !open);
+  chev.classList.toggle('open', !open);
+}
+
+function deletePieza(piezaId) {
+  const p = getCurrentProject(); if (!p) return;
+  if (!confirm('¿Eliminar esta pieza?')) return;
+  p.piezas = p.piezas.filter(x => x.id !== piezaId);
+  document.getElementById('d-piezas').textContent = p.piezas.length;
+  renderPiezas(p);
+  renderOffline(p);
+  renderOnline(p);
+}
+
+// ── OFFLINE / ONLINE ──
+function renderStageTab(containerId, stages, dataKey, stateKey, p) {
+  if (!p.piezas.length) {
+    document.getElementById(containerId).innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin piezas — agregá piezas en el tab Piezas</div>';
+    return;
+  }
+  document.getElementById(containerId).innerHTML = p.piezas.map((pieza, i) => {
+    const d = getPiezaData(p.id, pieza.id);
+    const est = d[stateKey];
+    return `<div class="piece-card" id="${dataKey}-pc-${pieza.id}">
+      <div class="piece-sum${i===0?' open':''}" onclick="togglePiece(this)">
+        <div class="p-left"><div class="p-name">${pieza.nombre}</div><div class="p-dur">${pieza.dur}</div></div>
+        <div class="p-date normal" style="min-width:100px;font-size:10px;color:${estColor(est)}">${est}</div>
+        <div class="p-chev${i===0?' open':''}">›</div>
+      </div>
+      <div class="p-detail${i===0?' open':''}">
+        <div class="dl">Estado general</div>
+        <div class="estado-wrap" id="${dataKey}-ew-${pieza.id}">
+          <div class="estado-dot" style="background:${estColor(est)}"></div>
+          <select class="estado-sel" onchange="setEstado(this,'${stateKey}',${pieza.id},'${dataKey}',${p.id})">
+            ${ESTADO_OPTS.map(o => `<option${o===est?' selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+        <div class="dl">Etapas — click para cambiar</div>
+        <div class="stage-status-grid">
+          ${stages.map(s => {
+            const sv = d[dataKey+'Stages'][s]||'—';
+            const sc = ESTADO_CLS[sv]||'';
+            return `<div class="sst-item ${sc}" onclick="cycleEstado(this,'${dataKey}Stages','${s}',${pieza.id},${p.id})">
+              <div class="sst-name">${s}</div>
+              <div class="sst-dot"></div>
+              <div class="sst-label">${sv}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="dl">Comentarios</div>
+        <textarea class="txt-input" style="min-height:48px" placeholder="Notas de ${dataKey}..." onchange="getPiezaData(${p.id},${pieza.id}).${dataKey}Comment=this.value">${d[dataKey+'Comment']||''}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderOffline(p) { renderStageTab('offlineList', OFFLINE_STAGES, 'offline', 'offlineEstado', p||getCurrentProject()); }
+function renderOnline(p)  { renderStageTab('onlineList',  ONLINE_STAGES,  'online',  'onlineEstado',  p||getCurrentProject()); }
+
+function estColor(est) {
+  return { 'En curso':'#f1c40f','Rev Agencia':'#3498db','Ajustes':'#e8a87c','Rev Cliente':'#9b59b6','Aprobado':'#2ecc71' }[est]||'#ccc';
+}
+
+function setEstado(sel, stateKey, piezaId, prefix, projId) {
+  const val = sel.value;
+  getPiezaData(projId, piezaId)[stateKey] = val;
+  const ew = document.getElementById(`${prefix}-ew-${piezaId}`);
+  if (ew) { const dot = ew.querySelector('.estado-dot'); if(dot) dot.style.background = estColor(val); }
+}
+
+function cycleEstado(el, dataKey, stage, piezaId, projId) {
+  const d = getPiezaData(projId, piezaId);
+  if (!d[dataKey]) d[dataKey] = {};
+  const cur = ESTADO_OPTS.indexOf(d[dataKey][stage]||'—');
+  const next = ESTADO_OPTS[(cur+1)%ESTADO_OPTS.length];
+  Object.values(ESTADO_CLS).forEach(c => { if(c) el.classList.remove(c); });
+  const nc = ESTADO_CLS[next]||'';
+  if (nc) el.classList.add(nc);
+  el.querySelector('.sst-label').textContent = next;
+  d[dataKey][stage] = next;
+}
+
+// ── TIMING — CALENDARIO SEMANAL ──
+function renderTiming() {
+  const days = ['MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY','SUNDAY'];
+  let html = `<div class="cal-header-row">
+    <div class="cal-corner"><div class="cal-corner-name">LAUTARO</div><div class="cal-corner-sub">FURIOLO</div></div>
+    ${days.map((d,i) => `<div class="cal-day-header${i>=5?' wk':''}"><div class="cal-day-name">${d}</div></div>`).join('')}
+  </div>`;
+
+  TIMING_WEEKS.forEach(week => {
+    html += `<div class="cal-week">
+      <div class="cal-week-label">
+        <div class="cal-week-dates">${week.dates}</div>
+      </div>
+      ${week.days.map(day => `
+        <div class="cal-day-cell${day.wk?' wk':''}">
+          <div class="cal-day-num">${day.n}</div>
+          ${day.events.map(e => `<div class="cal-event ${e.type}">${e.text}</div>`).join('')}
+        </div>
+      `).join('')}
+    </div>`;
+  });
+
+  html += `</div>
+  <div class="cal-legend">
+    <div class="cal-li"><div class="cal-ld" style="background:#111;color:#fff"></div>Shoot</div>
+    <div class="cal-li"><div class="cal-ld" style="background:var(--blue-cal)"></div>Edición</div>
+    <div class="cal-li"><div class="cal-ld" style="background:var(--orange-cal)"></div>CC</div>
+    <div class="cal-li"><div class="cal-ld" style="background:var(--green-cal)"></div>Audio</div>
+    <div class="cal-li"><div class="cal-ld" style="background:var(--purple-l)"></div>Online</div>
+    <div class="cal-li"><div class="cal-ld" style="background:var(--yellow-cal)"></div>Revisión</div>
+    <div class="cal-li"><div class="cal-ld" style="background:#111"></div>Entrega</div>
+    <div class="cal-li"><div class="cal-ld" style="background:var(--green-cal)"></div>Aprobación</div>
+    <div class="cal-li"><div class="cal-ld" style="background:var(--yellow-m)"></div>Feriado</div>
+  </div>`;
+
+  document.getElementById('calWrap').innerHTML = html;
+}
+
+// ── DAY BY DAY ──
+function renderDBD() {
+  document.getElementById('dbdList').innerHTML = dbdData.map(day => `
+    <div class="dbd-day" id="day-${day.id}">
+      <div class="dbd-dh">
+        <div class="dbd-date">${day.date}${day.label?` · <span style="color:${dayLabelColor(day.label)};font-weight:600">${day.label}</span>`:''}</div>
+        <div style="display:flex;gap:5px">
+          <button class="btn sm" onclick="addEntry('${day.id}')">+ Entrada</button>
+          <button class="btn sm danger" onclick="deleteDay('${day.id}')">✕</button>
+        </div>
+      </div>
+      <div class="dbd-entries" id="entries-${day.id}">
+        ${day.entries.map(e => renderEntry(e, day.id)).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderEntry(e, dayId) {
+  return `<div class="dbd-entry${e.hl?' '+e.hl:''}" id="entry-${e.id}">
+    <input class="dbd-time-input" value="${e.time}" onchange="updateEntry('${dayId}','${e.id}','time',this.value)" placeholder="Hora">
+    <div class="dbd-info">
+      <input class="dbd-title-input" value="${e.title}" onchange="updateEntry('${dayId}','${e.id}','title',this.value)" placeholder="Título...">
+      <input class="dbd-note-input" value="${e.note}" onchange="updateEntry('${dayId}','${e.id}','note',this.value)" placeholder="Nota...">
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0">
+      <span class="dbd-tag ${e.tag}">${e.tag}</span>
+      <button class="btn sm danger" style="font-size:9px;padding:2px 6px" onclick="deleteEntry('${dayId}','${e.id}')">✕</button>
+    </div>
+  </div>`;
+}
+
+function dayLabelColor(lbl) {
+  if (/aprobaci[oó]n|entrega/i.test(lbl)) return 'var(--green)';
+  if (/cliente/i.test(lbl)) return 'var(--orange)';
+  if (/agencia|ppm/i.test(lbl)) return 'var(--blue)';
+  return 'var(--muted)';
+}
+
+function addDia() {
+  const date = prompt('Fecha (ej. "Lun 5 May"):'); if (!date) return;
+  const label = prompt('Etiqueta (opcional):') || '';
+  dbdData.push({ id:'d'+Date.now(), date, label, entries:[] });
+  saveDBD(); renderDBD();
+}
+
+function deleteDay(dayId) {
+  if (!confirm('¿Eliminar este día?')) return;
+  dbdData = dbdData.filter(d => d.id !== dayId);
+  saveDBD(); renderDBD();
+}
+
+function addEntry(dayId) {
+  const day = dbdData.find(d => d.id === dayId); if (!day) return;
+  const time = prompt('Horario (ej. "10:00"):') || '';
+  const title = prompt('Título:'); if (!title) return;
+  const note = prompt('Nota (opcional):') || '';
+  const tags = 'shoot / edit / cc / audio / online / entrega / agencia / cliente / aprobacion';
+  const tag = prompt(`Tag (${tags}):`) || 'edit';
+  day.entries.push({ id:'e'+Date.now(), time, title, note, tag, hl:'' });
+  saveDBD(); renderDBD();
+}
+
+function deleteEntry(dayId, entryId) {
+  const day = dbdData.find(d => d.id === dayId); if (!day) return;
+  day.entries = day.entries.filter(e => e.id !== entryId);
+  saveDBD(); renderDBD();
+}
+
+let saveTimer = null;
+function updateEntry(dayId, entryId, field, value) {
+  const day = dbdData.find(d => d.id === dayId); if (!day) return;
+  const entry = day.entries.find(e => e.id === entryId);
+  if (entry) { entry[field] = value; clearTimeout(saveTimer); saveTimer = setTimeout(saveDBD, 1500); }
+}
+
+function saveDBD() {
+  localStorage.setItem('dbd_popeyes', JSON.stringify(dbdData));
+  setSyncStatus('ok','Guardado');
+}
+
+function loadDBD() {
+  const s = localStorage.getItem('dbd_popeyes');
+  if (s) { try { dbdData = JSON.parse(s); } catch(e){} }
+}
+
+// ── MODAL ──
+function openModal(type) {
+  if (type === 'proyecto') document.getElementById('modalProyecto').classList.add('open');
+  if (type === 'pieza') document.getElementById('piezaModal').classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  if (id === 'modalProyecto') {
+    ['f-cliente','f-director','f-nombre','f-rodaje','f-entrega'].forEach(k => { const el=document.getElementById(k); if(el) el.value=''; });
+  }
+  if (id === 'piezaModal') {
+    ['p-nombre','p-dur','p-fecha','p-guion'].forEach(k => { const el=document.getElementById(k); if(el) el.value=''; });
+  }
+}
+
+function closeModalOutside(e, id) {
+  if (e.target === document.getElementById(id)) closeModal(id);
+}
+
+function saveProject() {
+  const cliente = document.getElementById('f-cliente').value.trim();
+  if (!cliente) { alert('Ingresá el nombre del cliente'); return; }
+  const fmt = d => { if(!d) return '—'; const dt=new Date(d+'T00:00:00'); return dt.toLocaleDateString('es-AR',{day:'numeric',month:'short',year:'numeric'}); };
+  projects.push({
+    id: Date.now(),
+    cliente,
+    director: document.getElementById('f-director').value.trim(),
+    nombre: document.getElementById('f-nombre').value.trim(),
+    rodaje: fmt(document.getElementById('f-rodaje').value),
+    entrega: fmt(document.getElementById('f-entrega').value),
+    estado: document.getElementById('f-estado').value,
+    piezas: []
+  });
+  closeModal('modalProyecto');
+  renderBoard();
+}
+
+function savePieza() {
+  const nombre = document.getElementById('p-nombre').value.trim();
+  if (!nombre) { alert('Ingresá el nombre de la pieza'); return; }
+  const p = getCurrentProject(); if (!p) return;
+  const newPieza = {
+    id: Date.now(),
+    nombre,
+    dur: document.getElementById('p-dur').value.trim() || '—',
+    fecha: document.getElementById('p-fecha').value.trim() || '',
+    guion: document.getElementById('p-guion').value.trim() || ''
+  };
+  p.piezas.push(newPieza);
+  getPiezaData(p.id, newPieza.id).guion = newPieza.guion;
+  document.getElementById('d-piezas').textContent = p.piezas.length;
+  closeModal('piezaModal');
+  renderPiezas(p);
+  renderOffline(p);
+  renderOnline(p);
+}
+
+// ── SYNC STATUS ──
+function setSyncStatus(status, text) {
+  const bar = document.getElementById('syncBar');
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncText');
+  bar.style.display = 'flex';
+  dot.className = 'sync-dot' + (status==='syncing'?' syncing':status==='error'?' error':'');
+  txt.textContent = text;
+  if (status==='ok') setTimeout(()=>{ bar.style.display='none'; }, 2000);
+}
+
+// ── NAV ──
+function showBoard() { showView('boardView'); renderBoard(); }
+function showView(id) { document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+// ── INIT ──
+loadDBD();
+renderBoard();
 </script>
 </body>
 </html>
