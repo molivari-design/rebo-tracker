@@ -471,14 +471,7 @@
             <div class="sec-title">Fechas importantes</div>
             <button class="btn sm" onclick="addFecha()">+ Agregar</button>
           </div>
-          <div class="f-grid" id="fechasGrid">
-            <div class="fi ag"><div class="fi-tipo">PPM Agencia y Cliente</div><div class="fi-val">18 Mar</div><div class="fi-nota">8:00–11:00 am MX</div></div>
-            <div class="fi cl"><div class="fi-tipo">Copias Cliente</div><div class="fi-val">30 Mar</div><div class="fi-nota">14:00 hs</div></div>
-            <div class="fi ag"><div class="fi-tipo">Aprobación CC Tasty</div><div class="fi-val">8 Abr</div><div class="fi-nota">Horario PM</div></div>
-            <div class="fi ap"><div class="fi-tipo">Aprobación Online Lifts</div><div class="fi-val">13 Abr</div><div class="fi-nota">12:00 pm</div></div>
-            <div class="fi cl"><div class="fi-tipo">Aprobación Online Tasty</div><div class="fi-val">15 Abr</div><div class="fi-nota">12:00 pm</div></div>
-            <div class="fi ap"><div class="fi-tipo">Entrega Final Lifts</div><div class="fi-val">19 Abr</div><div class="fi-nota">EOD</div></div>
-          </div>
+          <div class="f-grid" id="fechasGrid"></div>
         </div>
         <div>
           <div class="dbd-bh">
@@ -653,42 +646,56 @@ const TIMING_WEEKS = [
   },
 ];
 
-// ── DIA A DIA DATA ──
-let dbdData = [
-  { id:'d1', date:'Lun 23 Mar', label:'Shoot', entries:[
-    { id:'e1', time:'Todo el día', title:'Shoot + Shooting Fotos', note:'Rodaje general. Selección 8 fotos.', tag:'shoot', hl:'' }
-  ]},
-  { id:'d2', date:'Jue 26 Mar', label:'Copias Agencia', entries:[
-    { id:'e2', time:'12:00', title:'Copias de trabajo Agencia — Presencial', note:'Tasty Desk 15" / Teaser 10" / SCAT 15"', tag:'agencia', hl:'hl-ag' }
-  ]},
-  { id:'d3', date:'Dom 30 Mar', label:'Copias Cliente', entries:[
-    { id:'e3', time:'14:00', title:'Copias de trabajo Cliente', note:'Tasty Desk 15" / Teaser 10" / SCAT 15" + LIFTS 2x30" y 4x15"', tag:'cliente', hl:'hl-cl' }
-  ]},
-  { id:'d4', date:'Mié 1 Abr', label:'', entries:[
-    { id:'e4', time:'TBC', title:'Corrección de Color', note:'Tasty Desk / Teaser / SCAT', tag:'cc', hl:'' }
-  ]},
-  { id:'d5', date:'Lun 6 Abr', label:'', entries:[
-    { id:'e5', time:'TBC', title:'Audios / Radios', note:'Horario TBC', tag:'audio', hl:'' },
-    { id:'e6', time:'PM', title:'Aprobación audios y CC', note:'', tag:'aprobacion', hl:'hl-ap' }
-  ]},
-  { id:'d6', date:'Mié 8 Abr', label:'Aprobación Online Tasty', entries:[
-    { id:'e7', time:'12:00', title:'Aprobación Online Tasty Desk / Teaser / SCAT', note:'', tag:'aprobacion', hl:'hl-ap' }
-  ]},
-  { id:'d7', date:'Jue 9 Abr', label:'', entries:[
-    { id:'e8', time:'Todo el día', title:'Online LIFTS 2x30" y 4x15" + Contenido extra', note:'', tag:'online', hl:'' },
-    { id:'e9', time:'EOD', title:'Entrega formatos Tasty / Teaser / SCAT', note:'', tag:'entrega', hl:'' }
-  ]},
-  { id:'d8', date:'Lun 13 Abr', label:'Aprobación Online Lifts', entries:[
-    { id:'e10', time:'12:00', title:'Aprobación Online LIFTS 2x30" y 4x15"', note:'', tag:'aprobacion', hl:'hl-ap' },
-    { id:'e11', time:'EOD', title:'Entrega 16:9 LIFTS + Contenido extra', note:'', tag:'entrega', hl:'' }
-  ]},
-  { id:'d9', date:'Mar 14 Abr', label:'', entries:[
-    { id:'e12', time:'Todo el día', title:'Entrega formatos LIFTS 2x30" y 4x15" + Contenido extra', note:'', tag:'entrega', hl:'' }
-  ]},
-  { id:'d10', date:'Dom 19 Abr', label:'Entrega Final', entries:[
-    { id:'e13', time:'EOD', title:'Entrega 16:9 LIFTS 2x30" y 4x15" + Contenido extra', note:'Entrega final.', tag:'entrega', hl:'hl-ap' }
-  ]},
-];
+// ── DIA A DIA DATA — por proyecto ──
+const DBD_BY_PROJECT = {
+  1: {
+    fechas: [
+      { tipo:'PPM Agencia y Cliente',  val:'18 Mar', nota:'8:00–11:00 am MX', cls:'ag' },
+      { tipo:'Copias Cliente',          val:'30 Mar', nota:'14:00 hs',          cls:'cl' },
+      { tipo:'Aprobación CC Tasty',     val:'8 Abr',  nota:'Horario PM',        cls:'ag' },
+      { tipo:'Aprobación Online Lifts', val:'13 Abr', nota:'12:00 pm',          cls:'ap' },
+      { tipo:'Aprobación Online Tasty', val:'15 Abr', nota:'12:00 pm',          cls:'cl' },
+      { tipo:'Entrega Final Lifts',     val:'19 Abr', nota:'EOD',               cls:'ap' },
+    ],
+    dbd: [
+      { id:'d1', date:'Lun 23 Mar', label:'Shoot', entries:[
+        { id:'e1', time:'Todo el día', title:'Shoot + Shooting Fotos', note:'Rodaje general. Selección 8 fotos.', tag:'shoot', hl:'' }
+      ]},
+      { id:'d2', date:'Jue 26 Mar', label:'Copias Agencia', entries:[
+        { id:'e2', time:'12:00', title:'Copias de trabajo Agencia — Presencial', note:'Tasty Desk 15" / Teaser 10" / SCAT 15"', tag:'agencia', hl:'hl-ag' }
+      ]},
+      { id:'d3', date:'Dom 30 Mar', label:'Copias Cliente', entries:[
+        { id:'e3', time:'14:00', title:'Copias de trabajo Cliente', note:'Tasty Desk 15" / Teaser 10" / SCAT 15" + LIFTS 2x30" y 4x15"', tag:'cliente', hl:'hl-cl' }
+      ]},
+      { id:'d4', date:'Mié 1 Abr', label:'', entries:[
+        { id:'e4', time:'TBC', title:'Corrección de Color', note:'Tasty Desk / Teaser / SCAT', tag:'cc', hl:'' }
+      ]},
+      { id:'d5', date:'Lun 6 Abr', label:'', entries:[
+        { id:'e5', time:'TBC', title:'Audios / Radios', note:'Horario TBC', tag:'audio', hl:'' },
+        { id:'e6', time:'PM', title:'Aprobación audios y CC', note:'', tag:'aprobacion', hl:'hl-ap' }
+      ]},
+      { id:'d6', date:'Mié 8 Abr', label:'Aprobación Online Tasty', entries:[
+        { id:'e7', time:'12:00', title:'Aprobación Online Tasty Desk / Teaser / SCAT', note:'', tag:'aprobacion', hl:'hl-ap' }
+      ]},
+      { id:'d7', date:'Jue 9 Abr', label:'', entries:[
+        { id:'e8', time:'Todo el día', title:'Online LIFTS 2x30" y 4x15" + Contenido extra', note:'', tag:'online', hl:'' },
+        { id:'e9', time:'EOD', title:'Entrega formatos Tasty / Teaser / SCAT', note:'', tag:'entrega', hl:'' }
+      ]},
+      { id:'d8', date:'Lun 13 Abr', label:'Aprobación Online Lifts', entries:[
+        { id:'e10', time:'12:00', title:'Aprobación Online LIFTS 2x30" y 4x15"', note:'', tag:'aprobacion', hl:'hl-ap' },
+        { id:'e11', time:'EOD', title:'Entrega 16:9 LIFTS + Contenido extra', note:'', tag:'entrega', hl:'' }
+      ]},
+      { id:'d9', date:'Mar 14 Abr', label:'', entries:[
+        { id:'e12', time:'Todo el día', title:'Entrega formatos LIFTS 2x30" y 4x15" + Contenido extra', note:'', tag:'entrega', hl:'' }
+      ]},
+      { id:'d10', date:'Dom 19 Abr', label:'Entrega Final', entries:[
+        { id:'e13', time:'EOD', title:'Entrega 16:9 LIFTS 2x30" y 4x15" + Contenido extra', note:'Entrega final.', tag:'entrega', hl:'hl-ap' }
+      ]},
+    ]
+  }
+};
+
+let dbdData = [];
 
 // ── BOARD ──
 function renderBoard() {
@@ -730,10 +737,12 @@ function showDetail(id) {
   document.getElementById('d-piezas').textContent = `${p.piezas.length}`;
   document.getElementById('d-entrega').textContent = p.entrega;
   document.getElementById('d-meta').innerHTML = `<span class="m-tag post">Post-producción</span><span class="m-tag soon">Entrega: ${p.entrega}</span>`;
+  loadDBD();
   renderPiezas(p);
   renderOffline(p);
   renderOnline(p);
   renderTiming();
+  renderFechas();
   renderDBD();
   switchTab('piezas', document.querySelector('.tab'));
   showView('detailView');
@@ -961,7 +970,22 @@ function renderTiming() {
 }
 
 // ── DAY BY DAY ──
+function renderFechas() {
+  const defaults = DBD_BY_PROJECT[currentProjectId];
+  if (!defaults) {
+    document.getElementById('fechasGrid').innerHTML = '<div style="padding:20px 0;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin fechas — se cargan junto con el timing</div>';
+    return;
+  }
+  document.getElementById('fechasGrid').innerHTML = defaults.fechas.map(f =>
+    `<div class="fi ${f.cls}"><div class="fi-tipo">${f.tipo}</div><div class="fi-val">${f.val}</div><div class="fi-nota">${f.nota}</div></div>`
+  ).join('');
+}
+
 function renderDBD() {
+  if (!DBD_BY_PROJECT[currentProjectId] && !dbdData.length) {
+    document.getElementById('dbdList').innerHTML = '<div style="padding:20px 0;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin agenda — se carga junto con el timing</div>';
+    return;
+  }
   document.getElementById('dbdList').innerHTML = dbdData.map(day => `
     <div class="dbd-day" id="day-${day.id}">
       <div class="dbd-dh">
@@ -1037,13 +1061,14 @@ function updateEntry(dayId, entryId, field, value) {
 }
 
 function saveDBD() {
-  localStorage.setItem('dbd_popeyes', JSON.stringify(dbdData));
+  localStorage.setItem('dbd_' + currentProjectId, JSON.stringify(dbdData));
   setSyncStatus('ok','Guardado');
 }
 
 function loadDBD() {
-  const s = localStorage.getItem('dbd_popeyes');
-  if (s) { try { dbdData = JSON.parse(s); } catch(e){} }
+  const s = localStorage.getItem('dbd_' + currentProjectId);
+  if (s) { try { dbdData = JSON.parse(s); return; } catch(e){} }
+  dbdData = JSON.parse(JSON.stringify(DBD_BY_PROJECT[currentProjectId]?.dbd || []));
 }
 
 // ── MODAL ──
@@ -1150,7 +1175,6 @@ function loadPiezaData() {
 // ── INIT ──
 loadProjects();
 loadPiezaData();
-loadDBD();
 renderBoard();
 </script>
 </body>
