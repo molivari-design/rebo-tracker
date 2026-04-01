@@ -717,6 +717,7 @@ function renderBoard() {
         <div class="proj-info"><div class="proj-client">${p.cliente}</div><div class="proj-dir">${p.director}</div></div>
         <div class="proj-piezas">${cnt} pieza${cnt!==1?'s':''}</div>
         <div class="proj-date soon">${p.entrega}</div>
+        <button class="btn sm danger" style="flex-shrink:0" onclick="event.stopPropagation();deleteProject(${p.id})">✕</button>
         <div class="proj-arrow">›</div>
       </div>`;
     });
@@ -751,6 +752,15 @@ async function showDetail(id) {
 }
 
 function getCurrentProject() { return projects.find(x => x.id === currentProjectId); }
+
+async function deleteProject(id) {
+  const p = projects.find(x => x.id === id);
+  if (!p) return;
+  if (!confirm(`¿Eliminar "${p.cliente} — ${p.nombre}"? Esta acción no se puede deshacer.`)) return;
+  projects = projects.filter(x => x.id !== id);
+  await saveProjects();
+  renderBoard();
+}
 
 // ── PIEZAS ──
 function renderPiezas(p) {
