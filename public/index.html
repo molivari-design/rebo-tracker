@@ -778,9 +778,9 @@ function renderPiezas(p) {
           <div class="vo-lbl">Incluye locutor</div>
         </div>
         <div class="dl">Guión</div>
-        <input class="txt-input" type="text" value="${d.guion||''}" placeholder="Link al guión..." onchange="getPiezaData(${p.id},${pieza.id}).guion=this.value">
+        <input class="txt-input" type="text" value="${d.guion||''}" placeholder="Link al guión..." onchange="getPiezaData(${p.id},${pieza.id}).guion=this.value; savePiezaData()">
         <div class="dl">Comentarios</div>
-        <textarea class="txt-input" style="min-height:48px" placeholder="Comentarios..." onchange="getPiezaData(${p.id},${pieza.id}).comment=this.value">${d.comment||''}</textarea>
+        <textarea class="txt-input" style="min-height:48px" placeholder="Comentarios..." onchange="getPiezaData(${p.id},${pieza.id}).comment=this.value; savePiezaData()">${d.comment||''}</textarea>
         <div class="piece-actions">
           <button class="btn sm danger" onclick="deletePieza(${pieza.id})">Eliminar pieza</button>
         </div>
@@ -806,6 +806,7 @@ function cycleFmt(el, fmt, piezaId) {
   if (next.cls) el.classList.add(next.cls);
   el.querySelector('.fmt-st').textContent = next.lbl;
   d.formatos[fmt] = next.lbl;
+  savePiezaData();
   const card = document.getElementById('pc-'+piezaId);
   if (card) {
     const dots = card.querySelectorAll('.fdot');
@@ -819,6 +820,7 @@ function toggleVO(el, piezaId) {
   const on = el.classList.contains('on');
   el.querySelector('.vo-chk').textContent = on ? '✓' : '';
   getPiezaData(p.id, piezaId).vo = on;
+  savePiezaData();
 }
 
 function togglePiece(sum) {
@@ -835,6 +837,7 @@ function deletePieza(piezaId) {
   if (!confirm('¿Eliminar esta pieza?')) return;
   p.piezas = p.piezas.filter(x => x.id !== piezaId);
   document.getElementById('d-piezas').textContent = p.piezas.length;
+  saveProjects();
   renderPiezas(p);
   renderOffline(p);
   renderOnline(p);
@@ -876,7 +879,7 @@ function renderStageTab(containerId, stages, dataKey, stateKey, p) {
           }).join('')}
         </div>
         <div class="dl">Comentarios</div>
-        <textarea class="txt-input" style="min-height:48px" placeholder="Notas de ${dataKey}..." onchange="getPiezaData(${p.id},${pieza.id}).${dataKey}Comment=this.value">${d[dataKey+'Comment']||''}</textarea>
+        <textarea class="txt-input" style="min-height:48px" placeholder="Notas de ${dataKey}..." onchange="getPiezaData(${p.id},${pieza.id}).${dataKey}Comment=this.value; savePiezaData()">${d[dataKey+'Comment']||''}</textarea>
       </div>
     </div>`;
   }).join('');
@@ -892,6 +895,7 @@ function estColor(est) {
 function setEstado(sel, stateKey, piezaId, prefix, projId) {
   const val = sel.value;
   getPiezaData(projId, piezaId)[stateKey] = val;
+  savePiezaData();
   const ew = document.getElementById(`${prefix}-ew-${piezaId}`);
   if (ew) { const dot = ew.querySelector('.estado-dot'); if(dot) dot.style.background = estColor(val); }
 }
@@ -906,6 +910,7 @@ function cycleEstado(el, dataKey, stage, piezaId, projId) {
   if (nc) el.classList.add(nc);
   el.querySelector('.sst-label').textContent = next;
   d[dataKey][stage] = next;
+  savePiezaData();
 }
 
 // ── TIMING — CALENDARIO SEMANAL ──
@@ -1067,6 +1072,7 @@ function saveProject() {
     piezas: []
   });
   closeModal('modalProyecto');
+  saveProjects();
   renderBoard();
 }
 
@@ -1085,6 +1091,7 @@ function savePieza() {
   getPiezaData(p.id, newPieza.id).guion = newPieza.guion;
   document.getElementById('d-piezas').textContent = p.piezas.length;
   closeModal('piezaModal');
+  saveProjects();
   renderPiezas(p);
   renderOffline(p);
   renderOnline(p);
@@ -1111,7 +1118,29 @@ function switchTab(tab, btn) {
   document.getElementById('tab-'+tab).classList.add('active');
 }
 
+// ── PERSISTENCE: PROJECTS ──
+function saveProjects() {
+  localStorage.setItem('projects_v1', JSON.stringify(projects));
+}
+
+function loadProjects() {
+  const s = localStorage.getItem('projects_v1');
+  if (s) { try { projects = JSON.parse(s); } catch(e){} }
+}
+
+// ── PERSISTENCE: PIEZA DATA ──
+function savePiezaData() {
+  localStorage.setItem('piezaData_v1', JSON.stringify(piezaData));
+}
+
+function loadPiezaData() {
+  const s = localStorage.getItem('piezaData_v1');
+  if (s) { try { piezaData = JSON.parse(s); } catch(e){} }
+}
+
 // ── INIT ──
+loadProjects();
+loadPiezaData();
 loadDBD();
 renderBoard();
 </script>
