@@ -69,6 +69,7 @@
   body.dark .piece-sum:hover, body.dark .piece-sum.open { background: #222; }
   body.dark .p-detail { background: #1f1f1f; }
   body.dark .fmt-item { background: #222; border-color: #383838; }
+  body.dark .fmt-item.apv { background: var(--blue-l); border-color: #2a3a5a; }
   body.dark .vo-box { background: #222; border-color: #383838; }
   body.dark .txt-input { background: #222; border-color: #383838; color: #e8e8e8; }
   body.dark .sst-item { background: #222; border-color: #383838; }
@@ -214,24 +215,25 @@
   .dl { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; margin-top: 12px; }
   .dl:first-child { margin-top: 0; }
 
-  /* FORMAT GRID — compact */
-  .fmt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
-  .fmt-item { background: var(--bg); border: 1px solid var(--rule); padding: 4px 2px; text-align: center; cursor: pointer; transition: all .15s; }
+  /* ETAPA GRID — 5 stages compact */
+  .fmt-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .fmt-item { background: var(--bg); border: 1px solid var(--rule); padding: 5px 2px; text-align: center; cursor: pointer; transition: all .15s; user-select: none; }
   .fmt-item:hover { border-color: #aaa; }
   .fmt-item.done { background: var(--green-l); border-color: #a8ddb8; }
-  .fmt-item.wip { background: var(--yellow-l); border-color: #e8d060; }
-  .fmt-item.rev { background: var(--blue-l); border-color: #90b0f0; }
-  .fmt-item.adj { background: var(--orange-l); border-color: #f5c8a8; }
-  .fmt-ratio { font-size: 10px; font-weight: 600; color: var(--muted); margin-bottom: 2px; }
+  .fmt-item.wip  { background: var(--yellow-l); border-color: #e8d060; }
+  .fmt-item.adj  { background: var(--orange-l); border-color: #f5c8a8; }
+  .fmt-item.apv  { background: var(--blue-l); border-color: #90b0f0; }
+  .fmt-ratio { font-size: 9px; font-weight: 600; color: var(--muted); margin-bottom: 2px; line-height: 1.2; }
   .fmt-item.done .fmt-ratio { color: var(--green); }
-  .fmt-item.wip .fmt-ratio { color: var(--yellow); }
-  .fmt-item.rev .fmt-ratio { color: var(--blue); }
-  .fmt-item.adj .fmt-ratio { color: var(--orange); }
-  .fmt-st { font-size: 8px; color: var(--muted2); }
+  .fmt-item.wip  .fmt-ratio { color: var(--yellow); }
+  .fmt-item.adj  .fmt-ratio { color: var(--orange); }
+  .fmt-item.apv  .fmt-ratio { color: var(--blue); }
+  .fmt-st { font-size: 7px; color: var(--muted2); line-height: 1.2; }
   .fmt-item.done .fmt-st { color: var(--green); }
-  .fmt-item.wip .fmt-st { color: var(--yellow); }
-  .fmt-item.rev .fmt-st { color: var(--blue); }
-  .fmt-item.adj .fmt-st { color: var(--orange); }
+  .fmt-item.wip  .fmt-st { color: var(--yellow); }
+  .fmt-item.adj  .fmt-st { color: var(--orange); }
+  .fmt-item.apv  .fmt-st { color: var(--blue); }
+  .fdot.apv { background: var(--blue-m); }
 
   .vo-box { display: inline-flex; align-items: center; gap: 7px; background: var(--bg); border: 1px solid var(--rule); padding: 7px 12px; cursor: pointer; transition: all .15s; }
   .vo-box:hover { border-color: #aaa; }
@@ -424,8 +426,8 @@
       <div class="sync-dot" id="syncDot"></div>
       <span id="syncText">Guardado</span>
     </div>
-    <button class="btn sm icon-btn" id="darkToggle" onclick="toggleDark()" title="Modo oscuro">🌙</button>
-    <button class="btn sm icon-btn" onclick="toggleNotifPanel()" title="Actividad">🔔</button>
+    <button class="btn sm icon-btn" id="darkToggle" onclick="toggleDark()" title="Modo oscuro"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M17 12.5A7 7 0 0 1 9.5 3a7 7 0 1 0 7.5 9.5z"/></svg></button>
+    <button class="btn sm icon-btn" onclick="toggleNotifPanel()" title="Actividad"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2a6 6 0 0 1 6 6v3l1.5 2.5H2.5L4 11V8a6 6 0 0 1 6-6z"/><path d="M8.5 16.5a1.5 1.5 0 0 0 3 0"/></svg></button>
     <button class="btn ink" onclick="openModal('proyecto')">+ Nuevo proyecto</button>
   </div>
 </header>
@@ -481,9 +483,45 @@
         <option value="done">Entregado</option>
       </select>
     </div>
+    <div class="form-field">
+      <label class="form-lbl">Google Sheets URL (Timing)</label>
+      <input class="form-input" id="ep-sheeturl" type="text" placeholder="https://docs.google.com/spreadsheets/d/...">
+    </div>
     <div class="modal-actions">
       <button class="btn ink" onclick="saveEditProject()">GUARDAR CAMBIOS</button>
       <button class="btn" onclick="closeModal('editProyectoModal')">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR PIEZA -->
+<div class="modal-overlay" id="editPiezaModal" onclick="closeModalOutside(event,'editPiezaModal')">
+  <div class="modal">
+    <div class="modal-title">EDITAR PIEZA</div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-lbl">Nombre</label><input class="form-input" id="epi-nombre" type="text"></div>
+      <div class="form-field"><label class="form-lbl">Duración</label><input class="form-input" id="epi-dur" type="text"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-lbl">País</label><input class="form-input" id="epi-pais" type="text"></div>
+      <div class="form-field">
+        <label class="form-lbl">Categoría</label>
+        <select class="form-select" id="epi-categoria">
+          <option value="Hero">Hero</option>
+          <option value="Reducción">Reducción</option>
+          <option value="Versiones">Versiones</option>
+          <option value="Digitales">Digitales</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-lbl">Fecha de entrega</label><input class="form-input" id="epi-fecha" type="text" placeholder="ej. 18 Jul"></div>
+      <div class="form-field"><label class="form-lbl">Link al guión</label><input class="form-input" id="epi-guion" type="text" placeholder="https://..."></div>
+    </div>
+    <input type="hidden" id="epi-id">
+    <div class="modal-actions">
+      <button class="btn ink" onclick="saveEditPieza()">GUARDAR</button>
+      <button class="btn" onclick="closeModal('editPiezaModal')">CANCELAR</button>
     </div>
   </div>
 </div>
@@ -650,8 +688,15 @@ const OFFLINE_STAGES = ['Edición','Locutor','Música','SFX'];
 const ONLINE_STAGES  = ['Color','VFX','Mix'];
 const ESTADO_OPTS    = ['—','En curso','Rev Agencia','Ajustes','Rev Cliente','Aprobado'];
 const ESTADO_CLS     = { '—':'', 'En curso':'en-curso', 'Rev Agencia':'rev-agencia', 'Ajustes':'ajustes', 'Rev Cliente':'rev-cliente', 'Aprobado':'aprobado' };
-const FMT_CYCLE      = [{ cls:'', lbl:'—' },{ cls:'wip', lbl:'En curso' },{ cls:'rev', lbl:'Rev' },{ cls:'adj', lbl:'Ajustes' },{ cls:'done', lbl:'Aprobado' }];
 const MONTHS_ES      = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+// Etapas por pieza (reemplaza formatos)
+const ETAPA_NAMES = ['Offline','Online','Sonido','Color','Entregado'];
+const ETAPA_CYCLE = [{cls:'',lbl:'—'},{cls:'wip',lbl:'En curso'},{cls:'adj',lbl:'Ajustes'},{cls:'apv',lbl:'Aprobado'},{cls:'done',lbl:'Entregado'}];
+
+// SVG icons
+const SVG_MOON = `<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M17 12.5A7 7 0 0 1 9.5 3a7 7 0 1 0 7.5 9.5z"/></svg>`;
+const SVG_SUN  = `<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="3.5"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="10" y1="16" x2="10" y2="18"/><line x1="2" y1="10" x2="4" y2="10"/><line x1="16" y1="10" x2="18" y2="10"/><line x1="4.5" y1="4.5" x2="5.9" y2="5.9"/><line x1="14.1" y1="14.1" x2="15.5" y2="15.5"/><line x1="15.5" y1="4.5" x2="14.1" y2="5.9"/><line x1="5.9" y1="14.1" x2="4.5" y2="15.5"/></svg>`;
 
 // ── LOGIN ──
 function doLogin() {
@@ -674,12 +719,12 @@ function checkAuth() {
 function toggleDark() {
   const dark = document.body.classList.toggle('dark');
   localStorage.setItem('darkMode', dark ? '1' : '0');
-  document.getElementById('darkToggle').textContent = dark ? '☀' : '🌙';
+  document.getElementById('darkToggle').innerHTML = dark ? SVG_SUN : SVG_MOON;
 }
 function initDark() {
   if (localStorage.getItem('darkMode') === '1') {
     document.body.classList.add('dark');
-    document.getElementById('darkToggle').textContent = '☀';
+    document.getElementById('darkToggle').innerHTML = SVG_SUN;
   }
 }
 
@@ -700,6 +745,27 @@ function toggleNotifPanel() {
   panel.classList.toggle('open');
   if (panel.classList.contains('open')) renderNotifPanel();
 }
+
+function fmtNotifTime(ts) {
+  const now  = new Date();
+  const dt   = new Date(ts);
+  const today = new Date(now); today.setHours(0,0,0,0);
+  const yest  = new Date(today); yest.setDate(yest.getDate()-1);
+  const time  = dt.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  const DAY_NAMES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  if (dt >= today) return 'Hoy ' + time;
+  if (dt >= yest)  return 'Ayer ' + time;
+  return DAY_NAMES[dt.getDay()] + ' ' + time;
+}
+
+const NOTIF_ICONS = {
+  'Proyecto creado':'⊕','Proyecto editado':'✎','Proyecto eliminado':'✕',
+  'Pieza agregada':'⊕','Pieza editada':'✎','Pieza eliminada':'✕',
+  'Estado actualizado':'◉','Etapa actualizada':'◉','Formato actualizado':'◈',
+  'VO actualizado':'♪','Fecha agregada':'⊕','Fecha editada':'✎',
+  'Día agregado':'⊕','Día eliminado':'✕','Entrada agregada':'⊕','Entrada eliminada':'✕',
+};
+
 function renderNotifPanel() {
   let log = [];
   try { log = JSON.parse(localStorage.getItem('activity_log') || '[]'); } catch(e) {}
@@ -709,12 +775,18 @@ function renderNotifPanel() {
     return;
   }
   list.innerHTML = log.map(e => {
-    const dt = new Date(e.ts);
-    const fdt = dt.toLocaleDateString('es-AR',{day:'numeric',month:'short'}) + ' · ' + dt.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+    const icon = NOTIF_ICONS[e.action] || '·';
+    const timeStr = fmtNotifTime(e.ts);
     return `<div class="notif-item">
-      <div class="notif-meta">${fdt}${e.proj ? ' · ' + e.proj : ''}</div>
-      <div class="notif-action">${e.action}</div>
-      ${e.detail ? `<div class="notif-detail">${e.detail}</div>` : ''}
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <span style="font-size:14px;flex-shrink:0;margin-top:1px;color:var(--muted2)">${icon}</span>
+        <div style="flex:1;min-width:0">
+          ${e.proj ? `<div style="font-size:11px;font-weight:600;margin-bottom:2px;color:var(--ink)">${e.proj}</div>` : ''}
+          <div class="notif-action">${e.action}</div>
+          ${e.detail ? `<div class="notif-detail">${e.detail}</div>` : ''}
+          <div class="notif-meta" style="margin-top:3px">${timeStr}</div>
+        </div>
+      </div>
     </div>`;
   }).join('');
 }
@@ -726,7 +798,8 @@ function shortDate(s) {
 }
 function fmtDateISO(iso) {
   if (!iso) return '—';
-  const p = iso.split('-');
+  const clean = iso.split('T')[0]; // strip any time/TZ part
+  const p = clean.split('-');
   if (p.length !== 3) return iso;
   return parseInt(p[2]) + ' ' + MONTHS_ES[parseInt(p[1]) - 1];
 }
@@ -788,20 +861,25 @@ function getPiezaData(pid, piezaId) {
       offlineEstado: '—',
       offlineStages: Object.fromEntries(OFFLINE_STAGES.map(s => [s,'—'])),
       offlineComment: '',
+      offlineAprob: '',
       framioOffline: '',
       onlineEstado: '—',
       onlineStages: Object.fromEntries(ONLINE_STAGES.map(s => [s,'—'])),
       onlineComment: '',
+      onlineEntrega: '',
       framioOnline: '',
-      formatos: { '16:9':'—','4:5':'—','1:1':'—','9:16':'—' },
+      etapas: Object.fromEntries(ETAPA_NAMES.map(n => [n,'—'])),
       vo: true,
       guion: '',
       comment: ''
     };
   }
   const d = piezaData[pid][piezaId];
-  if (d.framioOffline === undefined) d.framioOffline = '';
-  if (d.framioOnline === undefined) d.framioOnline = '';
+  if (!d.framioOffline) d.framioOffline = '';
+  if (!d.framioOnline)  d.framioOnline  = '';
+  if (!d.offlineAprob)  d.offlineAprob  = '';
+  if (!d.onlineEntrega) d.onlineEntrega  = '';
+  if (!d.etapas) d.etapas = Object.fromEntries(ETAPA_NAMES.map(n => [n,'—']));
   return d;
 }
 
@@ -1008,12 +1086,13 @@ async function deleteProject(id) {
 // ── EDIT PROJECT ──
 function openEditProject() {
   const p = getCurrentProject(); if (!p) return;
-  document.getElementById('ep-cliente').value = p.cliente || '';
+  document.getElementById('ep-cliente').value  = p.cliente  || '';
   document.getElementById('ep-director').value = p.director || '';
-  document.getElementById('ep-nombre').value = p.nombre || '';
-  document.getElementById('ep-rodaje').value = '';
-  document.getElementById('ep-entrega').value = '';
-  document.getElementById('ep-estado').value = p.estado || 'post';
+  document.getElementById('ep-nombre').value   = p.nombre   || '';
+  document.getElementById('ep-rodaje').value   = '';
+  document.getElementById('ep-entrega').value  = '';
+  document.getElementById('ep-estado').value   = p.estado   || 'post';
+  document.getElementById('ep-sheeturl').value = p.sheetUrl || '';
   document.getElementById('editProyectoModal').classList.add('open');
 }
 
@@ -1025,14 +1104,16 @@ async function saveEditProject() {
   p.director = document.getElementById('ep-director').value.trim();
   p.nombre   = document.getElementById('ep-nombre').value.trim();
   p.estado   = document.getElementById('ep-estado').value;
-  const rodajeISO = document.getElementById('ep-rodaje').value;
+  p.sheetUrl = document.getElementById('ep-sheeturl').value.trim();
+  const rodajeISO  = document.getElementById('ep-rodaje').value;
   const entregaISO = document.getElementById('ep-entrega').value;
-  if (rodajeISO) p.rodaje = fmtDateISO(rodajeISO);
+  if (rodajeISO)  p.rodaje  = fmtDateISO(rodajeISO);
   if (entregaISO) p.entrega = fmtDateISO(entregaISO);
   closeModal('editProyectoModal');
   await saveProjects();
   updateDetailHeader(p);
   renderBoard();
+  renderTiming(); // refresh timing if sheetUrl changed
   logActivity('Proyecto editado', `${p.cliente} — ${p.nombre}`);
 }
 
@@ -1065,7 +1146,7 @@ function renderPiezas(p) {
       html += `<div class="pieza-cat-group"><div class="pieza-cat-hdr">${cat}</div>`;
       piezas.forEach(pieza => {
         const d = getPiezaData(p.id, pieza.id);
-        const dots = ['16:9','4:5','1:1','9:16'].map(f => `<div class="fdot ${fmtCls(d.formatos[f])}"></div>`).join('');
+        const dots = ETAPA_NAMES.map(n => `<div class="fdot ${etapaCls(d.etapas[n]||'—')}"></div>`).join('');
         const isFirst = idx === 0;
         html += `<div class="piece-card" id="pc-${pieza.id}">
           <div class="piece-sum${isFirst?' open':''}" onclick="togglePiece(this)">
@@ -1075,13 +1156,14 @@ function renderPiezas(p) {
             <div class="p-chev${isFirst?' open':''}">›</div>
           </div>
           <div class="p-detail${isFirst?' open':''}">
-            <div class="dl">Formatos</div>
+            <div class="dl">Etapas — click para ciclar</div>
             <div class="fmt-grid">
-              ${['16:9','4:5','1:1','9:16'].map(f => {
-                const cls = fmtCls(d.formatos[f]);
-                return `<div class="fmt-item ${cls}" onclick="cycleFmt(this,'${f}',${pieza.id})">
-                  <div class="fmt-ratio">${f}</div>
-                  <div class="fmt-st">${d.formatos[f]||'—'}</div>
+              ${ETAPA_NAMES.map(n => {
+                const val = d.etapas[n]||'—';
+                const cls = etapaCls(val);
+                return `<div class="fmt-item ${cls}" onclick="cycleEtapa(this,'${n}',${pieza.id})">
+                  <div class="fmt-ratio">${n}</div>
+                  <div class="fmt-st">${val}</div>
                 </div>`;
               }).join('')}
             </div>
@@ -1096,7 +1178,8 @@ function renderPiezas(p) {
             <div class="dl">Comentarios</div>
             <textarea class="txt-input" style="min-height:48px" placeholder="Comentarios..."
               onchange="getPiezaData(${p.id},${pieza.id}).comment=this.value; savePiezaData()">${d.comment||''}</textarea>
-            <div class="piece-actions">
+            <div class="piece-actions" style="gap:6px">
+              <button class="btn sm" onclick="openEditPieza(${pieza.id})">✎ Editar</button>
               <button class="btn sm danger" onclick="deletePieza(${pieza.id})">Eliminar pieza</button>
             </div>
           </div>
@@ -1110,30 +1193,65 @@ function renderPiezas(p) {
   list.innerHTML = html;
 }
 
-function fmtCls(val) {
-  if (val==='Aprobado') return 'done';
-  if (val==='En curso') return 'wip';
-  if (val==='Rev') return 'rev';
-  if (val==='Ajustes') return 'adj';
+function etapaCls(val) {
+  if (val==='Entregado') return 'done';
+  if (val==='Aprobado')  return 'apv';
+  if (val==='Ajustes')   return 'adj';
+  if (val==='En curso')  return 'wip';
   return '';
 }
 
-function cycleFmt(el, fmt, piezaId) {
+function cycleEtapa(el, etapa, piezaId) {
   const p = getCurrentProject(); if (!p) return;
   const d = getPiezaData(p.id, piezaId);
-  const cur = FMT_CYCLE.findIndex(f => f.cls && el.classList.contains(f.cls));
-  const next = FMT_CYCLE[(cur === -1 ? 1 : cur + 1) % FMT_CYCLE.length];
-  FMT_CYCLE.forEach(f => { if (f.cls) el.classList.remove(f.cls); });
+  if (!d.etapas) d.etapas = Object.fromEntries(ETAPA_NAMES.map(n => [n,'—']));
+  const cur  = ETAPA_CYCLE.findIndex(f => f.cls && el.classList.contains(f.cls));
+  const next = ETAPA_CYCLE[(cur === -1 ? 1 : cur + 1) % ETAPA_CYCLE.length];
+  ETAPA_CYCLE.forEach(f => { if (f.cls) el.classList.remove(f.cls); });
   if (next.cls) el.classList.add(next.cls);
   el.querySelector('.fmt-st').textContent = next.lbl;
-  d.formatos[fmt] = next.lbl;
+  d.etapas[etapa] = next.lbl;
   savePiezaData();
   const card = document.getElementById('pc-' + piezaId);
   if (card) {
     const dots = card.querySelectorAll('.fdot');
-    ['16:9','4:5','1:1','9:16'].forEach((f, i) => { dots[i].className = 'fdot ' + fmtCls(d.formatos[f]); });
+    ETAPA_NAMES.forEach((n, i) => { dots[i].className = 'fdot ' + etapaCls(d.etapas[n]||'—'); });
   }
-  logActivity('Formato actualizado', `${fmt} → ${next.lbl}`);
+  logActivity('Etapa actualizada', `${etapa} → ${next.lbl}`);
+}
+
+// Edit pieza
+function openEditPieza(piezaId) {
+  const p = getCurrentProject(); if (!p) return;
+  const pieza = p.piezas.find(x => x.id == piezaId); if (!pieza) return;
+  document.getElementById('epi-id').value       = piezaId;
+  document.getElementById('epi-nombre').value   = pieza.nombre || '';
+  document.getElementById('epi-dur').value      = pieza.dur || '';
+  document.getElementById('epi-pais').value     = pieza.pais || '';
+  document.getElementById('epi-categoria').value= pieza.categoria || 'Hero';
+  document.getElementById('epi-fecha').value    = pieza.fecha || '';
+  document.getElementById('epi-guion').value    = pieza.guion || '';
+  document.getElementById('editPiezaModal').classList.add('open');
+}
+
+function saveEditPieza() {
+  const p = getCurrentProject(); if (!p) return;
+  const piezaId = document.getElementById('epi-id').value;
+  const pieza   = p.piezas.find(x => x.id == piezaId); if (!pieza) return;
+  const nombre  = document.getElementById('epi-nombre').value.trim();
+  if (!nombre) { alert('Ingresá el nombre'); return; }
+  pieza.nombre    = nombre;
+  pieza.dur       = document.getElementById('epi-dur').value.trim() || '—';
+  pieza.pais      = document.getElementById('epi-pais').value.trim() || 'Sin país';
+  pieza.categoria = document.getElementById('epi-categoria').value;
+  pieza.fecha     = document.getElementById('epi-fecha').value.trim();
+  pieza.guion     = document.getElementById('epi-guion').value.trim();
+  closeModal('editPiezaModal');
+  saveProjects();
+  renderPiezas(p);
+  renderOffline(p);
+  renderOnline(p);
+  logActivity('Pieza editada', nombre);
 }
 
 function toggleVO(el, piezaId) {
@@ -1210,6 +1328,15 @@ function renderStageTab(containerId, stages, dataKey, stateKey, p) {
             onchange="getPiezaData(${p.id},${pieza.id})['${frameKey}']=this.value; savePiezaData()" id="frio-${dataKey}-${pieza.id}">
           <button class="btn sm" onclick="openFramio('${frameKey}',${pieza.id},${p.id})">↗ Ver</button>
         </div>
+        ${dataKey === 'offline' ? `
+        <div class="dl">Fecha de aprobación</div>
+        <input class="txt-input" type="date" style="max-width:180px" value="${d.offlineAprob||''}"
+          onchange="getPiezaData(${p.id},${pieza.id}).offlineAprob=this.value; savePiezaData()">
+        ` : `
+        <div class="dl">Fecha de entrega</div>
+        <input class="txt-input" type="date" style="max-width:180px" value="${d.onlineEntrega||''}"
+          onchange="getPiezaData(${p.id},${pieza.id}).onlineEntrega=this.value; savePiezaData()">
+        `}
         <div class="dl">Comentarios</div>
         <textarea class="txt-input" style="min-height:48px" placeholder="Notas de ${dataKey}..."
           onchange="getPiezaData(${p.id},${pieza.id}).${dataKey}Comment=this.value; savePiezaData()">${d[dataKey+'Comment']||''}</textarea>
@@ -1254,12 +1381,71 @@ function cycleEstado(el, dataKey, stage, piezaId, projId) {
 }
 
 // ── TIMING ──
-function renderTiming() {
+async function renderTiming() {
+  const p = getCurrentProject();
+  const calWrap = document.getElementById('calWrap');
+
+  // If project has a sheetUrl, load CSV from Sheets
+  if (p && p.sheetUrl && p.sheetUrl.trim()) {
+    calWrap.innerHTML = '<div style="padding:24px;text-align:center;color:var(--muted);font-size:11px;letter-spacing:1px">Cargando timing...</div>';
+    try {
+      const csvUrl = p.sheetUrl.trim()
+        .replace(/\/edit(\?.*)?$/, '/export?format=csv')
+        .replace(/\/pub(\?.*)?$/, '/export?format=csv');
+      const res  = await fetch(csvUrl);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const text = await res.text();
+      renderTimingCSV(text);
+      return;
+    } catch(err) {
+      calWrap.innerHTML = `<div style="padding:24px;text-align:center;color:var(--red);font-size:11px">Error al cargar el timing.<br><span style="color:var(--muted)">Verificá el link en Editar proyecto.<br>${err.message}</span></div>`;
+      return;
+    }
+  }
+
+  // Fallback to hardcoded weeks
   const weeks = TIMING_BY_PROJECT[currentProjectId];
   if (!weeks || !weeks.length) {
-    document.getElementById('calWrap').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin timing</div>';
+    calWrap.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin timing — agregá el link de Google Sheets en Editar proyecto</div>';
     return;
   }
+  renderTimingWeeks(weeks);
+}
+
+function renderTimingCSV(csv) {
+  const lines = csv.split('\n').map(l => l.trim()).filter(Boolean);
+  if (!lines.length) {
+    document.getElementById('calWrap').innerHTML = '<div style="padding:24px;text-align:center;color:var(--muted);font-size:11px">Sin datos en el Sheets</div>';
+    return;
+  }
+  // Parse CSV respecting quoted fields
+  function parseCSVLine(line) {
+    const cells = []; let cur = ''; let inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { cells.push(cur); cur = ''; }
+      else cur += c;
+    }
+    cells.push(cur);
+    return cells.map(c => c.trim());
+  }
+  let html = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px;min-width:500px">';
+  lines.forEach((line, i) => {
+    const cells = parseCSVLine(line);
+    const isHeader = i === 0;
+    html += `<tr style="border-bottom:1px solid var(--rule)${isHeader ? ';background:var(--soft)' : ''}">`;
+    cells.forEach(c => {
+      const tag = isHeader ? 'th' : 'td';
+      html += `<${tag} style="padding:6px 10px;border-right:1px solid var(--rule);text-align:left;font-weight:${isHeader?'600':'400'};white-space:nowrap">${c}</${tag}>`;
+    });
+    html += '</tr>';
+  });
+  html += '</table></div>';
+  document.getElementById('calWrap').innerHTML = html;
+}
+
+function renderTimingWeeks(weeks) {
   const days = ['MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY','SUNDAY'];
   let html = `<div class="cal-header-row">
     <div class="cal-corner"><div class="cal-corner-name">LAUTARO</div><div class="cal-corner-sub">FURIOLO</div></div>
@@ -1621,7 +1807,7 @@ function switchTab(tab, btn) {
 // ── PERSISTENCE: PROJECTS ──
 async function saveProjects() {
   localStorage.setItem('projects_v1', JSON.stringify(projects));
-  const rows = projects.map(p => [p.id, p.cliente, p.nombre, p.director, p.rodaje, p.entrega, p.estado, JSON.stringify(p.piezas)]);
+  const rows = projects.map(p => [p.id, p.cliente, p.nombre, p.director, p.rodaje, p.entrega, p.estado, JSON.stringify(p.piezas), p.sheetUrl||'']);
   try {
     await fetch(SHEETS_URL, { method:'POST', body: JSON.stringify({ tab:'projects', data:rows }) });
   } catch(e) {}
@@ -1635,7 +1821,8 @@ async function loadProjects() {
       projects = rows.map(r => ({
         id: Number(r[0]), cliente: r[1], nombre: r[2], director: r[3],
         rodaje: r[4], entrega: r[5], estado: r[6],
-        piezas: (() => { try { return JSON.parse(r[7]); } catch(e) { return []; } })()
+        piezas: (() => { try { return JSON.parse(r[7]); } catch(e) { return []; } })(),
+        sheetUrl: r[8] || ''
       }));
       localStorage.setItem('projects_v1', JSON.stringify(projects));
       return;
