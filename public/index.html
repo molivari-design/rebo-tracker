@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Post Tracker MEX — Popeye's</title>
+<title>Post Tracker</title>
+<meta property="og:title" content="Post Tracker">
 <link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="Post Tracker MEX">
+<meta name="apple-mobile-web-app-title" content="Post Tracker">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -42,23 +43,73 @@
     --gray-cal: #e8e8e8;
   }
 
-  html, body { background: #fff; margin: 0; padding: 0; }
+  /* DARK MODE */
+  body.dark {
+    --bg: #111;
+    --ink: #e8e8e8;
+    --rule: #2a2a2a;
+    --soft: #1a1a1a;
+    --muted: #777;
+    --muted2: #444;
+    --green-l: #0a1f10;
+    --yellow-l: #1f1800;
+    --orange-l: #1f0f00;
+    --red-l: #1f0a0a;
+    --blue-l: #091428;
+    --purple-l: #110828;
+  }
+  body.dark { background: #111; }
+  body.dark header { background: #111; border-color: #2a2a2a; }
+  body.dark .modal { background: #1a1a1a; border-color: #2a2a2a; }
+  body.dark .modal-overlay { background: rgba(0,0,0,.82); }
+  body.dark .form-input, body.dark .form-select { background: #222; color: #e8e8e8; border-color: #383838; }
+  body.dark .proj-row { background: #1a1a1a; border-color: #2a2a2a; }
+  body.dark .proj-row:hover { border-color: #555; box-shadow: none; }
+  body.dark .piece-card { background: #1a1a1a; border-color: #2a2a2a; }
+  body.dark .piece-sum:hover, body.dark .piece-sum.open { background: #222; }
+  body.dark .p-detail { background: #1f1f1f; }
+  body.dark .fmt-item { background: #222; border-color: #383838; }
+  body.dark .vo-box { background: #222; border-color: #383838; }
+  body.dark .txt-input { background: #222; border-color: #383838; color: #e8e8e8; }
+  body.dark .sst-item { background: #222; border-color: #383838; }
+  body.dark .dbd-day { background: #1a1a1a; border-color: #2a2a2a; }
+  body.dark .dbd-dh { background: #1f1f1f; border-color: #2a2a2a; }
+  body.dark .fi { background: #1a1a1a; border-color: #2a2a2a; }
+  body.dark .estado-wrap { background: #222; border-color: #383838; }
+  body.dark .dbd-time-input, body.dark .dbd-title-input, body.dark .dbd-note-input { color: #e8e8e8; border-color: #383838; }
+  body.dark .cal-wrap { border-color: #2a2a2a; }
+  body.dark .cal-header-row { border-color: #2a2a2a; }
+  body.dark .cal-day-header { background: #1a1a1a; border-color: #2a2a2a; }
+  body.dark .cal-day-header.wk { background: #111; }
+  body.dark .cal-week { border-color: #2a2a2a; }
+  body.dark .cal-week-label { background: #1a1a1a; border-color: #2a2a2a; }
+  body.dark .cal-day-cell { border-color: #2a2a2a; }
+  body.dark .cal-day-cell.wk { background: #0d0d0d; }
+  body.dark .cal-day-cell.today { background: #1f1a00; }
+  body.dark .cal-legend { background: #1a1a1a; border-color: #2a2a2a; }
+  body.dark #notifPanel { background: #1a1a1a; border-color: #2a2a2a; }
+  body.dark .notif-item { border-color: #2a2a2a; }
+  body.dark #loginOverlay { background: #111; }
+  body.dark .pieza-pais-hdr { color: #e8e8e8; border-color: #e8e8e8; }
+  body.dark .pieza-cat-hdr { border-color: #2a2a2a; }
+
+  html, body { background: var(--bg); margin: 0; padding: 0; }
   * { box-sizing: border-box; }
   body { color: var(--ink); font-family: 'Inter', sans-serif; font-size: 14px; min-height: 100vh; }
 
   /* HEADER */
-  header { background: #fff; border-bottom: 2px solid var(--ink); padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  header { background: var(--bg); border-bottom: 2px solid var(--ink); padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
   .logo { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 4px; cursor: pointer; }
-  .logo em { font-style: normal; font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-left: 8px; font-weight: 400; }
 
   /* BTN */
   .btn { font-size: 11px; padding: 6px 14px; border: 1px solid var(--rule); background: none; color: var(--muted); cursor: pointer; transition: all .15s; font-family: 'Inter', sans-serif; }
   .btn:hover { border-color: var(--ink); color: var(--ink); }
-  .btn.ink { background: var(--ink); color: #fff; border-color: var(--ink); }
-  .btn.ink:hover { background: #333; }
+  .btn.ink { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .btn.ink:hover { opacity: .85; }
   .btn.sm { font-size: 10px; padding: 4px 10px; }
   .btn.danger { border-color: #f5c0bc; color: var(--red); }
   .btn.danger:hover { background: var(--red-l); border-color: var(--red); }
+  .icon-btn { padding: 5px 9px; font-size: 15px; line-height: 1; }
 
   /* VIEWS */
   .view { display: none; }
@@ -75,7 +126,7 @@
   .gname { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
   .gcnt { font-size: 11px; color: var(--muted2); margin-left: auto; }
 
-  .proj-row { display: flex; align-items: center; padding: 12px 14px; background: #fff; border: 1px solid var(--rule); margin-bottom: 4px; cursor: pointer; transition: all .15s; gap: 12px; }
+  .proj-row { display: flex; align-items: center; padding: 12px 14px; background: var(--bg); border: 1px solid var(--rule); margin-bottom: 4px; cursor: pointer; transition: all .15s; gap: 12px; }
   .proj-row:hover { border-color: var(--ink); box-shadow: 0 1px 6px rgba(0,0,0,.06); }
   .proj-info { flex: 1; min-width: 0; }
   .proj-client { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -92,18 +143,15 @@
   /* MODAL */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
   .modal-overlay.open { display: flex; }
-  .modal { background: #fff; border: 1px solid var(--rule); padding: 22px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; }
+  .modal { background: var(--bg); border: 1px solid var(--rule); padding: 22px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; }
   .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--rule); }
   .form-field { margin-bottom: 12px; }
   .form-lbl { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; display: block; }
-  .form-input, .form-select { width: 100%; border: 1px solid var(--rule); background: #fff; font-family: 'Inter', sans-serif; font-size: 13px; padding: 8px 11px; outline: none; color: var(--ink); transition: border-color .15s; }
+  .form-input, .form-select { width: 100%; border: 1px solid var(--rule); background: var(--bg); font-family: 'Inter', sans-serif; font-size: 13px; padding: 8px 11px; outline: none; color: var(--ink); transition: border-color .15s; }
   .form-input:focus, .form-select:focus { border-color: var(--ink); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .modal-actions { display: flex; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule); }
   .modal-actions .btn { flex: 1; padding: 9px; font-size: 11px; text-align: center; }
-
-  /* PIEZA MODAL */
-  #piezaModal .modal { max-width: 400px; }
 
   /* DETAIL */
   .bc { font-size: 12px; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
@@ -119,7 +167,7 @@
   .m-tag { font-size: 10px; padding: 4px 9px; border: 1px solid var(--rule); color: var(--muted); white-space: nowrap; }
   .m-tag.post { background: var(--orange-l); color: var(--orange); border-color: #f5c8a8; }
   .m-tag.soon { background: var(--yellow-l); color: var(--yellow); border-color: #f0dc80; }
-  .ptitle-bottom { display: flex; gap: 18px; flex-wrap: wrap; }
+  .ptitle-bottom { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
   .pstat { font-size: 12px; color: var(--muted); }
   .pstat b { color: var(--ink); font-weight: 500; }
 
@@ -136,7 +184,12 @@
   .empty-piezas { text-align: center; padding: 40px 20px; border: 1px dashed var(--rule); color: var(--muted); }
   .empty-piezas p { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
 
-  .piece-card { border: 1px solid var(--rule); background: #fff; margin-bottom: 4px; overflow: hidden; }
+  .pieza-pais-group { margin-bottom: 18px; }
+  .pieza-pais-hdr { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--ink); padding: 5px 0; border-bottom: 2px solid var(--ink); margin-bottom: 8px; }
+  .pieza-cat-group { margin-bottom: 10px; }
+  .pieza-cat-hdr { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted2); padding: 3px 0; border-bottom: 1px dashed var(--rule); margin-bottom: 5px; }
+
+  .piece-card { border: 1px solid var(--rule); background: var(--bg); margin-bottom: 4px; overflow: hidden; }
   .piece-sum { display: flex; align-items: center; padding: 11px 14px; cursor: pointer; gap: 12px; transition: background .1s; user-select: none; }
   .piece-sum:hover, .piece-sum.open { background: var(--soft); }
   .piece-sum.open { border-bottom: 1px solid var(--rule); }
@@ -161,25 +214,26 @@
   .dl { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; margin-top: 12px; }
   .dl:first-child { margin-top: 0; }
 
-  .fmt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
-  .fmt-item { background: #fff; border: 1px solid var(--rule); padding: 8px 5px; text-align: center; cursor: pointer; transition: all .15s; }
+  /* FORMAT GRID — compact */
+  .fmt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  .fmt-item { background: var(--bg); border: 1px solid var(--rule); padding: 4px 2px; text-align: center; cursor: pointer; transition: all .15s; }
   .fmt-item:hover { border-color: #aaa; }
   .fmt-item.done { background: var(--green-l); border-color: #a8ddb8; }
   .fmt-item.wip { background: var(--yellow-l); border-color: #e8d060; }
   .fmt-item.rev { background: var(--blue-l); border-color: #90b0f0; }
   .fmt-item.adj { background: var(--orange-l); border-color: #f5c8a8; }
-  .fmt-ratio { font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 3px; }
+  .fmt-ratio { font-size: 10px; font-weight: 600; color: var(--muted); margin-bottom: 2px; }
   .fmt-item.done .fmt-ratio { color: var(--green); }
   .fmt-item.wip .fmt-ratio { color: var(--yellow); }
   .fmt-item.rev .fmt-ratio { color: var(--blue); }
   .fmt-item.adj .fmt-ratio { color: var(--orange); }
-  .fmt-st { font-size: 9px; color: var(--muted2); }
+  .fmt-st { font-size: 8px; color: var(--muted2); }
   .fmt-item.done .fmt-st { color: var(--green); }
   .fmt-item.wip .fmt-st { color: var(--yellow); }
   .fmt-item.rev .fmt-st { color: var(--blue); }
   .fmt-item.adj .fmt-st { color: var(--orange); }
 
-  .vo-box { display: inline-flex; align-items: center; gap: 7px; background: #fff; border: 1px solid var(--rule); padding: 7px 12px; cursor: pointer; transition: all .15s; }
+  .vo-box { display: inline-flex; align-items: center; gap: 7px; background: var(--bg); border: 1px solid var(--rule); padding: 7px 12px; cursor: pointer; transition: all .15s; }
   .vo-box:hover { border-color: #aaa; }
   .vo-box.on { background: var(--green-l); border-color: #a8ddb8; }
   .vo-chk { width: 15px; height: 15px; border: 1.5px solid var(--muted2); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 9px; flex-shrink: 0; }
@@ -187,16 +241,19 @@
   .vo-lbl { font-size: 11px; color: var(--muted); }
   .vo-box.on .vo-lbl { color: var(--green); font-weight: 500; }
 
-  .txt-input { width: 100%; border: 1px solid var(--rule); background: #fff; font-family: 'Inter', sans-serif; font-size: 12px; padding: 8px 11px; outline: none; color: var(--ink); resize: none; line-height: 1.5; transition: border-color .15s; }
+  .txt-input { width: 100%; border: 1px solid var(--rule); background: var(--bg); font-family: 'Inter', sans-serif; font-size: 12px; padding: 8px 11px; outline: none; color: var(--ink); resize: none; line-height: 1.5; transition: border-color .15s; }
   .txt-input:focus { border-color: var(--ink); }
   .txt-input::placeholder { color: var(--muted2); }
-
   .piece-actions { display: flex; justify-content: flex-end; margin-top: 10px; }
 
+  /* FRAMEIO ROW */
+  .frameio-row { display: flex; gap: 6px; align-items: center; }
+  .frameio-row input { flex: 1; padding: 6px 8px; font-size: 11px; border: 1px solid var(--rule); background: var(--bg); font-family: 'Inter', sans-serif; color: var(--ink); outline: none; }
+  .frameio-row input:focus { border-color: var(--ink); }
+
   /* OFFLINE / ONLINE */
-  .ESTADO_OPTS = ['—','En curso','Rev Agencia','Ajustes','Rev Cliente','Aprobado']; */
   .stage-status-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
-  .sst-item { background: #fff; border: 1px solid var(--rule); padding: 10px 12px; cursor: pointer; transition: all .15s; user-select: none; }
+  .sst-item { background: var(--bg); border: 1px solid var(--rule); padding: 10px 12px; cursor: pointer; transition: all .15s; user-select: none; }
   .sst-item:hover { border-color: #aaa; }
   .sst-item.en-curso { background: var(--yellow-l); border-color: #e8d060; }
   .sst-item.rev-agencia { background: var(--blue-l); border-color: #90b0f0; }
@@ -217,13 +274,11 @@
   .sst-item.rev-cliente .sst-label { color: #9b59b6; }
   .sst-item.aprobado .sst-label { color: var(--green); }
 
-  .estado-wrap { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--rule); padding: 8px 12px; }
+  .estado-wrap { display: flex; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--rule); padding: 8px 12px; }
   .estado-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--rule); flex-shrink: 0; }
   .estado-sel { border: none; background: none; font-family: 'Inter', sans-serif; font-size: 12px; color: var(--ink); outline: none; cursor: pointer; flex: 1; }
 
-  /* ══════════════════════════════════════
-     TIMING — CALENDARIO SEMANAL
-  ══════════════════════════════════════ */
+  /* TIMING */
   .cal-wrap { overflow-x: auto; border: 1px solid var(--rule); }
   .cal-header-row { display: flex; align-items: stretch; border-bottom: 2px solid var(--ink); }
   .cal-corner { min-width: 80px; max-width: 80px; background: var(--ink); display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 8px 6px; flex-shrink: 0; }
@@ -233,19 +288,14 @@
   .cal-day-name { font-size: 9px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
   .cal-day-header.wk { background: #f4f4f4; }
   .cal-day-header.wk .cal-day-name { color: var(--muted2); }
-
   .cal-week { display: flex; border-bottom: 1px solid var(--rule); min-height: 80px; }
   .cal-week:last-child { border-bottom: none; }
   .cal-week-label { min-width: 80px; max-width: 80px; background: var(--soft); border-right: 2px solid var(--rule); padding: 8px 6px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: flex-start; }
   .cal-week-dates { font-size: 9px; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 3px; }
-  .cal-week-num { font-family: 'Bebas Neue', sans-serif; font-size: 13px; color: var(--muted2); }
-
-  .cal-day-cell { flex: 1; border-left: 1px solid var(--rule); padding: 4px; min-height: 80px; vertical-align: top; position: relative; }
+  .cal-day-cell { flex: 1; border-left: 1px solid var(--rule); padding: 4px; min-height: 80px; position: relative; }
   .cal-day-cell.wk { background: #fafafa; }
   .cal-day-cell.today { background: #fffbf0; }
   .cal-day-num { font-size: 9px; color: var(--muted2); margin-bottom: 3px; text-align: right; }
-
-  /* EVENTOS EN EL CALENDARIO */
   .cal-event { border-radius: 2px; padding: 3px 5px; margin-bottom: 2px; font-size: 9px; line-height: 1.3; font-weight: 500; }
   .cal-event.shoot { background: #111; color: #fff; }
   .cal-event.edit { background: var(--blue-cal); color: #1a3a6a; }
@@ -261,9 +311,9 @@
   .cal-event.ppm { background: #d6f0ff; color: #1a5a7a; }
   .cal-event.ensayo { background: #d6ffe8; color: #1a5a3a; }
   .cal-event.backs { background: #f0d6ff; color: #5a1a8a; }
-
-  /* CAL LEGEND */
-  .cal-legend { display: flex; gap: 10px; flex-wrap: wrap; padding: 8px 10px; border: 1px solid var(--rule); border-top: none; background: #fff; }
+  .cal-event.agencia { background: var(--blue-cal); color: #1a3a6a; }
+  .cal-event.cliente { background: var(--orange-cal); color: #7a3a10; }
+  .cal-legend { display: flex; gap: 10px; flex-wrap: wrap; padding: 8px 10px; border: 1px solid var(--rule); border-top: none; background: var(--bg); }
   .cal-li { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--muted); }
   .cal-ld { width: 12px; height: 8px; border-radius: 2px; }
 
@@ -271,7 +321,7 @@
   .dbd-sec { display: flex; flex-direction: column; gap: 14px; }
   .dbd-bh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
   .f-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 0; }
-  .fi { background: #fff; border: 1px solid var(--rule); padding: 8px 9px; cursor: pointer; }
+  .fi { background: var(--bg); border: 1px solid var(--rule); padding: 8px 9px; cursor: pointer; transition: border-color .15s; }
   .fi:hover { border-color: #aaa; }
   .fi.ag { border-left: 3px solid var(--blue-m); }
   .fi.cl { border-left: 3px solid var(--orange-m); }
@@ -284,10 +334,11 @@
   .fi-nota { font-size: 10px; color: var(--muted); }
 
   .dbd-list { display: flex; flex-direction: column; gap: 4px; }
-  .dbd-day { background: #fff; border: 1px solid var(--rule); overflow: hidden; }
+  .dbd-day { background: var(--bg); border: 1px solid var(--rule); overflow: hidden; }
+  .dbd-day.vencido { opacity: .5; }
+  .dbd-vencido-tag { font-size: 8px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted2); border: 1px solid var(--muted2); padding: 1px 5px; flex-shrink: 0; }
   .dbd-dh { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--soft); border-bottom: 1px solid var(--rule); gap: 8px; }
   .dbd-date { font-size: 12px; font-weight: 600; }
-  .dbd-entries { }
   .dbd-entry { display: flex; align-items: flex-start; gap: 10px; padding: 9px 12px; border-bottom: 1px solid var(--rule); }
   .dbd-entry:last-child { border-bottom: none; }
   .dbd-entry:hover { background: var(--soft); }
@@ -316,6 +367,22 @@
   .sync-dot.error { background: var(--red); }
   @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
 
+  /* NOTIFICATION PANEL */
+  #notifPanel { position: fixed; top: 0; right: 0; bottom: 0; width: 340px; background: var(--bg); border-left: 1px solid var(--rule); z-index: 300; display: none; flex-direction: column; overflow: hidden; box-shadow: -4px 0 16px rgba(0,0,0,.12); }
+  #notifPanel.open { display: flex; }
+  .notif-hdr { padding: 14px 16px; border-bottom: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .notif-title { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; }
+  .notif-item { padding: 10px 16px; border-bottom: 1px solid var(--rule); }
+  .notif-meta { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
+  .notif-action { font-size: 12px; font-weight: 600; margin-bottom: 1px; }
+  .notif-detail { font-size: 11px; color: var(--muted); }
+
+  /* LOGIN */
+  #loginOverlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 14px; }
+  .login-logo { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 6px; }
+  .login-sub { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-top: -8px; }
+  #loginError { color: var(--red); font-size: 12px; display: none; }
+
   @media (max-width: 600px) {
     header { padding: 0 14px; }
     .wrap { padding: 14px; }
@@ -325,23 +392,45 @@
     .f-grid { grid-template-columns: 1fr 1fr; }
     .cal-week-label { min-width: 60px; max-width: 60px; }
     .cal-corner { min-width: 60px; max-width: 60px; }
+    #notifPanel { width: 100%; }
   }
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
+<div id="loginOverlay">
+  <div class="login-logo">POST TRACKER</div>
+  <div class="login-sub">Acceso privado</div>
+  <input type="password" id="loginInput" class="form-input" style="max-width:240px;text-align:center" placeholder="Contraseña"
+    onkeydown="if(event.key==='Enter')doLogin()">
+  <button class="btn ink" onclick="doLogin()" style="min-width:160px;padding:10px">ENTRAR</button>
+  <div id="loginError">Contraseña incorrecta</div>
+</div>
+
+<!-- NOTIFICATION PANEL -->
+<div id="notifPanel">
+  <div class="notif-hdr">
+    <div class="notif-title">Actividad</div>
+    <button class="btn sm" onclick="toggleNotifPanel()">✕ Cerrar</button>
+  </div>
+  <div id="notifList" style="flex:1;overflow-y:auto"></div>
+</div>
+
 <header>
-  <div class="logo" onclick="showBoard()">POST TRACKER <em>MEX</em></div>
-  <div style="display:flex;align-items:center;gap:10px">
+  <div class="logo" onclick="showBoard()">POST TRACKER</div>
+  <div style="display:flex;align-items:center;gap:8px">
     <div class="sync-bar" id="syncBar" style="display:none">
       <div class="sync-dot" id="syncDot"></div>
       <span id="syncText">Guardado</span>
     </div>
+    <button class="btn sm icon-btn" id="darkToggle" onclick="toggleDark()" title="Modo oscuro">🌙</button>
+    <button class="btn sm icon-btn" onclick="toggleNotifPanel()" title="Actividad">🔔</button>
     <button class="btn ink" onclick="openModal('proyecto')">+ Nuevo proyecto</button>
   </div>
 </header>
 
-<!-- MODAL PROYECTO -->
+<!-- MODAL NUEVO PROYECTO -->
 <div class="modal-overlay" id="modalProyecto" onclick="closeModalOutside(event,'modalProyecto')">
   <div class="modal">
     <div class="modal-title">NUEVO PROYECTO</div>
@@ -354,16 +443,14 @@
       <div class="form-field"><label class="form-lbl">Fecha de rodaje</label><input class="form-input" id="f-rodaje" type="date"></div>
       <div class="form-field"><label class="form-lbl">Fecha de entrega</label><input class="form-input" id="f-entrega" type="date"></div>
     </div>
-    <div class="form-row">
-      <div class="form-field">
-        <label class="form-lbl">Estado</label>
-        <select class="form-select" id="f-estado">
-          <option value="pre">Pre-producción</option>
-          <option value="prod">Producción</option>
-          <option value="post" selected>Post-producción</option>
-          <option value="done">Entregado</option>
-        </select>
-      </div>
+    <div class="form-field">
+      <label class="form-lbl">Estado</label>
+      <select class="form-select" id="f-estado">
+        <option value="pre">Pre-producción</option>
+        <option value="prod">Producción</option>
+        <option value="post" selected>Post-producción</option>
+        <option value="done">Entregado</option>
+      </select>
     </div>
     <div class="modal-actions">
       <button class="btn ink" onclick="saveProject()">GUARDAR</button>
@@ -372,7 +459,36 @@
   </div>
 </div>
 
-<!-- MODAL PIEZA -->
+<!-- MODAL EDITAR PROYECTO -->
+<div class="modal-overlay" id="editProyectoModal" onclick="closeModalOutside(event,'editProyectoModal')">
+  <div class="modal">
+    <div class="modal-title">EDITAR PROYECTO</div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-lbl">Cliente</label><input class="form-input" id="ep-cliente" type="text"></div>
+      <div class="form-field"><label class="form-lbl">Director</label><input class="form-input" id="ep-director" type="text"></div>
+    </div>
+    <div class="form-field"><label class="form-lbl">Nombre del proyecto</label><input class="form-input" id="ep-nombre" type="text"></div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-lbl">Fecha de rodaje</label><input class="form-input" id="ep-rodaje" type="date"></div>
+      <div class="form-field"><label class="form-lbl">Fecha de entrega</label><input class="form-input" id="ep-entrega" type="date"></div>
+    </div>
+    <div class="form-field">
+      <label class="form-lbl">Estado</label>
+      <select class="form-select" id="ep-estado">
+        <option value="pre">Pre-producción</option>
+        <option value="prod">Producción</option>
+        <option value="post">Post-producción</option>
+        <option value="done">Entregado</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ink" onclick="saveEditProject()">GUARDAR CAMBIOS</button>
+      <button class="btn" onclick="closeModal('editProyectoModal')">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVA PIEZA -->
 <div class="modal-overlay" id="piezaModal" onclick="closeModalOutside(event,'piezaModal')">
   <div class="modal">
     <div class="modal-title">NUEVA PIEZA</div>
@@ -381,12 +497,63 @@
       <div class="form-field"><label class="form-lbl">Duración</label><input class="form-input" id="p-dur" type="text" placeholder="ej. 30s"></div>
     </div>
     <div class="form-row">
+      <div class="form-field"><label class="form-lbl">País</label><input class="form-input" id="p-pais" type="text" placeholder="ej. MEX"></div>
+      <div class="form-field">
+        <label class="form-lbl">Categoría</label>
+        <select class="form-select" id="p-categoria">
+          <option value="Hero">Hero</option>
+          <option value="Reducción">Reducción</option>
+          <option value="Versiones">Versiones</option>
+          <option value="Digitales">Digitales</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
       <div class="form-field"><label class="form-lbl">Fecha de entrega</label><input class="form-input" id="p-fecha" type="text" placeholder="ej. 18 Jul"></div>
       <div class="form-field"><label class="form-lbl">Link al guión</label><input class="form-input" id="p-guion" type="text" placeholder="https://..."></div>
     </div>
     <div class="modal-actions">
       <button class="btn ink" onclick="savePieza()">AGREGAR PIEZA</button>
       <button class="btn" onclick="closeModal('piezaModal')">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FECHA IMPORTANTE -->
+<div class="modal-overlay" id="fechaModal" onclick="closeModalOutside(event,'fechaModal')">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-title" id="fechaModalTitle">AGREGAR FECHA</div>
+    <div class="form-field">
+      <label class="form-lbl">Tipo</label>
+      <select class="form-select" id="fm-tipo">
+        <option value="ag">Agencia</option>
+        <option value="cl">Cliente</option>
+        <option value="ap">Aprobación</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label class="form-lbl">Fecha</label>
+      <input class="form-input" id="fm-fecha" type="date">
+      <div id="fm-fecha-actual" style="font-size:11px;color:var(--muted);margin-top:3px;display:none"></div>
+    </div>
+    <div class="form-field"><label class="form-lbl">Nota</label><input class="form-input" id="fm-nota" type="text" placeholder="ej. 10:00 am MX"></div>
+    <input type="hidden" id="fm-edit-idx" value="-1">
+    <div class="modal-actions">
+      <button class="btn ink" onclick="saveFechaModal()">GUARDAR</button>
+      <button class="btn" onclick="closeModal('fechaModal')">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AGREGAR DÍA -->
+<div class="modal-overlay" id="addDiaModal" onclick="closeModalOutside(event,'addDiaModal')">
+  <div class="modal" style="max-width:360px">
+    <div class="modal-title">AGREGAR DÍA</div>
+    <div class="form-field"><label class="form-lbl">Fecha</label><input class="form-input" id="nd-fecha" type="date"></div>
+    <div class="form-field"><label class="form-lbl">Etiqueta (opcional)</label><input class="form-input" id="nd-label" type="text" placeholder="ej. Shoot, Copias Agencia"></div>
+    <div class="modal-actions">
+      <button class="btn ink" onclick="saveAddDia()">AGREGAR</button>
+      <button class="btn" onclick="closeModal('addDiaModal')">CANCELAR</button>
     </div>
   </div>
 </div>
@@ -419,6 +586,7 @@
         <div class="pstat">Rodaje: <b id="d-rodaje"></b></div>
         <div class="pstat">Piezas: <b id="d-piezas"></b></div>
         <div class="pstat">Entrega: <b id="d-entrega"></b></div>
+        <button class="btn sm" onclick="openEditProject()" style="margin-left:auto">✎ Editar proyecto</button>
       </div>
     </div>
 
@@ -430,7 +598,6 @@
       <div class="tab" onclick="switchTab('daybyday',this)">Day by Day</div>
     </div>
 
-    <!-- PIEZAS -->
     <div class="tab-panel active" id="tab-piezas">
       <div class="ph">
         <div class="sec-title">Piezas del proyecto</div>
@@ -439,31 +606,23 @@
       <div id="piezasList"></div>
     </div>
 
-    <!-- OFFLINE -->
     <div class="tab-panel" id="tab-offline">
-      <div class="ph" style="margin-bottom:14px">
-        <div class="sec-title">Estado Offline</div>
-      </div>
+      <div class="ph" style="margin-bottom:14px"><div class="sec-title">Estado Offline</div></div>
       <div id="offlineList"></div>
     </div>
 
-    <!-- ONLINE -->
     <div class="tab-panel" id="tab-online">
-      <div class="ph" style="margin-bottom:14px">
-        <div class="sec-title">Estado Online</div>
-      </div>
+      <div class="ph" style="margin-bottom:14px"><div class="sec-title">Estado Online</div></div>
       <div id="onlineList"></div>
     </div>
 
-    <!-- TIMING -->
     <div class="tab-panel" id="tab-timing">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div class="sec-title">Calendario de producción — Popeye's GUT Mexico</div>
+        <div class="sec-title">Calendario de producción</div>
       </div>
       <div class="cal-wrap" id="calWrap"></div>
     </div>
 
-    <!-- DAY BY DAY -->
     <div class="tab-panel" id="tab-daybyday">
       <div class="dbd-sec">
         <div>
@@ -482,7 +641,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -493,38 +651,134 @@ const ONLINE_STAGES  = ['Color','VFX','Mix'];
 const ESTADO_OPTS    = ['—','En curso','Rev Agencia','Ajustes','Rev Cliente','Aprobado'];
 const ESTADO_CLS     = { '—':'', 'En curso':'en-curso', 'Rev Agencia':'rev-agencia', 'Ajustes':'ajustes', 'Rev Cliente':'rev-cliente', 'Aprobado':'aprobado' };
 const FMT_CYCLE      = [{ cls:'', lbl:'—' },{ cls:'wip', lbl:'En curso' },{ cls:'rev', lbl:'Rev' },{ cls:'adj', lbl:'Ajustes' },{ cls:'done', lbl:'Aprobado' }];
+const MONTHS_ES      = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+// ── LOGIN ──
+function doLogin() {
+  if (document.getElementById('loginInput').value === 'rebo2026') {
+    sessionStorage.setItem('auth','1');
+    document.getElementById('loginOverlay').style.display = 'none';
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+    document.getElementById('loginInput').value = '';
+    document.getElementById('loginInput').focus();
+  }
+}
+function checkAuth() {
+  if (sessionStorage.getItem('auth') === '1') {
+    document.getElementById('loginOverlay').style.display = 'none';
+  }
+}
+
+// ── DARK MODE ──
+function toggleDark() {
+  const dark = document.body.classList.toggle('dark');
+  localStorage.setItem('darkMode', dark ? '1' : '0');
+  document.getElementById('darkToggle').textContent = dark ? '☀' : '🌙';
+}
+function initDark() {
+  if (localStorage.getItem('darkMode') === '1') {
+    document.body.classList.add('dark');
+    document.getElementById('darkToggle').textContent = '☀';
+  }
+}
+
+// ── ACTIVITY LOG ──
+function logActivity(action, detail, projOverride) {
+  const p = getCurrentProject();
+  const proj = projOverride || (p ? `${p.cliente} — ${p.nombre}` : '');
+  let log = [];
+  try { log = JSON.parse(localStorage.getItem('activity_log') || '[]'); } catch(e) {}
+  log.unshift({ ts: new Date().toISOString(), proj, action, detail: detail || '' });
+  if (log.length > 50) log = log.slice(0, 50);
+  localStorage.setItem('activity_log', JSON.stringify(log));
+}
+
+// ── NOTIFICATION PANEL ──
+function toggleNotifPanel() {
+  const panel = document.getElementById('notifPanel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) renderNotifPanel();
+}
+function renderNotifPanel() {
+  let log = [];
+  try { log = JSON.parse(localStorage.getItem('activity_log') || '[]'); } catch(e) {}
+  const list = document.getElementById('notifList');
+  if (!log.length) {
+    list.innerHTML = '<div style="padding:28px 16px;text-align:center;color:var(--muted);font-size:11px;letter-spacing:1px">Sin actividad registrada</div>';
+    return;
+  }
+  list.innerHTML = log.map(e => {
+    const dt = new Date(e.ts);
+    const fdt = dt.toLocaleDateString('es-AR',{day:'numeric',month:'short'}) + ' · ' + dt.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+    return `<div class="notif-item">
+      <div class="notif-meta">${fdt}${e.proj ? ' · ' + e.proj : ''}</div>
+      <div class="notif-action">${e.action}</div>
+      ${e.detail ? `<div class="notif-detail">${e.detail}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ── HELPERS ──
+function shortDate(s) {
+  if (!s || s === '—') return s || '—';
+  return s.replace(/\s+\d{4}$/, '').trim();
+}
+function fmtDateISO(iso) {
+  if (!iso) return '—';
+  const p = iso.split('-');
+  if (p.length !== 3) return iso;
+  return parseInt(p[2]) + ' ' + MONTHS_ES[parseInt(p[1]) - 1];
+}
+function parseDateDisplay(str) {
+  // Parse "Lun 23 Mar" or "23 Mar" or "23 Mar 2025" → Date object
+  const mmap = { ene:0,feb:1,mar:2,abr:3,may:4,jun:5,jul:6,ago:7,sep:8,oct:9,nov:10,dic:11 };
+  const parts = (str||'').trim().split(/\s+/);
+  // Skip leading weekday if present (no digits)
+  let i = 0;
+  if (parts[i] && !/\d/.test(parts[i])) i++;
+  const day = parseInt(parts[i]);
+  const mon = parts[i+1] ? mmap[parts[i+1].toLowerCase().slice(0,3)] : undefined;
+  if (isNaN(day) || mon === undefined) return null;
+  const year = parts[i+2] ? parseInt(parts[i+2]) : new Date().getFullYear();
+  return new Date(year, mon, day);
+}
+function isDayPast(day) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  if (day.isoDate) return new Date(day.isoDate + 'T00:00:00') < today;
+  const d = parseDateDisplay(day.date);
+  return d ? d < today : false;
+}
 
 // ── STATE ──
 const PIEZAS_POPEYES = [
-  { id:101, nombre:'HERO Live Session MEX', dur:'13m',  fecha:'18 Jul', guion:'Doc Hero' },
-  { id:102, nombre:'HERO Live Session PR',  dur:'13m',  fecha:'18 Jul', guion:'' },
-  { id:103, nombre:'Teaser MEX',            dur:'10s',  fecha:'18 Jul', guion:'' },
-  { id:104, nombre:'Teaser PR',             dur:'10s',  fecha:'18 Jul', guion:'' },
-  { id:105, nombre:'HERO MEX',              dur:'30s',  fecha:'',       guion:'' },
-  { id:106, nombre:'HERO PR',               dur:'30s',  fecha:'',       guion:'' },
-  { id:107, nombre:'LIFT 1 MEX',            dur:'15s',  fecha:'',       guion:'' },
-  { id:108, nombre:'LIFT 1 PR',             dur:'15s',  fecha:'',       guion:'' },
-  { id:109, nombre:'LIFT 2 MEX',            dur:'15s',  fecha:'',       guion:'' },
-  { id:110, nombre:'LIFT 2 PR',             dur:'15s',  fecha:'25 Sept',guion:'' },
-  { id:111, nombre:'LIFT PR',               dur:'15s',  fecha:'',       guion:'' },
-  { id:112, nombre:'Promo SCAT MEX',        dur:'15s',  fecha:'',       guion:'' },
-  { id:113, nombre:'Promo SCAT PR',         dur:'15s',  fecha:'',       guion:'' },
-  { id:114, nombre:'Gráfica Sandwich',      dur:'N/A',  fecha:'',       guion:'' },
-  { id:115, nombre:'Gráfica None In',       dur:'N/A',  fecha:'',       guion:'' },
-  { id:116, nombre:'Radio MEX',             dur:'20s',  fecha:'',       guion:'' },
-  { id:117, nombre:'Radio PR',              dur:'15s',  fecha:'',       guion:'' },
+  { id:101, nombre:'HERO Live Session MEX', dur:'13m',  fecha:'18 Jul', guion:'Doc Hero', pais:'MEX', categoria:'Hero' },
+  { id:102, nombre:'HERO Live Session PR',  dur:'13m',  fecha:'18 Jul', guion:'',         pais:'PR',  categoria:'Hero' },
+  { id:103, nombre:'Teaser MEX',            dur:'10s',  fecha:'18 Jul', guion:'',         pais:'MEX', categoria:'Versiones' },
+  { id:104, nombre:'Teaser PR',             dur:'10s',  fecha:'18 Jul', guion:'',         pais:'PR',  categoria:'Versiones' },
+  { id:105, nombre:'HERO MEX',              dur:'30s',  fecha:'',       guion:'',         pais:'MEX', categoria:'Hero' },
+  { id:106, nombre:'HERO PR',               dur:'30s',  fecha:'',       guion:'',         pais:'PR',  categoria:'Hero' },
+  { id:107, nombre:'LIFT 1 MEX',            dur:'15s',  fecha:'',       guion:'',         pais:'MEX', categoria:'Reducción' },
+  { id:108, nombre:'LIFT 1 PR',             dur:'15s',  fecha:'',       guion:'',         pais:'PR',  categoria:'Reducción' },
+  { id:109, nombre:'LIFT 2 MEX',            dur:'15s',  fecha:'',       guion:'',         pais:'MEX', categoria:'Reducción' },
+  { id:110, nombre:'LIFT 2 PR',             dur:'15s',  fecha:'25 Sept',guion:'',         pais:'PR',  categoria:'Reducción' },
+  { id:111, nombre:'LIFT PR',               dur:'15s',  fecha:'',       guion:'',         pais:'PR',  categoria:'Reducción' },
+  { id:112, nombre:'Promo SCAT MEX',        dur:'15s',  fecha:'',       guion:'',         pais:'MEX', categoria:'Versiones' },
+  { id:113, nombre:'Promo SCAT PR',         dur:'15s',  fecha:'',       guion:'',         pais:'PR',  categoria:'Versiones' },
+  { id:114, nombre:'Gráfica Sandwich',      dur:'N/A',  fecha:'',       guion:'',         pais:'MEX', categoria:'Digitales' },
+  { id:115, nombre:'Gráfica None In',       dur:'N/A',  fecha:'',       guion:'',         pais:'MEX', categoria:'Digitales' },
+  { id:116, nombre:'Radio MEX',             dur:'20s',  fecha:'',       guion:'',         pais:'MEX', categoria:'Versiones' },
+  { id:117, nombre:'Radio PR',              dur:'15s',  fecha:'',       guion:'',         pais:'PR',  categoria:'Versiones' },
 ];
 
 let projects = [{
   id: 1,
   cliente: "Popeye's", nombre: 'GUT', director: 'Lautaro Furiolo',
-  rodaje: '23 Mar 2025', entrega: '19 Abr 2025', estado: 'post',
+  rodaje: '23 Mar', entrega: '19 Abr', estado: 'post',
   piezas: PIEZAS_POPEYES
 }];
 
-// piezaData[projectId][piezaId] = { offline, online, formatos, vo, guion, comment }
 let piezaData = {};
-
 let currentProjectId = null;
 
 function getPiezaData(pid, piezaId) {
@@ -534,119 +788,101 @@ function getPiezaData(pid, piezaId) {
       offlineEstado: '—',
       offlineStages: Object.fromEntries(OFFLINE_STAGES.map(s => [s,'—'])),
       offlineComment: '',
+      framioOffline: '',
       onlineEstado: '—',
       onlineStages: Object.fromEntries(ONLINE_STAGES.map(s => [s,'—'])),
       onlineComment: '',
+      framioOnline: '',
       formatos: { '16:9':'—','4:5':'—','1:1':'—','9:16':'—' },
       vo: true,
       guion: '',
       comment: ''
     };
   }
-  return piezaData[pid][piezaId];
+  const d = piezaData[pid][piezaId];
+  if (d.framioOffline === undefined) d.framioOffline = '';
+  if (d.framioOnline === undefined) d.framioOnline = '';
+  return d;
 }
 
-// ── TIMING DATA — Calendario real del PDF ──
+// ── TIMING DATA ──
 const TIMING_WEEKS = [
-  {
-    dates: '23–29 Feb', label: 'Sem 1',
-    days: [
-      { n:'23', day:'L', events:[] },
-      { n:'24', day:'Ma', events:[] },
-      { n:'25', day:'Mi', events:[] },
-      { n:'26', day:'J', events:[] },
-      { n:'27', day:'V', events:[{ type:'rev', text:'APROBACIÓN' }] },
-      { n:'28', day:'S', wk:true, events:[] },
-      { n:'1 Mar', day:'D', wk:true, events:[] },
-    ]
-  },
-  {
-    dates: '2–8 Mar', label: 'Sem 2',
-    days: [
-      { n:'2', day:'L', events:[] },
-      { n:'3', day:'Ma', events:[] },
-      { n:'4', day:'Mi', events:[{ type:'musical', text:'Producción Musical' }] },
-      { n:'5', day:'J', events:[] },
-      { n:'6', day:'V', events:[] },
-      { n:'7', day:'S', wk:true, events:[] },
-      { n:'8', day:'D', wk:true, events:[] },
-    ]
-  },
-  {
-    dates: '9–15 Mar', label: 'Sem 3',
-    days: [
-      { n:'9', day:'L', events:[] },
-      { n:'10', day:'Ma', events:[{ type:'musical', text:'Call música I Rebo+GUT 5:30pm' },{ type:'musical', text:'Call música I Rebo+GUT+Karina 6:00pm' }] },
-      { n:'11', day:'Mi', events:[{ type:'musical', text:'Producción Musical' }] },
-      { n:'12', day:'J', events:[] },
-      { n:'13', day:'V', events:[{ type:'rev', text:'Junta avances LOCACIONES' }] },
-      { n:'14', day:'S', wk:true, events:[] },
-      { n:'15', day:'D', wk:true, events:[] },
-    ]
-  },
-  {
-    dates: '16–22 Mar', label: 'Sem 4',
-    days: [
-      { n:'16', day:'L', events:[{ type:'feriado', text:'FERIADO' }] },
-      { n:'17', day:'Ma', events:[{ type:'ppm', text:'Pre PPM Agencia' }] },
-      { n:'18', day:'Mi', events:[{ type:'ppm', text:'PPM AGENCIA Y CLIENTE 8–11am' }] },
-      { n:'19', day:'J', events:[{ type:'ensayo', text:'ENSAYOS MÚSICOS' }] },
-      { n:'20', day:'V', events:[{ type:'ensayo', text:'ENSAYOS CON KARINA Y MÚSICOS' }] },
-      { n:'21', day:'S', wk:true, events:[{ type:'backs', text:'Envío BACKS IA (4/4) 12pm' },{ type:'backs', text:'Recepción FEEDBACK (4/4) 4pm' }] },
-      { n:'22', day:'D', wk:true, events:[{ type:'backs', text:'Envío ajustes (4/4) 11am' },{ type:'aprobacion', text:'APROBACIÓN (4/4) 2pm' }] },
-    ]
-  },
-  {
-    dates: '23–29 Mar', label: 'Sem 5',
-    days: [
-      { n:'23', day:'L', events:[{ type:'shoot', text:'SHOOT / SHOOTING FOTOS' }] },
-      { n:'24', day:'Ma', events:[{ type:'edit', text:'EDICIÓN / AUDIOS' }] },
-      { n:'25', day:'Mi', events:[{ type:'edit', text:'EDICIÓN / AUDIOS' }] },
-      { n:'26', day:'J', events:[{ type:'agencia', text:'COPIAS DE TRABAJO AGENCIA 12:00 hrs' },{ type:'edit', text:'Tasty Desk / Teaser / SCAT' }] },
-      { n:'27', day:'V', events:[{ type:'foto', text:'Envío FOTO PRODUCTO #1 Tenders y #2 Bone In' }] },
-      { n:'28', day:'S', wk:true, events:[] },
-      { n:'29', day:'D', wk:true, events:[] },
-    ]
-  },
-  {
-    dates: '30 Mar–5 Abr', label: 'Sem 6',
-    days: [
-      { n:'30', day:'L', events:[{ type:'cliente', text:'COPIAS TRABAJO CLIENTE 14:00 hs' },{ type:'edit', text:'Tasty/Teaser/SCAT + Lifts' }] },
-      { n:'31', day:'Ma', events:[{ type:'aprobacion', text:'Aprobación copias 18hs MIAMI' }] },
-      { n:'1', day:'Mi', events:[{ type:'cc', text:'CORRECCIÓN DE COLOR Tasty/Teaser/SCAT' }] },
-      { n:'2', day:'J', events:[{ type:'foto', text:'Feedback FOTO #1 Tenders y #2 Bone In' }] },
-      { n:'3', day:'V', events:[{ type:'feriado', text:'FERIADO SEMANA SANTA' }] },
-      { n:'4', day:'S', wk:true, events:[{ type:'feriado', text:'FERIADO SEMANA SANTA' }] },
-      { n:'5', day:'D', wk:true, events:[{ type:'feriado', text:'FERIADO SEMANA SANTA' }] },
-    ]
-  },
-  {
-    dates: '6–12 Abr', label: 'Sem 7',
-    days: [
-      { n:'6', day:'L', events:[{ type:'audio', text:'AUDIOS / RADIOS' },{ type:'aprobacion', text:'Aprobación audios y CC PM' }] },
-      { n:'7', day:'Ma', events:[{ type:'cc', text:'CORRECCIÓN DE COLOR Lifts' },{ type:'aprobacion', text:'Aprobación CC PM' }] },
-      { n:'8', day:'Mi', events:[{ type:'audio', text:'AUDIOS' },{ type:'aprobacion', text:'Aprobación audios PM' },{ type:'aprobacion', text:'Aprobación Online Tasty/Teaser/SCAT 12pm' }] },
-      { n:'9', day:'J', events:[{ type:'online', text:'ONLINE LIFTS 2x30" y 4x15"' },{ type:'entrega', text:'ENTREGA FORMATOS Tasty/Teaser/SCAT' }] },
-      { n:'10', day:'V', events:[{ type:'entrega', text:'ENTREGA FORMATOS Tasty/Teaser/SCAT' }] },
-      { n:'11', day:'S', wk:true, events:[] },
-      { n:'12', day:'D', wk:true, events:[] },
-    ]
-  },
-  {
-    dates: '13–19 Abr', label: 'Sem 8',
-    days: [
-      { n:'13', day:'L', events:[{ type:'aprobacion', text:'APROBACIÓN ONLINE LIFTS 12pm' },{ type:'entrega', text:'ENTREGA 16:9 LIFTS EOD' }] },
-      { n:'14', day:'Ma', events:[{ type:'entrega', text:'ENTREGA FORMATOS LIFTS 2x30" y 4x15"' }] },
-      { n:'15', day:'Mi', events:[{ type:'online', text:'ONLINE Tasty/Teaser/SCAT' },{ type:'aprobacion', text:'Aprobación Online Tasty/Teaser 12pm' }] },
-      { n:'16', day:'J', events:[] },
-      { n:'17', day:'V', events:[] },
-      { n:'18', day:'S', wk:true, events:[] },
-      { n:'19', day:'D', wk:true, events:[{ type:'entrega', text:'ENTREGA 16:9 LIFTS + Contenido extra EOD' }] },
-    ]
-  },
+  { dates:'23–29 Feb', label:'Sem 1', days:[
+    { n:'23', day:'L', events:[] },
+    { n:'24', day:'Ma', events:[] },
+    { n:'25', day:'Mi', events:[] },
+    { n:'26', day:'J', events:[] },
+    { n:'27', day:'V', events:[{ type:'rev', text:'APROBACIÓN' }] },
+    { n:'28', day:'S', wk:true, events:[] },
+    { n:'1 Mar', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'2–8 Mar', label:'Sem 2', days:[
+    { n:'2', day:'L', events:[] },
+    { n:'3', day:'Ma', events:[] },
+    { n:'4', day:'Mi', events:[{ type:'musical', text:'Producción Musical' }] },
+    { n:'5', day:'J', events:[] },
+    { n:'6', day:'V', events:[] },
+    { n:'7', day:'S', wk:true, events:[] },
+    { n:'8', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'9–15 Mar', label:'Sem 3', days:[
+    { n:'9', day:'L', events:[] },
+    { n:'10', day:'Ma', events:[{ type:'musical', text:'Call música I Rebo+GUT 5:30pm' },{ type:'musical', text:'Call música I Rebo+GUT+Karina 6:00pm' }] },
+    { n:'11', day:'Mi', events:[{ type:'musical', text:'Producción Musical' }] },
+    { n:'12', day:'J', events:[] },
+    { n:'13', day:'V', events:[{ type:'rev', text:'Junta avances LOCACIONES' }] },
+    { n:'14', day:'S', wk:true, events:[] },
+    { n:'15', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'16–22 Mar', label:'Sem 4', days:[
+    { n:'16', day:'L', events:[{ type:'feriado', text:'FERIADO' }] },
+    { n:'17', day:'Ma', events:[{ type:'ppm', text:'Pre PPM Agencia' }] },
+    { n:'18', day:'Mi', events:[{ type:'ppm', text:'PPM AGENCIA Y CLIENTE 8–11am' }] },
+    { n:'19', day:'J', events:[{ type:'ensayo', text:'ENSAYOS MÚSICOS' }] },
+    { n:'20', day:'V', events:[{ type:'ensayo', text:'ENSAYOS CON KARINA Y MÚSICOS' }] },
+    { n:'21', day:'S', wk:true, events:[{ type:'backs', text:'Envío BACKS IA (4/4) 12pm' },{ type:'backs', text:'Recepción FEEDBACK (4/4) 4pm' }] },
+    { n:'22', day:'D', wk:true, events:[{ type:'backs', text:'Envío ajustes (4/4) 11am' },{ type:'aprobacion', text:'APROBACIÓN (4/4) 2pm' }] },
+  ]},
+  { dates:'23–29 Mar', label:'Sem 5', days:[
+    { n:'23', day:'L', events:[{ type:'shoot', text:'SHOOT / SHOOTING FOTOS' }] },
+    { n:'24', day:'Ma', events:[{ type:'edit', text:'EDICIÓN / AUDIOS' }] },
+    { n:'25', day:'Mi', events:[{ type:'edit', text:'EDICIÓN / AUDIOS' }] },
+    { n:'26', day:'J', events:[{ type:'agencia', text:'COPIAS DE TRABAJO AGENCIA 12:00 hrs' },{ type:'edit', text:'Tasty Desk / Teaser / SCAT' }] },
+    { n:'27', day:'V', events:[{ type:'foto', text:'Envío FOTO PRODUCTO #1 Tenders y #2 Bone In' }] },
+    { n:'28', day:'S', wk:true, events:[] },
+    { n:'29', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'30 Mar–5 Abr', label:'Sem 6', days:[
+    { n:'30', day:'L', events:[{ type:'cliente', text:'COPIAS TRABAJO CLIENTE 14:00 hs' },{ type:'edit', text:'Tasty/Teaser/SCAT + Lifts' }] },
+    { n:'31', day:'Ma', events:[{ type:'aprobacion', text:'Aprobación copias 18hs MIAMI' }] },
+    { n:'1', day:'Mi', events:[{ type:'cc', text:'CORRECCIÓN DE COLOR Tasty/Teaser/SCAT' }] },
+    { n:'2', day:'J', events:[{ type:'foto', text:'Feedback FOTO #1 Tenders y #2 Bone In' }] },
+    { n:'3', day:'V', events:[{ type:'feriado', text:'FERIADO SEMANA SANTA' }] },
+    { n:'4', day:'S', wk:true, events:[{ type:'feriado', text:'FERIADO SEMANA SANTA' }] },
+    { n:'5', day:'D', wk:true, events:[{ type:'feriado', text:'FERIADO SEMANA SANTA' }] },
+  ]},
+  { dates:'6–12 Abr', label:'Sem 7', days:[
+    { n:'6', day:'L', events:[{ type:'audio', text:'AUDIOS / RADIOS' },{ type:'aprobacion', text:'Aprobación audios y CC PM' }] },
+    { n:'7', day:'Ma', events:[{ type:'cc', text:'CORRECCIÓN DE COLOR Lifts' },{ type:'aprobacion', text:'Aprobación CC PM' }] },
+    { n:'8', day:'Mi', events:[{ type:'audio', text:'AUDIOS' },{ type:'aprobacion', text:'Aprobación audios PM' },{ type:'aprobacion', text:'Aprobación Online Tasty/Teaser/SCAT 12pm' }] },
+    { n:'9', day:'J', events:[{ type:'online', text:'ONLINE LIFTS 2x30" y 4x15"' },{ type:'entrega', text:'ENTREGA FORMATOS Tasty/Teaser/SCAT' }] },
+    { n:'10', day:'V', events:[{ type:'entrega', text:'ENTREGA FORMATOS Tasty/Teaser/SCAT' }] },
+    { n:'11', day:'S', wk:true, events:[] },
+    { n:'12', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'13–19 Abr', label:'Sem 8', days:[
+    { n:'13', day:'L', events:[{ type:'aprobacion', text:'APROBACIÓN ONLINE LIFTS 12pm' },{ type:'entrega', text:'ENTREGA 16:9 LIFTS EOD' }] },
+    { n:'14', day:'Ma', events:[{ type:'entrega', text:'ENTREGA FORMATOS LIFTS 2x30" y 4x15"' }] },
+    { n:'15', day:'Mi', events:[{ type:'online', text:'ONLINE Tasty/Teaser/SCAT' },{ type:'aprobacion', text:'Aprobación Online Tasty/Teaser 12pm' }] },
+    { n:'16', day:'J', events:[] },
+    { n:'17', day:'V', events:[] },
+    { n:'18', day:'S', wk:true, events:[] },
+    { n:'19', day:'D', wk:true, events:[{ type:'entrega', text:'ENTREGA 16:9 LIFTS + Contenido extra EOD' }] },
+  ]},
 ];
+const TIMING_BY_PROJECT = { 1: TIMING_WEEKS };
 
-// ── DIA A DIA DATA — por proyecto ──
+// ── DBD DEFAULT DATA ──
 const DBD_BY_PROJECT = {
   1: {
     fechas: [
@@ -696,11 +932,12 @@ const DBD_BY_PROJECT = {
 };
 
 let dbdData = [];
+let fechasData = [];
 
 // ── BOARD ──
 function renderBoard() {
   const groups = { pre:[], prod:[], post:[], done:[] };
-  projects.forEach(p => groups[p.estado].push(p));
+  projects.forEach(p => { if (groups[p.estado]) groups[p.estado].push(p); });
   const meta = {
     post:{ name:'Post-producción', color:'#e8a87c' },
     prod:{ name:'Producción', color:'#f1c40f' },
@@ -716,7 +953,7 @@ function renderBoard() {
       html += `<div class="proj-row" onclick="showDetail(${p.id})">
         <div class="proj-info"><div class="proj-client">${p.cliente}</div><div class="proj-dir">${p.director}</div></div>
         <div class="proj-piezas">${cnt} pieza${cnt!==1?'s':''}</div>
-        <div class="proj-date soon">${p.entrega}</div>
+        <div class="proj-date soon">${shortDate(p.entrega)}</div>
         <button class="btn sm danger" style="flex-shrink:0" onclick="event.stopPropagation();deleteProject(${p.id})">✕</button>
         <div class="proj-arrow">›</div>
       </div>`;
@@ -731,13 +968,7 @@ async function showDetail(id) {
   const p = projects.find(x => x.id === id);
   if (!p) return;
   currentProjectId = id;
-  document.getElementById('bc-name').textContent = p.cliente;
-  document.getElementById('d-client').textContent = p.cliente;
-  document.getElementById('d-sub').textContent = `${p.nombre} · ${p.director}`;
-  document.getElementById('d-rodaje').textContent = p.rodaje;
-  document.getElementById('d-piezas').textContent = `${p.piezas.length}`;
-  document.getElementById('d-entrega').textContent = p.entrega;
-  document.getElementById('d-meta').innerHTML = `<span class="m-tag post">Post-producción</span><span class="m-tag soon">Entrega: ${p.entrega}</span>`;
+  updateDetailHeader(p);
   renderPiezas(p);
   renderOffline(p);
   renderOnline(p);
@@ -751,15 +982,58 @@ async function showDetail(id) {
   setSyncStatus('ok', 'Listo');
 }
 
+function updateDetailHeader(p) {
+  document.getElementById('bc-name').textContent = p.cliente;
+  document.getElementById('d-client').textContent = p.cliente;
+  document.getElementById('d-sub').textContent = `${p.nombre} · ${p.director}`;
+  document.getElementById('d-rodaje').textContent = shortDate(p.rodaje);
+  document.getElementById('d-piezas').textContent = p.piezas.length;
+  document.getElementById('d-entrega').textContent = shortDate(p.entrega);
+  const estadoLabels = { pre:'Pre-producción', prod:'Producción', post:'Post-producción', done:'Entregado' };
+  document.getElementById('d-meta').innerHTML = `<span class="m-tag post">${estadoLabels[p.estado]||p.estado}</span><span class="m-tag soon">Entrega: ${shortDate(p.entrega)}</span>`;
+}
+
 function getCurrentProject() { return projects.find(x => x.id === currentProjectId); }
 
 async function deleteProject(id) {
   const p = projects.find(x => x.id === id);
   if (!p) return;
   if (!confirm(`¿Eliminar "${p.cliente} — ${p.nombre}"? Esta acción no se puede deshacer.`)) return;
+  logActivity('Proyecto eliminado', `${p.cliente} — ${p.nombre}`, `${p.cliente} — ${p.nombre}`);
   projects = projects.filter(x => x.id !== id);
   await saveProjects();
   renderBoard();
+}
+
+// ── EDIT PROJECT ──
+function openEditProject() {
+  const p = getCurrentProject(); if (!p) return;
+  document.getElementById('ep-cliente').value = p.cliente || '';
+  document.getElementById('ep-director').value = p.director || '';
+  document.getElementById('ep-nombre').value = p.nombre || '';
+  document.getElementById('ep-rodaje').value = '';
+  document.getElementById('ep-entrega').value = '';
+  document.getElementById('ep-estado').value = p.estado || 'post';
+  document.getElementById('editProyectoModal').classList.add('open');
+}
+
+async function saveEditProject() {
+  const p = getCurrentProject(); if (!p) return;
+  const cliente = document.getElementById('ep-cliente').value.trim();
+  if (!cliente) { alert('Ingresá el nombre del cliente'); return; }
+  p.cliente  = cliente;
+  p.director = document.getElementById('ep-director').value.trim();
+  p.nombre   = document.getElementById('ep-nombre').value.trim();
+  p.estado   = document.getElementById('ep-estado').value;
+  const rodajeISO = document.getElementById('ep-rodaje').value;
+  const entregaISO = document.getElementById('ep-entrega').value;
+  if (rodajeISO) p.rodaje = fmtDateISO(rodajeISO);
+  if (entregaISO) p.entrega = fmtDateISO(entregaISO);
+  closeModal('editProyectoModal');
+  await saveProjects();
+  updateDetailHeader(p);
+  renderBoard();
+  logActivity('Proyecto editado', `${p.cliente} — ${p.nombre}`);
 }
 
 // ── PIEZAS ──
@@ -772,42 +1046,68 @@ function renderPiezas(p) {
     </div>`;
     return;
   }
-  list.innerHTML = p.piezas.map((pieza, i) => {
-    const d = getPiezaData(p.id, pieza.id);
-    const dots = ['16:9','4:5','1:1','9:16'].map(f => `<div class="fdot ${fmtCls(d.formatos[f])}"></div>`).join('');
-    return `<div class="piece-card" id="pc-${pieza.id}">
-      <div class="piece-sum${i===0?' open':''}" onclick="togglePiece(this)">
-        <div class="p-left"><div class="p-name">${pieza.nombre}</div><div class="p-dur">${pieza.dur}</div></div>
-        <div class="fmt-dots">${dots}</div>
-        <div class="p-date normal">${pieza.fecha||'—'}</div>
-        <div class="p-chev${i===0?' open':''}">›</div>
-      </div>
-      <div class="p-detail${i===0?' open':''}">
-        <div class="dl">Formatos</div>
-        <div class="fmt-grid">
-          ${['16:9','4:5','1:1','9:16'].map(f => {
-            const cls = fmtCls(d.formatos[f]);
-            return `<div class="fmt-item ${cls}" onclick="cycleFmt(this,'${f}',${pieza.id})">
-              <div class="fmt-ratio">${f}</div>
-              <div class="fmt-st">${d.formatos[f]||'—'}</div>
-            </div>`;
-          }).join('')}
-        </div>
-        <div class="dl">Locutor (VO)</div>
-        <div class="vo-box${d.vo?' on':''}" onclick="toggleVO(this,${pieza.id})">
-          <div class="vo-chk">${d.vo?'✓':''}</div>
-          <div class="vo-lbl">Incluye locutor</div>
-        </div>
-        <div class="dl">Guión</div>
-        <input class="txt-input" type="text" value="${d.guion||''}" placeholder="Link al guión..." onchange="getPiezaData(${p.id},${pieza.id}).guion=this.value; savePiezaData()">
-        <div class="dl">Comentarios</div>
-        <textarea class="txt-input" style="min-height:48px" placeholder="Comentarios..." onchange="getPiezaData(${p.id},${pieza.id}).comment=this.value; savePiezaData()">${d.comment||''}</textarea>
-        <div class="piece-actions">
-          <button class="btn sm danger" onclick="deletePieza(${pieza.id})">Eliminar pieza</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
+
+  // Group by pais → categoria
+  const groups = {};
+  p.piezas.forEach(pieza => {
+    const pais = pieza.pais || 'Sin país';
+    const cat  = pieza.categoria || 'Sin categoría';
+    if (!groups[pais]) groups[pais] = {};
+    if (!groups[pais][cat]) groups[pais][cat] = [];
+    groups[pais][cat].push(pieza);
+  });
+
+  let html = '';
+  let idx = 0;
+  Object.entries(groups).forEach(([pais, cats]) => {
+    html += `<div class="pieza-pais-group"><div class="pieza-pais-hdr">${pais}</div>`;
+    Object.entries(cats).forEach(([cat, piezas]) => {
+      html += `<div class="pieza-cat-group"><div class="pieza-cat-hdr">${cat}</div>`;
+      piezas.forEach(pieza => {
+        const d = getPiezaData(p.id, pieza.id);
+        const dots = ['16:9','4:5','1:1','9:16'].map(f => `<div class="fdot ${fmtCls(d.formatos[f])}"></div>`).join('');
+        const isFirst = idx === 0;
+        html += `<div class="piece-card" id="pc-${pieza.id}">
+          <div class="piece-sum${isFirst?' open':''}" onclick="togglePiece(this)">
+            <div class="p-left"><div class="p-name">${pieza.nombre}</div><div class="p-dur">${pieza.dur}</div></div>
+            <div class="fmt-dots">${dots}</div>
+            <div class="p-date normal">${pieza.fecha||'—'}</div>
+            <div class="p-chev${isFirst?' open':''}">›</div>
+          </div>
+          <div class="p-detail${isFirst?' open':''}">
+            <div class="dl">Formatos</div>
+            <div class="fmt-grid">
+              ${['16:9','4:5','1:1','9:16'].map(f => {
+                const cls = fmtCls(d.formatos[f]);
+                return `<div class="fmt-item ${cls}" onclick="cycleFmt(this,'${f}',${pieza.id})">
+                  <div class="fmt-ratio">${f}</div>
+                  <div class="fmt-st">${d.formatos[f]||'—'}</div>
+                </div>`;
+              }).join('')}
+            </div>
+            <div class="dl">Locutor (VO)</div>
+            <div class="vo-box${d.vo?' on':''}" onclick="toggleVO(this,${pieza.id})">
+              <div class="vo-chk">${d.vo?'✓':''}</div>
+              <div class="vo-lbl">Incluye locutor</div>
+            </div>
+            <div class="dl">Guión</div>
+            <input class="txt-input" type="text" value="${(d.guion||'').replace(/"/g,'&quot;')}" placeholder="Link al guión..."
+              onchange="getPiezaData(${p.id},${pieza.id}).guion=this.value; savePiezaData()">
+            <div class="dl">Comentarios</div>
+            <textarea class="txt-input" style="min-height:48px" placeholder="Comentarios..."
+              onchange="getPiezaData(${p.id},${pieza.id}).comment=this.value; savePiezaData()">${d.comment||''}</textarea>
+            <div class="piece-actions">
+              <button class="btn sm danger" onclick="deletePieza(${pieza.id})">Eliminar pieza</button>
+            </div>
+          </div>
+        </div>`;
+        idx++;
+      });
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+  list.innerHTML = html;
 }
 
 function fmtCls(val) {
@@ -822,17 +1122,18 @@ function cycleFmt(el, fmt, piezaId) {
   const p = getCurrentProject(); if (!p) return;
   const d = getPiezaData(p.id, piezaId);
   const cur = FMT_CYCLE.findIndex(f => f.cls && el.classList.contains(f.cls));
-  const next = FMT_CYCLE[(cur===-1?0:cur+1)%FMT_CYCLE.length];
-  FMT_CYCLE.forEach(f => { if(f.cls) el.classList.remove(f.cls); });
+  const next = FMT_CYCLE[(cur === -1 ? 1 : cur + 1) % FMT_CYCLE.length];
+  FMT_CYCLE.forEach(f => { if (f.cls) el.classList.remove(f.cls); });
   if (next.cls) el.classList.add(next.cls);
   el.querySelector('.fmt-st').textContent = next.lbl;
   d.formatos[fmt] = next.lbl;
   savePiezaData();
-  const card = document.getElementById('pc-'+piezaId);
+  const card = document.getElementById('pc-' + piezaId);
   if (card) {
     const dots = card.querySelectorAll('.fdot');
-    ['16:9','4:5','1:1','9:16'].forEach((f,i) => { dots[i].className = 'fdot ' + fmtCls(d.formatos[f]); });
+    ['16:9','4:5','1:1','9:16'].forEach((f, i) => { dots[i].className = 'fdot ' + fmtCls(d.formatos[f]); });
   }
+  logActivity('Formato actualizado', `${fmt} → ${next.lbl}`);
 }
 
 function toggleVO(el, piezaId) {
@@ -842,10 +1143,11 @@ function toggleVO(el, piezaId) {
   el.querySelector('.vo-chk').textContent = on ? '✓' : '';
   getPiezaData(p.id, piezaId).vo = on;
   savePiezaData();
+  logActivity('VO actualizado', on ? 'Con locutor' : 'Sin locutor');
 }
 
 function togglePiece(sum) {
-  const det = sum.nextElementSibling;
+  const det  = sum.nextElementSibling;
   const chev = sum.querySelector('.p-chev');
   const open = det.classList.contains('open');
   det.classList.toggle('open', !open);
@@ -856,6 +1158,7 @@ function togglePiece(sum) {
 function deletePieza(piezaId) {
   const p = getCurrentProject(); if (!p) return;
   if (!confirm('¿Eliminar esta pieza?')) return;
+  logActivity('Pieza eliminada', p.piezas.find(x => x.id === piezaId)?.nombre || '');
   p.piezas = p.piezas.filter(x => x.id !== piezaId);
   document.getElementById('d-piezas').textContent = p.piezas.length;
   saveProjects();
@@ -866,13 +1169,15 @@ function deletePieza(piezaId) {
 
 // ── OFFLINE / ONLINE ──
 function renderStageTab(containerId, stages, dataKey, stateKey, p) {
-  if (!p.piezas.length) {
+  if (!p || !p.piezas.length) {
     document.getElementById(containerId).innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin piezas — agregá piezas en el tab Piezas</div>';
     return;
   }
+  const frameKey = 'framio' + dataKey.charAt(0).toUpperCase() + dataKey.slice(1);
   document.getElementById(containerId).innerHTML = p.piezas.map((pieza, i) => {
     const d = getPiezaData(p.id, pieza.id);
     const est = d[stateKey];
+    const frameVal = (d[frameKey] || '').replace(/"/g,'&quot;');
     return `<div class="piece-card" id="${dataKey}-pc-${pieza.id}">
       <div class="piece-sum${i===0?' open':''}" onclick="togglePiece(this)">
         <div class="p-left"><div class="p-name">${pieza.nombre}</div><div class="p-dur">${pieza.dur}</div></div>
@@ -899,11 +1204,24 @@ function renderStageTab(containerId, stages, dataKey, stateKey, p) {
             </div>`;
           }).join('')}
         </div>
+        <div class="dl">Link Frame.io</div>
+        <div class="frameio-row">
+          <input type="text" value="${frameVal}" placeholder="https://app.frame.io/..."
+            onchange="getPiezaData(${p.id},${pieza.id})['${frameKey}']=this.value; savePiezaData()" id="frio-${dataKey}-${pieza.id}">
+          <button class="btn sm" onclick="openFramio('${frameKey}',${pieza.id},${p.id})">↗ Ver</button>
+        </div>
         <div class="dl">Comentarios</div>
-        <textarea class="txt-input" style="min-height:48px" placeholder="Notas de ${dataKey}..." onchange="getPiezaData(${p.id},${pieza.id}).${dataKey}Comment=this.value; savePiezaData()">${d[dataKey+'Comment']||''}</textarea>
+        <textarea class="txt-input" style="min-height:48px" placeholder="Notas de ${dataKey}..."
+          onchange="getPiezaData(${p.id},${pieza.id}).${dataKey}Comment=this.value; savePiezaData()">${d[dataKey+'Comment']||''}</textarea>
       </div>
     </div>`;
   }).join('');
+}
+
+function openFramio(frameKey, piezaId, projId) {
+  const url = getPiezaData(projId, piezaId)[frameKey];
+  if (url && url.trim()) window.open(url.trim(), '_blank');
+  else alert('Ingresá primero el link de Frame.io');
 }
 
 function renderOffline(p) { renderStageTab('offlineList', OFFLINE_STAGES, 'offline', 'offlineEstado', p||getCurrentProject()); }
@@ -918,15 +1236,16 @@ function setEstado(sel, stateKey, piezaId, prefix, projId) {
   getPiezaData(projId, piezaId)[stateKey] = val;
   savePiezaData();
   const ew = document.getElementById(`${prefix}-ew-${piezaId}`);
-  if (ew) { const dot = ew.querySelector('.estado-dot'); if(dot) dot.style.background = estColor(val); }
+  if (ew) { const dot = ew.querySelector('.estado-dot'); if (dot) dot.style.background = estColor(val); }
+  logActivity('Estado actualizado', `${prefix} → ${val}`);
 }
 
 function cycleEstado(el, dataKey, stage, piezaId, projId) {
   const d = getPiezaData(projId, piezaId);
   if (!d[dataKey]) d[dataKey] = {};
-  const cur = ESTADO_OPTS.indexOf(d[dataKey][stage]||'—');
-  const next = ESTADO_OPTS[(cur+1)%ESTADO_OPTS.length];
-  Object.values(ESTADO_CLS).forEach(c => { if(c) el.classList.remove(c); });
+  const cur  = ESTADO_OPTS.indexOf(d[dataKey][stage]||'—');
+  const next = ESTADO_OPTS[(cur + 1) % ESTADO_OPTS.length];
+  Object.values(ESTADO_CLS).forEach(c => { if (c) el.classList.remove(c); });
   const nc = ESTADO_CLS[next]||'';
   if (nc) el.classList.add(nc);
   el.querySelector('.sst-label').textContent = next;
@@ -934,40 +1253,30 @@ function cycleEstado(el, dataKey, stage, piezaId, projId) {
   savePiezaData();
 }
 
-// ── TIMING DATA: keyed by project id ──
-const TIMING_BY_PROJECT = { 1: TIMING_WEEKS };
-
-// ── TIMING — CALENDARIO SEMANAL ──
+// ── TIMING ──
 function renderTiming() {
   const weeks = TIMING_BY_PROJECT[currentProjectId];
   if (!weeks || !weeks.length) {
-    document.getElementById('calWrap').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin timing — enviá el calendario a Mariano para cargarlo</div>';
+    document.getElementById('calWrap').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin timing</div>';
     return;
   }
-
   const days = ['MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY','SUNDAY'];
   let html = `<div class="cal-header-row">
     <div class="cal-corner"><div class="cal-corner-name">LAUTARO</div><div class="cal-corner-sub">FURIOLO</div></div>
     ${days.map((d,i) => `<div class="cal-day-header${i>=5?' wk':''}"><div class="cal-day-name">${d}</div></div>`).join('')}
   </div>`;
-
   weeks.forEach(week => {
     html += `<div class="cal-week">
-      <div class="cal-week-label">
-        <div class="cal-week-dates">${week.dates}</div>
-      </div>
+      <div class="cal-week-label"><div class="cal-week-dates">${week.dates}</div></div>
       ${week.days.map(day => `
         <div class="cal-day-cell${day.wk?' wk':''}">
           <div class="cal-day-num">${day.n}</div>
           ${day.events.map(e => `<div class="cal-event ${e.type}">${e.text}</div>`).join('')}
-        </div>
-      `).join('')}
+        </div>`).join('')}
     </div>`;
   });
-
-  html += `</div>
-  <div class="cal-legend">
-    <div class="cal-li"><div class="cal-ld" style="background:#111;color:#fff"></div>Shoot</div>
+  html += `</div><div class="cal-legend">
+    <div class="cal-li"><div class="cal-ld" style="background:#111"></div>Shoot</div>
     <div class="cal-li"><div class="cal-ld" style="background:var(--blue-cal)"></div>Edición</div>
     <div class="cal-li"><div class="cal-ld" style="background:var(--orange-cal)"></div>CC</div>
     <div class="cal-li"><div class="cal-ld" style="background:var(--green-cal)"></div>Audio</div>
@@ -977,109 +1286,80 @@ function renderTiming() {
     <div class="cal-li"><div class="cal-ld" style="background:var(--green-cal)"></div>Aprobación</div>
     <div class="cal-li"><div class="cal-ld" style="background:var(--yellow-m)"></div>Feriado</div>
   </div>`;
-
   document.getElementById('calWrap').innerHTML = html;
 }
 
 // ── SHEETS CONFIG ──
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxH-w3FCy8oJFh3DA3mscRERYp_iisfTay8rxQpDOJUYPU5jOr3VBDW66OfQ-7JvNmu8g/exec';
 
-let fechasData = [];
-
-// ── DAY BY DAY ──
+// ── FECHAS ──
 function renderFechas() {
   if (!fechasData.length) {
-    document.getElementById('fechasGrid').innerHTML = '<div style="padding:20px 0;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin fechas — se cargan junto con el timing</div>';
+    document.getElementById('fechasGrid').innerHTML = '<div style="padding:20px 0;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase;grid-column:1/-1">Sin fechas importantes</div>';
     return;
   }
-  document.getElementById('fechasGrid').innerHTML = fechasData.map(f =>
-    `<div class="fi ${f.cls}"><div class="fi-tipo">${f.tipo}</div><div class="fi-val">${f.val}</div><div class="fi-nota">${f.nota}</div></div>`
+  document.getElementById('fechasGrid').innerHTML = fechasData.map((f, i) =>
+    `<div class="fi ${f.cls||'ag'}" onclick="editFecha(${i})" title="Click para editar">
+      <div class="fi-tipo">${f.tipo}</div>
+      <div class="fi-val">${f.val}</div>
+      <div class="fi-nota">${f.nota}</div>
+    </div>`
   ).join('');
 }
 
-function renderDBD() {
-  if (!dbdData.length) {
-    document.getElementById('dbdList').innerHTML = '<div style="padding:20px 0;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin agenda — se carga junto con el timing</div>';
-    return;
+function addFecha() {
+  document.getElementById('fechaModalTitle').textContent = 'AGREGAR FECHA';
+  document.getElementById('fm-tipo').value = 'ag';
+  document.getElementById('fm-fecha').value = '';
+  document.getElementById('fm-nota').value = '';
+  document.getElementById('fm-edit-idx').value = '-1';
+  document.getElementById('fm-fecha-actual').style.display = 'none';
+  document.getElementById('fechaModal').classList.add('open');
+}
+
+function editFecha(idx) {
+  const f = fechasData[idx]; if (!f) return;
+  document.getElementById('fechaModalTitle').textContent = 'EDITAR FECHA';
+  document.getElementById('fm-tipo').value = f.cls || 'ag';
+  document.getElementById('fm-fecha').value = f.isoDate || '';
+  document.getElementById('fm-nota').value = f.nota || '';
+  document.getElementById('fm-edit-idx').value = idx;
+  const act = document.getElementById('fm-fecha-actual');
+  act.textContent = 'Fecha actual: ' + f.val;
+  act.style.display = 'block';
+  document.getElementById('fechaModal').classList.add('open');
+}
+
+function saveFechaModal() {
+  const tipo = document.getElementById('fm-tipo').value;
+  const isoFecha = document.getElementById('fm-fecha').value;
+  const nota = document.getElementById('fm-nota').value.trim();
+  const tipoLabels = { ag:'Agencia', cl:'Cliente', ap:'Aprobación' };
+  const idx = parseInt(document.getElementById('fm-edit-idx').value);
+
+  let val = '';
+  if (isoFecha) val = fmtDateISO(isoFecha);
+
+  if (idx >= 0) {
+    const f = fechasData[idx];
+    if (val) { f.val = val; f.isoDate = isoFecha; }
+    f.nota = nota;
+    f.cls  = tipo;
+    f.tipo = tipoLabels[tipo];
+    logActivity('Fecha editada', `${tipoLabels[tipo]}: ${f.val}`);
+  } else {
+    if (!val) { alert('Seleccioná una fecha'); return; }
+    fechasData.push({ tipo: tipoLabels[tipo], val, isoDate: isoFecha, nota, cls: tipo });
+    logActivity('Fecha agregada', `${tipoLabels[tipo]}: ${val}`);
   }
-  document.getElementById('dbdList').innerHTML = dbdData.map(day => `
-    <div class="dbd-day" id="day-${day.id}">
-      <div class="dbd-dh">
-        <div class="dbd-date">${day.date}${day.label?` · <span style="color:${dayLabelColor(day.label)};font-weight:600">${day.label}</span>`:''}</div>
-        <div style="display:flex;gap:5px">
-          <button class="btn sm" onclick="addEntry('${day.id}')">+ Entrada</button>
-          <button class="btn sm danger" onclick="deleteDay('${day.id}')">✕</button>
-        </div>
-      </div>
-      <div class="dbd-entries" id="entries-${day.id}">
-        ${day.entries.map(e => renderEntry(e, day.id)).join('')}
-      </div>
-    </div>
-  `).join('');
+  closeModal('fechaModal');
+  saveFechas();
+  renderFechas();
 }
 
-function renderEntry(e, dayId) {
-  return `<div class="dbd-entry${e.hl?' '+e.hl:''}" id="entry-${e.id}">
-    <input class="dbd-time-input" value="${e.time}" onchange="updateEntry('${dayId}','${e.id}','time',this.value)" placeholder="Hora">
-    <div class="dbd-info">
-      <input class="dbd-title-input" value="${e.title}" onchange="updateEntry('${dayId}','${e.id}','title',this.value)" placeholder="Título...">
-      <input class="dbd-note-input" value="${e.note}" onchange="updateEntry('${dayId}','${e.id}','note',this.value)" placeholder="Nota...">
-    </div>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0">
-      <span class="dbd-tag ${e.tag}">${e.tag}</span>
-      <button class="btn sm danger" style="font-size:9px;padding:2px 6px" onclick="deleteEntry('${dayId}','${e.id}')">✕</button>
-    </div>
-  </div>`;
-}
-
-function dayLabelColor(lbl) {
-  if (/aprobaci[oó]n|entrega/i.test(lbl)) return 'var(--green)';
-  if (/cliente/i.test(lbl)) return 'var(--orange)';
-  if (/agencia|ppm/i.test(lbl)) return 'var(--blue)';
-  return 'var(--muted)';
-}
-
-function addDia() {
-  const date = prompt('Fecha (ej. "Lun 5 May"):'); if (!date) return;
-  const label = prompt('Etiqueta (opcional):') || '';
-  dbdData.push({ id:'d'+Date.now(), date, label, entries:[] });
-  saveDBD(); renderDBD();
-}
-
-function deleteDay(dayId) {
-  if (!confirm('¿Eliminar este día?')) return;
-  dbdData = dbdData.filter(d => d.id !== dayId);
-  saveDBD(); renderDBD();
-}
-
-function addEntry(dayId) {
-  const day = dbdData.find(d => d.id === dayId); if (!day) return;
-  const time = prompt('Horario (ej. "10:00"):') || '';
-  const title = prompt('Título:'); if (!title) return;
-  const note = prompt('Nota (opcional):') || '';
-  const tags = 'shoot / edit / cc / audio / online / entrega / agencia / cliente / aprobacion';
-  const tag = prompt(`Tag (${tags}):`) || 'edit';
-  day.entries.push({ id:'e'+Date.now(), time, title, note, tag, hl:'' });
-  saveDBD(); renderDBD();
-}
-
-function deleteEntry(dayId, entryId) {
-  const day = dbdData.find(d => d.id === dayId); if (!day) return;
-  day.entries = day.entries.filter(e => e.id !== entryId);
-  saveDBD(); renderDBD();
-}
-
-let saveTimer = null;
-function updateEntry(dayId, entryId, field, value) {
-  const day = dbdData.find(d => d.id === dayId); if (!day) return;
-  const entry = day.entries.find(e => e.id === entryId);
-  if (entry) { entry[field] = value; clearTimeout(saveTimer); saveTimer = setTimeout(saveDBD, 1500); }
-}
-
-// ── SHEETS: FECHAS ──
 async function saveFechas() {
   setSyncStatus('syncing', 'Guardando...');
-  const rows = fechasData.map(f => [f.tipo, f.val, f.nota, f.cls]);
+  const rows = fechasData.map(f => [f.tipo, f.val, f.nota, f.cls, f.isoDate||'']);
   localStorage.setItem('fechas_' + currentProjectId, JSON.stringify(fechasData));
   try {
     await fetch(SHEETS_URL, { method:'POST', body: JSON.stringify({ tab:'fechas_'+currentProjectId, data:rows }) });
@@ -1094,27 +1374,128 @@ async function loadFechas() {
     const res = await fetch(SHEETS_URL + '?tab=fechas_' + currentProjectId);
     const rows = await res.json();
     if (Array.isArray(rows) && rows.length) {
-      fechasData = rows.map(r => ({ tipo:r[0], val:r[1], nota:r[2], cls:r[3] }));
+      fechasData = rows.map(r => ({ tipo:r[0], val:r[1], nota:r[2], cls:r[3], isoDate:r[4]||'' }));
       localStorage.setItem('fechas_' + currentProjectId, JSON.stringify(fechasData));
       return;
     }
   } catch(e) {}
-  // fallback localStorage
   const s = localStorage.getItem('fechas_' + currentProjectId);
   if (s) { try { fechasData = JSON.parse(s); return; } catch(e){} }
-  // fallback defaults
   fechasData = JSON.parse(JSON.stringify(DBD_BY_PROJECT[currentProjectId]?.fechas || []));
 }
 
-// ── SHEETS: DBD ──
+// ── DBD ──
+function renderDBD() {
+  const active = dbdData.filter(d => !isDayPast(d));
+  const past   = dbdData.filter(d => isDayPast(d));
+  const ordered = [...active, ...past];
+
+  if (!ordered.length) {
+    document.getElementById('dbdList').innerHTML = '<div style="padding:20px 0;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase">Sin agenda</div>';
+    return;
+  }
+  document.getElementById('dbdList').innerHTML = ordered.map(day => {
+    const vencido = isDayPast(day);
+    return `<div class="dbd-day${vencido?' vencido':''}" id="day-${day.id}">
+      <div class="dbd-dh">
+        <div class="dbd-date">${day.date}${day.label?` · <span style="color:${dayLabelColor(day.label)};font-weight:600">${day.label}</span>`:''}</div>
+        <div style="display:flex;gap:5px;align-items:center">
+          ${vencido?'<span class="dbd-vencido-tag">Vencido</span>':''}
+          <button class="btn sm" onclick="addEntry('${day.id}')">+ Entrada</button>
+          <button class="btn sm danger" onclick="deleteDay('${day.id}')">✕</button>
+        </div>
+      </div>
+      <div class="dbd-entries" id="entries-${day.id}">
+        ${day.entries.map(e => renderEntry(e, day.id)).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderEntry(e, dayId) {
+  return `<div class="dbd-entry${e.hl?' '+e.hl:''}" id="entry-${e.id}">
+    <input class="dbd-time-input" value="${e.time||''}" onchange="updateEntry('${dayId}','${e.id}','time',this.value)" placeholder="Hora">
+    <div class="dbd-info">
+      <input class="dbd-title-input" value="${(e.title||'').replace(/"/g,'&quot;')}" onchange="updateEntry('${dayId}','${e.id}','title',this.value)" placeholder="Título...">
+      <input class="dbd-note-input" value="${(e.note||'').replace(/"/g,'&quot;')}" onchange="updateEntry('${dayId}','${e.id}','note',this.value)" placeholder="Nota...">
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0">
+      <span class="dbd-tag ${e.tag||''}">${e.tag||''}</span>
+      <button class="btn sm danger" style="font-size:9px;padding:2px 6px" onclick="deleteEntry('${dayId}','${e.id}')">✕</button>
+    </div>
+  </div>`;
+}
+
+function dayLabelColor(lbl) {
+  if (/aprobaci[oó]n|entrega/i.test(lbl)) return 'var(--green)';
+  if (/cliente/i.test(lbl)) return 'var(--orange)';
+  if (/agencia|ppm/i.test(lbl)) return 'var(--blue)';
+  return 'var(--muted)';
+}
+
+function addDia() {
+  document.getElementById('nd-fecha').value = '';
+  document.getElementById('nd-label').value = '';
+  document.getElementById('addDiaModal').classList.add('open');
+}
+
+function saveAddDia() {
+  const isoFecha = document.getElementById('nd-fecha').value;
+  if (!isoFecha) { alert('Seleccioná una fecha'); return; }
+  const label = document.getElementById('nd-label').value.trim();
+  const d = new Date(isoFecha + 'T00:00:00');
+  const dayNames = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const displayDate = dayNames[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS_ES[d.getMonth()];
+  dbdData.push({ id:'d'+Date.now(), date:displayDate, isoDate:isoFecha, label, entries:[] });
+  closeModal('addDiaModal');
+  saveDBD();
+  renderDBD();
+  logActivity('Día agregado', displayDate);
+}
+
+function deleteDay(dayId) {
+  if (!confirm('¿Eliminar este día?')) return;
+  const day = dbdData.find(d => d.id === dayId);
+  logActivity('Día eliminado', day?.date || '');
+  dbdData = dbdData.filter(d => d.id !== dayId);
+  saveDBD(); renderDBD();
+}
+
+function addEntry(dayId) {
+  const day = dbdData.find(d => d.id === dayId); if (!day) return;
+  const time  = prompt('Horario (ej. "10:00"):') || '';
+  const title = prompt('Título:'); if (!title) return;
+  const note  = prompt('Nota (opcional):') || '';
+  const tags  = 'shoot / edit / cc / audio / online / entrega / agencia / cliente / aprobacion';
+  const tag   = prompt(`Tag (${tags}):`) || 'edit';
+  day.entries.push({ id:'e'+Date.now(), time, title, note, tag, hl:'' });
+  saveDBD(); renderDBD();
+  logActivity('Entrada agregada', title);
+}
+
+function deleteEntry(dayId, entryId) {
+  const day = dbdData.find(d => d.id === dayId); if (!day) return;
+  const entry = day.entries.find(e => e.id === entryId);
+  logActivity('Entrada eliminada', entry?.title || '');
+  day.entries = day.entries.filter(e => e.id !== entryId);
+  saveDBD(); renderDBD();
+}
+
+let saveTimer = null;
+function updateEntry(dayId, entryId, field, value) {
+  const day = dbdData.find(d => d.id === dayId); if (!day) return;
+  const entry = day.entries.find(e => e.id === entryId);
+  if (entry) { entry[field] = value; clearTimeout(saveTimer); saveTimer = setTimeout(saveDBD, 1500); }
+}
+
 async function saveDBD() {
   setSyncStatus('syncing', 'Guardando...');
   const rows = [];
   dbdData.forEach(day => {
     if (!day.entries.length) {
-      rows.push([day.id, day.date, day.label, '', '', '', '', '', '']);
+      rows.push([day.id, day.date, day.label, '', '', '', '', '', '', day.isoDate||'']);
     } else {
-      day.entries.forEach(e => rows.push([day.id, day.date, day.label, e.id, e.time, e.title, e.note, e.tag, e.hl]));
+      day.entries.forEach(e => rows.push([day.id, day.date, day.label, e.id, e.time, e.title, e.note, e.tag, e.hl, day.isoDate||'']));
     }
   });
   localStorage.setItem('dbd_' + currentProjectId, JSON.stringify(dbdData));
@@ -1133,19 +1514,17 @@ async function loadDBD() {
     if (Array.isArray(rows) && rows.length) {
       dbdData = [];
       rows.forEach(row => {
-        const [dayId, date, label, entryId, time, title, note, tag, hl] = row;
+        const [dayId, date, label, entryId, time, title, note, tag, hl, isoDate] = row;
         let day = dbdData.find(d => d.id === dayId);
-        if (!day) { day = { id:dayId, date, label, entries:[] }; dbdData.push(day); }
+        if (!day) { day = { id:dayId, date, label, isoDate:isoDate||'', entries:[] }; dbdData.push(day); }
         if (entryId) day.entries.push({ id:entryId, time, title, note, tag, hl });
       });
       localStorage.setItem('dbd_' + currentProjectId, JSON.stringify(dbdData));
       return;
     }
   } catch(e) {}
-  // fallback localStorage
   const s = localStorage.getItem('dbd_' + currentProjectId);
   if (s) { try { dbdData = JSON.parse(s); return; } catch(e){} }
-  // fallback defaults
   dbdData = JSON.parse(JSON.stringify(DBD_BY_PROJECT[currentProjectId]?.dbd || []));
 }
 
@@ -1161,7 +1540,10 @@ function closeModal(id) {
     ['f-cliente','f-director','f-nombre','f-rodaje','f-entrega'].forEach(k => { const el=document.getElementById(k); if(el) el.value=''; });
   }
   if (id === 'piezaModal') {
-    ['p-nombre','p-dur','p-fecha','p-guion'].forEach(k => { const el=document.getElementById(k); if(el) el.value=''; });
+    ['p-nombre','p-dur','p-pais','p-fecha','p-guion'].forEach(k => { const el=document.getElementById(k); if(el) el.value=''; });
+  }
+  if (id === 'fechaModal') {
+    document.getElementById('fm-fecha-actual').style.display = 'none';
   }
 }
 
@@ -1172,20 +1554,23 @@ function closeModalOutside(e, id) {
 function saveProject() {
   const cliente = document.getElementById('f-cliente').value.trim();
   if (!cliente) { alert('Ingresá el nombre del cliente'); return; }
-  const fmt = d => { if(!d) return '—'; const dt=new Date(d+'T00:00:00'); return dt.toLocaleDateString('es-AR',{day:'numeric',month:'short',year:'numeric'}); };
-  projects.push({
+  const rodajeISO = document.getElementById('f-rodaje').value;
+  const entregaISO = document.getElementById('f-entrega').value;
+  const newProj = {
     id: Date.now(),
     cliente,
     director: document.getElementById('f-director').value.trim(),
     nombre: document.getElementById('f-nombre').value.trim(),
-    rodaje: fmt(document.getElementById('f-rodaje').value),
-    entrega: fmt(document.getElementById('f-entrega').value),
+    rodaje: rodajeISO ? fmtDateISO(rodajeISO) : '—',
+    entrega: entregaISO ? fmtDateISO(entregaISO) : '—',
     estado: document.getElementById('f-estado').value,
     piezas: []
-  });
+  };
+  projects.push(newProj);
   closeModal('modalProyecto');
   saveProjects();
   renderBoard();
+  logActivity('Proyecto creado', `${cliente} — ${newProj.nombre}`, `${cliente} — ${newProj.nombre}`);
 }
 
 function savePieza() {
@@ -1195,9 +1580,11 @@ function savePieza() {
   const newPieza = {
     id: Date.now(),
     nombre,
-    dur: document.getElementById('p-dur').value.trim() || '—',
-    fecha: document.getElementById('p-fecha').value.trim() || '',
-    guion: document.getElementById('p-guion').value.trim() || ''
+    dur:      document.getElementById('p-dur').value.trim() || '—',
+    pais:     document.getElementById('p-pais').value.trim() || 'Sin país',
+    categoria:document.getElementById('p-categoria').value || 'Hero',
+    fecha:    document.getElementById('p-fecha').value.trim() || '',
+    guion:    document.getElementById('p-guion').value.trim() || ''
   };
   p.piezas.push(newPieza);
   getPiezaData(p.id, newPieza.id).guion = newPieza.guion;
@@ -1207,6 +1594,7 @@ function savePieza() {
   renderPiezas(p);
   renderOffline(p);
   renderOnline(p);
+  logActivity('Pieza agregada', `${nombre} (${newPieza.pais} · ${newPieza.categoria})`);
 }
 
 // ── SYNC STATUS ──
@@ -1217,7 +1605,7 @@ function setSyncStatus(status, text) {
   bar.style.display = 'flex';
   dot.className = 'sync-dot' + (status==='syncing'?' syncing':status==='error'?' error':'');
   txt.textContent = text;
-  if (status==='ok') setTimeout(()=>{ bar.style.display='none'; }, 2000);
+  if (status === 'ok') setTimeout(() => { bar.style.display = 'none'; }, 2000);
 }
 
 // ── NAV ──
@@ -1226,7 +1614,7 @@ function showView(id) { document.querySelectorAll('.view').forEach(v=>v.classLis
 function switchTab(tab, btn) {
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  if(btn) btn.classList.add('active');
+  if (btn) btn.classList.add('active');
   document.getElementById('tab-'+tab).classList.add('active');
 }
 
@@ -1281,6 +1669,8 @@ async function loadPiezaData() {
 
 // ── INIT ──
 async function init() {
+  checkAuth();
+  initDark();
   setSyncStatus('syncing', 'Cargando...');
   await Promise.all([loadProjects(), loadPiezaData()]);
   setSyncStatus('ok', 'Listo');
