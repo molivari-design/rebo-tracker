@@ -186,7 +186,9 @@
   .empty-piezas p { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
 
   .pieza-pais-group { margin-bottom: 18px; }
-  .pieza-pais-hdr { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--ink); padding: 5px 0; border-bottom: 2px solid var(--ink); margin-bottom: 8px; }
+  .pieza-pais-hdr { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--ink); padding: 5px 0; border-bottom: 2px solid var(--ink); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+  .pieza-pais-hdr:hover { opacity: .75; }
+  .pais-chev { font-size: 10px; color: var(--muted); }
   .pieza-cat-group { margin-bottom: 10px; }
   .pieza-cat-hdr { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted2); padding: 3px 0; border-bottom: 1px dashed var(--rule); margin-bottom: 5px; }
 
@@ -311,6 +313,7 @@
   .cal-event.musical { background: #e8d6ff; color: #4a1a8a; }
   .cal-event.foto { background: #ffd6f0; color: #7a1a5a; }
   .cal-event.ppm { background: #d6f0ff; color: #1a5a7a; }
+  .cal-event.pre { background: #e8e8f8; color: #3a3a8a; }
   .cal-event.ensayo { background: #d6ffe8; color: #1a5a3a; }
   .cal-event.backs { background: #f0d6ff; color: #5a1a8a; }
   .cal-event.agencia { background: var(--blue-cal); color: #1a3a6a; }
@@ -935,15 +938,34 @@ const PIEZAS_POPEYES = [
   { id:117, nombre:'Radio PR',              dur:'15s',  fecha:'',       guion:'',         pais:'PR',  categoria:'Versiones' },
 ];
 
-let projects = [{
-  id: 1,
-  cliente: "Popeye's", nombre: 'GUT', director: 'Lautaro Furiolo',
-  rodaje: '23 Mar', entrega: '19 Abr', estado: 'post',
-  piezas: PIEZAS_POPEYES
-}];
+let projects = [
+  {
+    id: 1,
+    cliente: "Popeye's", nombre: 'GUT', director: 'Lautaro Furiolo',
+    rodaje: '23 Mar', entrega: '19 Abr', estado: 'post',
+    piezas: PIEZAS_POPEYES
+  },
+  {
+    id: 2,
+    cliente: 'MELI', nombre: 'F1', director: 'Ivan Vescovo',
+    rodaje: '10 Abr', entrega: '1 Jun', estado: 'post',
+    piezas: []
+  }
+];
 
 let piezaData = {};
 let currentProjectId = null;
+const paisCollapsed = {};  // key: `${tab}_${pid}_${pais}` → true
+
+function togglePaisGroup(hdr, key) {
+  const body = document.getElementById('pg-' + key);
+  const chev = hdr.querySelector('.pais-chev');
+  if (!body) return;
+  const nowCollapsed = body.style.display === 'none';
+  body.style.display = nowCollapsed ? '' : 'none';
+  chev.textContent = nowCollapsed ? '▼' : '▶';
+  paisCollapsed[key] = !nowCollapsed;
+}
 
 function getPiezaData(pid, piezaId) {
   if (!piezaData[pid]) piezaData[pid] = {};
@@ -1049,7 +1071,108 @@ const TIMING_WEEKS = [
     { n:'19', day:'D', wk:true, events:[{ type:'entrega', text:'ENTREGA 16:9 LIFTS + Contenido extra EOD' }] },
   ]},
 ];
-const TIMING_BY_PROJECT = { 1: TIMING_WEEKS };
+const TIMING_MELI = [
+  { dates:'23–29 Mar', label:'Sem 1', days:[
+    { n:'23', day:'L', events:[{ type:'pre', text:'Presentación Story' },{ type:'pre', text:'Scouting Locaciones' }] },
+    { n:'24', day:'Ma', events:[] },
+    { n:'25', day:'Mi', events:[] },
+    { n:'26', day:'J', events:[{ type:'pre', text:'Envío Presupuesto' }] },
+    { n:'27', day:'V', events:[{ type:'aprobacion', text:'Aprobación Presupuesto' }] },
+    { n:'28', day:'S', wk:true, events:[] },
+    { n:'29', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'30 Mar–5 Abr', label:'Sem 2', days:[
+    { n:'30', day:'L', events:[] },
+    { n:'31', day:'Ma', events:[{ type:'pre', text:'Preproducción' },{ type:'pre', text:'Casting' }] },
+    { n:'1', day:'Mi', events:[] },
+    { n:'2', day:'J', events:[{ type:'pre', text:'Scouting Director' }] },
+    { n:'3', day:'V', events:[{ type:'ppm', text:'Armado PPM' },{ type:'pre', text:'Callback' }] },
+    { n:'4', day:'S', wk:true, events:[{ type:'ppm', text:'Armando PPM' }] },
+    { n:'5', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'6–12 Abr', label:'Sem 3', days:[
+    { n:'6', day:'L', events:[{ type:'pre', text:'Pre producción' }] },
+    { n:'7', day:'Ma', events:[{ type:'ppm', text:'PPM Agencia' },{ type:'ppm', text:'PPM Cliente' }] },
+    { n:'8', day:'Mi', events:[{ type:'pre', text:'Preproducción' }] },
+    { n:'9', day:'J', events:[{ type:'pre', text:'Pre Light' },{ type:'pre', text:'Ambientación' }] },
+    { n:'10', day:'V', events:[{ type:'shoot', text:'SHOOT NIZA' }] },
+    { n:'11', day:'S', wk:true, events:[] },
+    { n:'12', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'13–19 Abr', label:'Sem 4', days:[
+    { n:'13', day:'L', events:[{ type:'shoot', text:'SHOOT GUADALAJARA' }] },
+    { n:'14', day:'Ma', events:[{ type:'pre', text:'Viaje a Bs As' }] },
+    { n:'15', day:'Mi', events:[{ type:'edit', text:'EDIT' }] },
+    { n:'16', day:'J', events:[] },
+    { n:'17', day:'V', events:[] },
+    { n:'18', day:'S', wk:true, events:[] },
+    { n:'19', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'20–26 Abr', label:'Sem 5', days:[
+    { n:'20', day:'L', events:[{ type:'rev', text:'Presentación Offline Agencia' }] },
+    { n:'21', day:'Ma', events:[{ type:'edit', text:'Edit AG' },{ type:'edit', text:'Generación IA Offline' }] },
+    { n:'22', day:'Mi', events:[{ type:'rev', text:'Presentación Offline Cliente' }] },
+    { n:'23', day:'J', events:[{ type:'edit', text:'Edit Cliente' }] },
+    { n:'24', day:'V', events:[{ type:'aprobacion', text:'APROBACIÓN OFFLINE' }] },
+    { n:'25', day:'S', wk:true, events:[] },
+    { n:'26', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'27 Abr–3 May', label:'Sem 6', days:[
+    { n:'27', day:'L', events:[{ type:'cc', text:'COLOR' }] },
+    { n:'28', day:'Ma', events:[{ type:'online', text:'ONLINE' }] },
+    { n:'29', day:'Mi', events:[{ type:'online', text:'ONLINE' }] },
+    { n:'30', day:'J', events:[{ type:'online', text:'ONLINE' }] },
+    { n:'1', day:'V', events:[{ type:'feriado', text:'FERIADO' }] },
+    { n:'2', day:'S', wk:true, events:[] },
+    { n:'3', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'4–10 May', label:'Sem 7', days:[
+    { n:'4', day:'L', events:[] },
+    { n:'5', day:'Ma', events:[] },
+    { n:'6', day:'Mi', events:[{ type:'online', text:'ONLINE' }] },
+    { n:'7', day:'J', events:[] },
+    { n:'8', day:'V', events:[] },
+    { n:'9', day:'S', wk:true, events:[] },
+    { n:'10', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'11–17 May', label:'Sem 8', days:[
+    { n:'11', day:'L', events:[] },
+    { n:'12', day:'Ma', events:[] },
+    { n:'13', day:'Mi', events:[{ type:'online', text:'ONLINE' }] },
+    { n:'14', day:'J', events:[] },
+    { n:'15', day:'V', events:[] },
+    { n:'16', day:'S', wk:true, events:[] },
+    { n:'17', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'18–24 May', label:'Sem 9', days:[
+    { n:'18', day:'L', events:[{ type:'entrega', text:'DELIVERY BUMPERS 3×6s MEX' }] },
+    { n:'19', day:'Ma', events:[] },
+    { n:'20', day:'Mi', events:[{ type:'online', text:'ONLINE' },{ type:'entrega', text:'DELIVERY SNACKS 3×15s MEX' }] },
+    { n:'21', day:'J', events:[{ type:'entrega', text:'DELIVERY SMF 1×15s MEX' }] },
+    { n:'22', day:'V', events:[{ type:'entrega', text:'DELIVERY HERO 60s+30s ARG' }] },
+    { n:'23', day:'S', wk:true, events:[] },
+    { n:'24', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'25–31 May', label:'Sem 10', days:[
+    { n:'25', day:'L', events:[{ type:'feriado', text:'FERIADO' }] },
+    { n:'26', day:'Ma', events:[{ type:'entrega', text:'DELIVERY REDUX 2×15s ARG' },{ type:'entrega', text:'DELIVERY BUMPERS 3×6s ARG' }] },
+    { n:'27', day:'Mi', events:[{ type:'entrega', text:'DELIVERY SNACKS 3×15s ARG' },{ type:'entrega', text:'DELIVERY SMF 1×15s ARG' }] },
+    { n:'28', day:'J', events:[{ type:'entrega', text:'DELIVERY 60s+30s BR' },{ type:'entrega', text:'DELIVERY REDUX 2×15s BR' }] },
+    { n:'29', day:'V', events:[{ type:'entrega', text:'DELIVERY BUMPERS 3×6s BR' },{ type:'entrega', text:'DELIVERY SMF 15s BR' }] },
+    { n:'30', day:'S', wk:true, events:[] },
+    { n:'31', day:'D', wk:true, events:[] },
+  ]},
+  { dates:'1–7 Jun', label:'Sem 11', days:[
+    { n:'1', day:'L', events:[{ type:'entrega', text:'DELIVERY SNACKS 3×15s BR' }] },
+    { n:'2', day:'Ma', events:[] },
+    { n:'3', day:'Mi', events:[] },
+    { n:'4', day:'J', events:[] },
+    { n:'5', day:'V', events:[] },
+    { n:'6', day:'S', wk:true, events:[] },
+    { n:'7', day:'D', wk:true, events:[] },
+  ]},
+];
+const TIMING_BY_PROJECT = { 1: TIMING_WEEKS, 2: TIMING_MELI };
 
 // ── DBD DEFAULT DATA ──
 const DBD_BY_PROJECT = {
@@ -1232,7 +1355,13 @@ function renderPiezas(p) {
   let html = '';
   let idx = 0;
   Object.entries(groups).forEach(([pais, cats]) => {
-    html += `<div class="pieza-pais-group"><div class="pieza-pais-hdr">${pais}</div>`;
+    const gkey = `piezas_${p.id}_${pais}`;
+    const collapsed = paisCollapsed[gkey] === true;
+    html += `<div class="pieza-pais-group">
+      <div class="pieza-pais-hdr" onclick="togglePaisGroup(this,'${gkey}')">
+        <span>${pais}</span><span class="pais-chev">${collapsed ? '▶' : '▼'}</span>
+      </div>
+      <div id="pg-${gkey}" ${collapsed ? 'style="display:none"' : ''}>`;
     Object.entries(cats).forEach(([cat, piezas]) => {
       html += `<div class="pieza-cat-group"><div class="pieza-cat-hdr">${cat}</div>`;
       piezas.forEach(pieza => {
@@ -1279,7 +1408,7 @@ function renderPiezas(p) {
       });
       html += '</div>';
     });
-    html += '</div>';
+    html += '</div></div>';  // close pg-body + pieza-pais-group
   });
   list.innerHTML = html;
 }
@@ -1395,7 +1524,13 @@ function renderStageTab(containerId, stages, dataKey, stateKey, p) {
   let html = '';
   let globalIdx = 0;
   Object.entries(groups).forEach(([pais, piezas]) => {
-    html += `<div class="pieza-pais-group"><div class="pieza-pais-hdr">${pais}</div>`;
+    const gkey = `${dataKey}_${p.id}_${pais}`;
+    const collapsed = paisCollapsed[gkey] === true;
+    html += `<div class="pieza-pais-group">
+      <div class="pieza-pais-hdr" onclick="togglePaisGroup(this,'${gkey}')">
+        <span>${pais}</span><span class="pais-chev">${collapsed ? '▶' : '▼'}</span>
+      </div>
+      <div id="pg-${gkey}" ${collapsed ? 'style="display:none"' : ''}>`;
     piezas.forEach(pieza => {
       const isFirst = globalIdx === 0;
       globalIdx++;
@@ -1449,7 +1584,7 @@ function renderStageTab(containerId, stages, dataKey, stateKey, p) {
         </div>
       </div>`;
     });
-    html += '</div>';
+    html += '</div></div>';  // close pg-body + pieza-pais-group
   });
   document.getElementById(containerId).innerHTML = html;
 }
@@ -1556,8 +1691,12 @@ function renderTimingCSV(csv) {
 
 function renderTimingWeeks(weeks) {
   const days = ['MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY','SUNDAY'];
+  const proj = getCurrentProject();
+  const nameParts = (proj ? proj.director : '').trim().split(/\s+/);
+  const lastName  = nameParts.length > 1 ? nameParts.pop().toUpperCase() : '';
+  const firstName = nameParts.join(' ').toUpperCase();
   let html = `<div class="cal-header-row">
-    <div class="cal-corner"><div class="cal-corner-name">LAUTARO</div><div class="cal-corner-sub">FURIOLO</div></div>
+    <div class="cal-corner"><div class="cal-corner-name">${firstName}</div><div class="cal-corner-sub">${lastName}</div></div>
     ${days.map((d,i) => `<div class="cal-day-header${i>=5?' wk':''}"><div class="cal-day-name">${d}</div></div>`).join('')}
   </div>`;
   weeks.forEach(week => {
@@ -1580,6 +1719,7 @@ function renderTimingWeeks(weeks) {
     <div class="cal-li"><div class="cal-ld" style="background:#111"></div>Entrega</div>
     <div class="cal-li"><div class="cal-ld" style="background:var(--green-cal)"></div>Aprobación</div>
     <div class="cal-li"><div class="cal-ld" style="background:var(--yellow-m)"></div>Feriado</div>
+    <div class="cal-li"><div class="cal-ld" style="background:#e8e8f8"></div>Pre-prod</div>
   </div>`;
   document.getElementById('calWrap').innerHTML = html;
 }
