@@ -596,6 +596,37 @@
   </div>
 </div>
 
+<!-- MODAL AGREGAR ENTRADA -->
+<div class="modal-overlay" id="addEntryModal" onclick="closeModalOutside(event,'addEntryModal')">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-title">AGREGAR ENTRADA</div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-lbl">Horario</label><input class="form-input" id="ae-time" type="text" placeholder="ej. 10:00"></div>
+      <div class="form-field">
+        <label class="form-lbl">Tag</label>
+        <select class="form-select" id="ae-tag">
+          <option value="edit">edit</option>
+          <option value="shoot">shoot</option>
+          <option value="cc">cc</option>
+          <option value="audio">audio</option>
+          <option value="online">online</option>
+          <option value="entrega">entrega</option>
+          <option value="agencia">agencia</option>
+          <option value="cliente">cliente</option>
+          <option value="aprobacion">aprobacion</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-field"><label class="form-lbl">Título</label><input class="form-input" id="ae-title" type="text" placeholder="ej. Copias de trabajo Agencia"></div>
+    <div class="form-field"><label class="form-lbl">Nota (opcional)</label><textarea class="form-input" id="ae-note" rows="2" placeholder="ej. Presencial, 10:00 am MX" style="resize:vertical"></textarea></div>
+    <input type="hidden" id="ae-day-id">
+    <div class="modal-actions">
+      <button class="btn ink" onclick="saveAddEntry()">AGREGAR</button>
+      <button class="btn" onclick="closeModal('addEntryModal')">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
 <!-- BOARD -->
 <div class="view active" id="boardView">
   <div class="wrap">
@@ -792,16 +823,15 @@ function renderNotifPanel() {
 }
 
 // ── HELPERS ──
-function shortDate(s) {
-  if (!s || s === '—') return s || '—';
-  return s.replace(/\s+\d{4}$/, '').trim();
-}
-function fmtDateISO(iso) {
-  if (!iso) return '—';
-  const clean = iso.split('T')[0]; // strip any time/TZ part
-  const p = clean.split('-');
-  if (p.length !== 3) return iso;
-  return parseInt(p[2]) + ' ' + MONTHS_ES[parseInt(p[1]) - 1];
+function formatDate(dateStr) {
+  if (!dateStr || dateStr === '—') return '—';
+  // ISO format YYYY-MM-DD (possibly with T...)
+  if (/^\d{4}-\d{2}-\d{2}/.test(dateStr)) {
+    const parts = dateStr.split('T')[0].split('-');
+    return parseInt(parts[2]) + ' ' + MONTHS_ES[parseInt(parts[1]) - 1];
+  }
+  // Already a display string — strip trailing year if any
+  return dateStr.replace(/\s+\d{4}$/, '').trim();
 }
 function parseDateDisplay(str) {
   // Parse "Lun 23 Mar" or "23 Mar" or "23 Mar 2025" → Date object
@@ -1031,7 +1061,7 @@ function renderBoard() {
       html += `<div class="proj-row" onclick="showDetail(${p.id})">
         <div class="proj-info"><div class="proj-client">${p.cliente}</div><div class="proj-dir">${p.director}</div></div>
         <div class="proj-piezas">${cnt} pieza${cnt!==1?'s':''}</div>
-        <div class="proj-date soon">${shortDate(p.entrega)}</div>
+        <div class="proj-date soon">${formatDate(p.entrega)}</div>
         <button class="btn sm danger" style="flex-shrink:0" onclick="event.stopPropagation();deleteProject(${p.id})">✕</button>
         <div class="proj-arrow">›</div>
       </div>`;
@@ -1064,11 +1094,11 @@ function updateDetailHeader(p) {
   document.getElementById('bc-name').textContent = p.cliente;
   document.getElementById('d-client').textContent = p.cliente;
   document.getElementById('d-sub').textContent = `${p.nombre} · ${p.director}`;
-  document.getElementById('d-rodaje').textContent = shortDate(p.rodaje);
+  document.getElementById('d-rodaje').textContent = formatDate(p.rodaje);
   document.getElementById('d-piezas').textContent = p.piezas.length;
-  document.getElementById('d-entrega').textContent = shortDate(p.entrega);
+  document.getElementById('d-entrega').textContent = formatDate(p.entrega);
   const estadoLabels = { pre:'Pre-producción', prod:'Producción', post:'Post-producción', done:'Entregado' };
-  document.getElementById('d-meta').innerHTML = `<span class="m-tag post">${estadoLabels[p.estado]||p.estado}</span><span class="m-tag soon">Entrega: ${shortDate(p.entrega)}</span>`;
+  document.getElementById('d-meta').innerHTML = `<span class="m-tag post">${estadoLabels[p.estado]||p.estado}</span><span class="m-tag soon">Entrega: ${formatDate(p.entrega)}</span>`;
 }
 
 function getCurrentProject() { return projects.find(x => x.id === currentProjectId); }
@@ -1107,8 +1137,8 @@ async function saveEditProject() {
   p.sheetUrl = document.getElementById('ep-sheeturl').value.trim();
   const rodajeISO  = document.getElementById('ep-rodaje').value;
   const entregaISO = document.getElementById('ep-entrega').value;
-  if (rodajeISO)  p.rodaje  = fmtDateISO(rodajeISO);
-  if (entregaISO) p.entrega = fmtDateISO(entregaISO);
+  if (rodajeISO)  p.rodaje  = formatDate(rodajeISO);
+  if (entregaISO) p.entrega = formatDate(entregaISO);
   closeModal('editProyectoModal');
   await saveProjects();
   updateDetailHeader(p);
@@ -1292,57 +1322,75 @@ function renderStageTab(containerId, stages, dataKey, stateKey, p) {
     return;
   }
   const frameKey = 'framio' + dataKey.charAt(0).toUpperCase() + dataKey.slice(1);
-  document.getElementById(containerId).innerHTML = p.piezas.map((pieza, i) => {
-    const d = getPiezaData(p.id, pieza.id);
-    const est = d[stateKey];
-    const frameVal = (d[frameKey] || '').replace(/"/g,'&quot;');
-    return `<div class="piece-card" id="${dataKey}-pc-${pieza.id}">
-      <div class="piece-sum${i===0?' open':''}" onclick="togglePiece(this)">
-        <div class="p-left"><div class="p-name">${pieza.nombre}</div><div class="p-dur">${pieza.dur}</div></div>
-        <div class="p-date normal" style="min-width:100px;font-size:10px;color:${estColor(est)}">${est}</div>
-        <div class="p-chev${i===0?' open':''}">›</div>
-      </div>
-      <div class="p-detail${i===0?' open':''}">
-        <div class="dl">Estado general</div>
-        <div class="estado-wrap" id="${dataKey}-ew-${pieza.id}">
-          <div class="estado-dot" style="background:${estColor(est)}"></div>
-          <select class="estado-sel" onchange="setEstado(this,'${stateKey}',${pieza.id},'${dataKey}',${p.id})">
-            ${ESTADO_OPTS.map(o => `<option${o===est?' selected':''}>${o}</option>`).join('')}
-          </select>
+
+  // Group by country
+  const groups = {};
+  p.piezas.forEach(pieza => {
+    const pais = pieza.pais || 'Sin país';
+    if (!groups[pais]) groups[pais] = [];
+    groups[pais].push(pieza);
+  });
+
+  let html = '';
+  let globalIdx = 0;
+  Object.entries(groups).forEach(([pais, piezas]) => {
+    html += `<div class="pieza-pais-group"><div class="pieza-pais-hdr">${pais}</div>`;
+    piezas.forEach(pieza => {
+      const isFirst = globalIdx === 0;
+      globalIdx++;
+      const d = getPiezaData(p.id, pieza.id);
+      const est = d[stateKey];
+      const frameVal = (d[frameKey] || '').replace(/"/g,'&quot;');
+      html += `<div class="piece-card" id="${dataKey}-pc-${pieza.id}">
+        <div class="piece-sum${isFirst?' open':''}" onclick="togglePiece(this)">
+          <div class="p-left"><div class="p-name">${pieza.nombre}</div><div class="p-dur">${pieza.dur}</div></div>
+          <div class="p-date normal" style="min-width:100px;font-size:10px;color:${estColor(est)}">${est}</div>
+          <div class="p-chev${isFirst?' open':''}">›</div>
         </div>
-        <div class="dl">Etapas — click para cambiar</div>
-        <div class="stage-status-grid">
-          ${stages.map(s => {
-            const sv = d[dataKey+'Stages'][s]||'—';
-            const sc = ESTADO_CLS[sv]||'';
-            return `<div class="sst-item ${sc}" onclick="cycleEstado(this,'${dataKey}Stages','${s}',${pieza.id},${p.id})">
-              <div class="sst-name">${s}</div>
-              <div class="sst-dot"></div>
-              <div class="sst-label">${sv}</div>
-            </div>`;
-          }).join('')}
+        <div class="p-detail${isFirst?' open':''}">
+          <div class="dl">Estado general</div>
+          <div class="estado-wrap" id="${dataKey}-ew-${pieza.id}">
+            <div class="estado-dot" style="background:${estColor(est)}"></div>
+            <select class="estado-sel" onchange="setEstado(this,'${stateKey}',${pieza.id},'${dataKey}',${p.id})">
+              ${ESTADO_OPTS.map(o => `<option${o===est?' selected':''}>${o}</option>`).join('')}
+            </select>
+          </div>
+          <div class="dl">Etapas — click para cambiar</div>
+          <div class="stage-status-grid">
+            ${stages.map(s => {
+              const sv = d[dataKey+'Stages'][s]||'—';
+              const sc = ESTADO_CLS[sv]||'';
+              return `<div class="sst-item ${sc}" onclick="cycleEstado(this,'${dataKey}Stages','${s}',${pieza.id},${p.id})">
+                <div class="sst-name">${s}</div>
+                <div class="sst-dot"></div>
+                <div class="sst-label">${sv}</div>
+              </div>`;
+            }).join('')}
+          </div>
+          <div class="dl">Link Frame.io</div>
+          <div class="frameio-row">
+            <input type="text" value="${frameVal}" placeholder="https://app.frame.io/..."
+              onchange="getPiezaData(${p.id},${pieza.id})['${frameKey}']=this.value; savePiezaData()" id="frio-${dataKey}-${pieza.id}">
+            <button class="btn sm" onclick="openFramio('${frameKey}',${pieza.id},${p.id})">↗ Ver</button>
+          </div>
+          ${dataKey === 'offline' ? `
+          <div class="dl">Fecha de aprobación</div>
+          <input class="txt-input" type="date" style="max-width:180px" value="${d.offlineAprob||''}"
+            onchange="getPiezaData(${p.id},${pieza.id}).offlineAprob=this.value; savePiezaData()">
+          ` : `
+          <div class="dl">Fecha de entrega</div>
+          <input class="txt-input" type="date" style="max-width:180px" value="${d.onlineEntrega||''}"
+            onchange="getPiezaData(${p.id},${pieza.id}).onlineEntrega=this.value; savePiezaData()">
+          `}
+          <div class="dl">Comentarios</div>
+          <textarea class="txt-input" style="min-height:48px" placeholder="Notas de ${dataKey}..."
+            onchange="getPiezaData(${p.id},${pieza.id}).${dataKey}Comment=this.value; savePiezaData()">${d[dataKey+'Comment']||''}</textarea>
         </div>
-        <div class="dl">Link Frame.io</div>
-        <div class="frameio-row">
-          <input type="text" value="${frameVal}" placeholder="https://app.frame.io/..."
-            onchange="getPiezaData(${p.id},${pieza.id})['${frameKey}']=this.value; savePiezaData()" id="frio-${dataKey}-${pieza.id}">
-          <button class="btn sm" onclick="openFramio('${frameKey}',${pieza.id},${p.id})">↗ Ver</button>
-        </div>
-        ${dataKey === 'offline' ? `
-        <div class="dl">Fecha de aprobación</div>
-        <input class="txt-input" type="date" style="max-width:180px" value="${d.offlineAprob||''}"
-          onchange="getPiezaData(${p.id},${pieza.id}).offlineAprob=this.value; savePiezaData()">
-        ` : `
-        <div class="dl">Fecha de entrega</div>
-        <input class="txt-input" type="date" style="max-width:180px" value="${d.onlineEntrega||''}"
-          onchange="getPiezaData(${p.id},${pieza.id}).onlineEntrega=this.value; savePiezaData()">
-        `}
-        <div class="dl">Comentarios</div>
-        <textarea class="txt-input" style="min-height:48px" placeholder="Notas de ${dataKey}..."
-          onchange="getPiezaData(${p.id},${pieza.id}).${dataKey}Comment=this.value; savePiezaData()">${d[dataKey+'Comment']||''}</textarea>
-      </div>
-    </div>`;
-  }).join('');
+      </div>`;
+    });
+    html += '</div>';
+  });
+  document.getElementById(containerId).innerHTML = html;
 }
 
 function openFramio(frameKey, piezaId, projId) {
@@ -1524,7 +1572,7 @@ function saveFechaModal() {
   const idx = parseInt(document.getElementById('fm-edit-idx').value);
 
   let val = '';
-  if (isoFecha) val = fmtDateISO(isoFecha);
+  if (isoFecha) val = formatDate(isoFecha);
 
   if (idx >= 0) {
     const f = fechasData[idx];
@@ -1648,14 +1696,26 @@ function deleteDay(dayId) {
 }
 
 function addEntry(dayId) {
-  const day = dbdData.find(d => d.id === dayId); if (!day) return;
-  const time  = prompt('Horario (ej. "10:00"):') || '';
-  const title = prompt('Título:'); if (!title) return;
-  const note  = prompt('Nota (opcional):') || '';
-  const tags  = 'shoot / edit / cc / audio / online / entrega / agencia / cliente / aprobacion';
-  const tag   = prompt(`Tag (${tags}):`) || 'edit';
+  document.getElementById('ae-day-id').value = dayId;
+  document.getElementById('ae-time').value   = '';
+  document.getElementById('ae-title').value  = '';
+  document.getElementById('ae-note').value   = '';
+  document.getElementById('ae-tag').value    = 'edit';
+  document.getElementById('addEntryModal').classList.add('open');
+}
+
+function saveAddEntry() {
+  const dayId = document.getElementById('ae-day-id').value;
+  const day   = dbdData.find(d => d.id === dayId); if (!day) return;
+  const title = document.getElementById('ae-title').value.trim();
+  if (!title) { alert('Ingresá un título'); return; }
+  const time = document.getElementById('ae-time').value.trim();
+  const note = document.getElementById('ae-note').value.trim();
+  const tag  = document.getElementById('ae-tag').value;
   day.entries.push({ id:'e'+Date.now(), time, title, note, tag, hl:'' });
-  saveDBD(); renderDBD();
+  closeModal('addEntryModal');
+  saveDBD();
+  renderDBD();
   logActivity('Entrada agregada', title);
 }
 
@@ -1747,8 +1807,8 @@ function saveProject() {
     cliente,
     director: document.getElementById('f-director').value.trim(),
     nombre: document.getElementById('f-nombre').value.trim(),
-    rodaje: rodajeISO ? fmtDateISO(rodajeISO) : '—',
-    entrega: entregaISO ? fmtDateISO(entregaISO) : '—',
+    rodaje: rodajeISO ? formatDate(rodajeISO) : '—',
+    entrega: entregaISO ? formatDate(entregaISO) : '—',
     estado: document.getElementById('f-estado').value,
     piezas: []
   };
