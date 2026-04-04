@@ -1015,18 +1015,12 @@ const PIEZAS_POPEYES = [
   { id:117, nombre:'Radio PR',              dur:'15s',  fecha:'',       guion:'',         pais:'PR',  categoria:'Versiones' },
 ];
 
-let projects = [
+let projectsMex = [
   {
     id: 1, region: 'mex',
     cliente: "Popeye's", nombre: 'GUT', director: 'Lautaro Furiolo',
     rodaje: '23 Mar', entrega: '19 Abr', estado: 'post',
     piezas: PIEZAS_POPEYES, avatar: ''
-  },
-  {
-    id: 2, region: 'arg',
-    cliente: 'MELI', nombre: 'F1', director: 'Ivan Vescovo',
-    rodaje: '10 Abr', entrega: '1 Jun', estado: 'post',
-    piezas: [], avatar: ''
   },
   {
     id: 3, region: 'mex',
@@ -1035,6 +1029,23 @@ let projects = [
     piezas: [], avatar: ''
   }
 ];
+
+let projectsArg = [
+  {
+    id: 2, region: 'arg',
+    cliente: 'MELI', nombre: 'F1', director: 'Ivan Vescovo',
+    rodaje: '10 Abr', entrega: '1 Jun', estado: 'post',
+    piezas: [], avatar: ''
+  }
+];
+
+function getProjects() {
+  return currentUser?.region === 'arg' ? projectsArg : projectsMex;
+}
+
+function getProjectsForRegion(region) {
+  return region === 'arg' ? projectsArg : projectsMex;
+}
 
 let piezaData = {};
 let currentProjectId = null;
@@ -1311,15 +1322,14 @@ let fechasData = [];
 
 // ── BOARD ──
 function renderBoard() {
-  const userRegion   = currentUser?.region   || '';
   const userProyecto = currentUser?.proyecto || '';
   const userRol      = currentUser?.rol      || 'invitado';
+  const isAdmin      = userRol === 'admin';
 
-  const visible = projects.filter(p => {
-    if (userRegion && p.region && p.region !== userRegion) return false;
-    if (userRol === 'cliente' && userProyecto && p.nombre !== userProyecto) return false;
-    return true;
-  });
+  let visible = getProjects();
+  if (userRol === 'cliente' && userProyecto) {
+    visible = visible.filter(p => p.nombre === userProyecto || p.cliente === userProyecto);
+  }
 
   const groups = { pre:[], prod:[], post:[], done:[] };
   visible.forEach(p => { if (groups[p.estado]) groups[p.estado].push(p); });
@@ -1336,15 +1346,20 @@ function renderBoard() {
     groups[s].forEach(p => {
       const cnt = p.piezas.length;
       const dotColor = meta[p.estado]?.color || '#ccc';
-      const avatarHtml = p.avatar
-        ? `<div class="proj-avatar"><img src="${p.avatar}" alt=""></div>`
-        : `<div class="proj-avatar" style="background:${dotColor}20;color:${dotColor};border-color:${dotColor}40">${p.cliente.charAt(0).toUpperCase()}</div>`;
+      const avatarContent = p.avatar
+        ? `<img src="${p.avatar}" alt="">`
+        : `<span style="color:${dotColor}">${p.cliente.charAt(0).toUpperCase()}</span>`;
+      const avatarClick = isAdmin ? `onclick="event.stopPropagation();document.getElementById('av-${p.id}').click()"` : '';
+      const avatarStyle = `background:${p.avatar ? '#fff' : dotColor+'18'};border-color:${dotColor}40;cursor:${isAdmin ? 'pointer' : 'default'}`;
+      const avatarInput = isAdmin ? `<input type="file" accept="image/*" id="av-${p.id}" style="display:none" onchange="saveAvatarInline(this,${p.id})">` : '';
+      const deleteBtn = isAdmin ? `<button class="btn sm danger" style="flex-shrink:0" onclick="event.stopPropagation();deleteProject(${p.id})">✕</button>` : '';
       html += `<div class="proj-row" onclick="showDetail(${p.id})">
-        ${avatarHtml}
+        <div class="proj-avatar" style="${avatarStyle}" ${avatarClick}>${avatarContent}</div>
+        ${avatarInput}
         <div class="proj-info"><div class="proj-client">${p.cliente} <span style="font-size:12px;font-weight:400;color:var(--muted)">${p.nombre}</span></div><div class="proj-dir">${p.director}</div></div>
         <div class="proj-piezas">${cnt} pieza${cnt!==1?'s':''}</div>
         <div class="proj-date soon">${formatDate(p.entrega)}</div>
-        <button class="btn sm danger" style="flex-shrink:0" onclick="event.stopPropagation();deleteProject(${p.id})">✕</button>
+        ${deleteBtn}
         <div class="proj-arrow">›</div>
       </div>`;
     });
@@ -1355,8 +1370,13 @@ function renderBoard() {
 
 // ── DETAIL ──
 async function showDetail(id) {
-  const p = projects.find(x => x.id === id);
+  const p = getProjects().find(x => x.id === id);
   if (!p) return;
+  // Restrict clients to their assigned project
+  if (currentUser?.rol === 'cliente' && currentUser?.proyecto) {
+    const allowed = p.nombre === currentUser.proyecto || p.cliente === currentUser.proyecto;
+    if (!allowed) { showBoard(); return; }
+  }
   currentProjectId = id;
   updateDetailHeader(p);
   renderPiezas(p);
@@ -1383,14 +1403,16 @@ function updateDetailHeader(p) {
   document.getElementById('d-meta').innerHTML = `<span class="m-tag post">${estadoLabels[p.estado]||p.estado}</span><span class="m-tag soon">Entrega: ${formatDate(p.entrega)}</span>`;
 }
 
-function getCurrentProject() { return projects.find(x => x.id === currentProjectId); }
+function getCurrentProject() { return getProjects().find(x => x.id === currentProjectId); }
 
 async function deleteProject(id) {
-  const p = projects.find(x => x.id === id);
+  const arr = getProjects();
+  const p = arr.find(x => x.id === id);
   if (!p) return;
   if (!confirm(`¿Eliminar "${p.cliente} — ${p.nombre}"? Esta acción no se puede deshacer.`)) return;
   logActivity('Proyecto eliminado', `${p.cliente} — ${p.nombre}`, `${p.cliente} — ${p.nombre}`);
-  projects = projects.filter(x => x.id !== id);
+  if (currentUser?.region === 'arg') projectsArg = projectsArg.filter(x => x.id !== id);
+  else projectsMex = projectsMex.filter(x => x.id !== id);
   await saveProjects();
   renderBoard();
 }
@@ -1501,7 +1523,7 @@ function renderPiezas(p) {
               onchange="getPiezaData(${p.id},${pieza.id}).comment=this.value; savePiezaData()">${d.comment||''}</textarea>
             <div class="piece-actions" style="gap:6px">
               <button class="btn sm" onclick="openEditPieza(${pieza.id})">✎ Editar</button>
-              <button class="btn sm danger" onclick="deletePieza(${pieza.id})">Eliminar pieza</button>
+              ${currentUser?.rol === 'admin' ? `<button class="btn sm danger" onclick="deletePieza(${pieza.id})">Eliminar pieza</button>` : ''}
             </div>
           </div>
         </div>`;
@@ -2080,6 +2102,19 @@ function closeModalOutside(e, id) {
   if (e.target === document.getElementById(id)) closeModal(id);
 }
 
+function saveAvatarInline(input, pid) {
+  const file = input.files[0]; if (!file) return;
+  const arr = getProjects();
+  const p = arr.find(x => x.id === pid); if (!p) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    p.avatar = e.target.result;
+    saveProjects();
+    renderBoard();
+  };
+  reader.readAsDataURL(file);
+}
+
 function previewAvatar(input, previewId) {
   const file = input.files[0]; if (!file) return;
   const reader = new FileReader();
@@ -2124,7 +2159,8 @@ function saveProject() {
     avatar:   getAvatarBase64('f-avatar-preview'),
     piezas: []
   };
-  projects.push(newProj);
+  if (currentUser?.region === 'arg') projectsArg.push(newProj);
+  else projectsMex.push(newProj);
   closeModal('modalProyecto');
   saveProjects();
   renderBoard();
@@ -2178,30 +2214,54 @@ function switchTab(tab, btn) {
 
 // ── PERSISTENCE: PROJECTS ──
 async function saveProjects() {
-  localStorage.setItem('projects_v1', JSON.stringify(projects));
-  const rows = projects.map(p => [p.id, p.cliente, p.nombre, p.director, p.rodaje, p.entrega, p.estado, JSON.stringify(p.piezas), p.sheetUrl||'', p.region||'', p.avatar||'']);
+  localStorage.setItem('projects_mex', JSON.stringify(projectsMex));
+  localStorage.setItem('projects_arg', JSON.stringify(projectsArg));
+  const allProjects = [...projectsMex, ...projectsArg];
+  const rows = allProjects.map(p => [p.id, p.cliente, p.nombre, p.director, p.rodaje, p.entrega, p.estado, JSON.stringify(p.piezas), p.sheetUrl||'', p.region||'', p.avatar||'']);
   try {
     await fetch(SHEETS_URL, { method:'POST', body: JSON.stringify({ tab:'projects', data:rows }) });
   } catch(e) {}
 }
 
+function parseProjectRow(r) {
+  return {
+    id: Number(r[0]), cliente: r[1], nombre: r[2], director: r[3],
+    rodaje: r[4], entrega: r[5], estado: r[6],
+    piezas: (() => { try { return JSON.parse(r[7]); } catch(e) { return []; } })(),
+    sheetUrl: r[8] || '', region: r[9] || '', avatar: r[10] || ''
+  };
+}
+
 async function loadProjects() {
+  // Try loading from Sheets first
   try {
     const res = await fetch(SHEETS_URL + '?tab=projects');
     const rows = await res.json();
     if (Array.isArray(rows) && rows.length) {
-      projects = rows.map(r => ({
-        id: Number(r[0]), cliente: r[1], nombre: r[2], director: r[3],
-        rodaje: r[4], entrega: r[5], estado: r[6],
-        piezas: (() => { try { return JSON.parse(r[7]); } catch(e) { return []; } })(),
-        sheetUrl: r[8] || '', region: r[9] || '', avatar: r[10] || ''
-      }));
-      localStorage.setItem('projects_v1', JSON.stringify(projects));
+      const all = rows.map(parseProjectRow);
+      projectsMex = all.filter(p => p.region !== 'arg');
+      projectsArg = all.filter(p => p.region === 'arg');
+      localStorage.setItem('projects_mex', JSON.stringify(projectsMex));
+      localStorage.setItem('projects_arg', JSON.stringify(projectsArg));
       return;
     }
   } catch(e) {}
-  const s = localStorage.getItem('projects_v1');
-  if (s) { try { projects = JSON.parse(s); } catch(e){} }
+  // Fallback to localStorage (separate keys)
+  const sm = localStorage.getItem('projects_mex');
+  if (sm) { try { projectsMex = JSON.parse(sm); } catch(e) {} }
+  const sa = localStorage.getItem('projects_arg');
+  if (sa) { try { projectsArg = JSON.parse(sa); } catch(e) {} }
+  // Legacy migration from old single key
+  if (!sm && !sa) {
+    const old = localStorage.getItem('projects_v1');
+    if (old) {
+      try {
+        const all = JSON.parse(old);
+        projectsMex = all.filter(p => p.region !== 'arg');
+        projectsArg = all.filter(p => p.region === 'arg');
+      } catch(e) {}
+    }
+  }
 }
 
 // ── PERSISTENCE: PIEZA DATA ──
