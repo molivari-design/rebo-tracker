@@ -404,10 +404,12 @@
 <div id="loginOverlay">
   <div class="login-logo">POST TRACKER</div>
   <div class="login-sub">Acceso privado</div>
-  <input type="password" id="loginInput" class="form-input" style="max-width:240px;text-align:center" placeholder="Contraseña"
+  <input class="form-input" id="loginNombre" type="text" style="max-width:240px;text-align:center" placeholder="Nombre"
+    onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
+  <input class="form-input" id="loginPass" type="password" style="max-width:240px;text-align:center" placeholder="Contraseña"
     onkeydown="if(event.key==='Enter')doLogin()">
-  <button class="btn ink" onclick="doLogin()" style="min-width:160px;padding:10px">ENTRAR</button>
-  <div id="loginError">Contraseña incorrecta</div>
+  <button class="btn ink" id="loginBtn" onclick="doLogin()" style="min-width:160px;padding:10px">ENTRAR</button>
+  <div id="loginError">Usuario o password incorrecto</div>
 </div>
 
 <!-- NOTIFICATION PANEL -->
@@ -428,6 +430,8 @@
     </div>
     <button class="btn sm icon-btn" id="darkToggle" onclick="toggleDark()" title="Modo oscuro"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M17 12.5A7 7 0 0 1 9.5 3a7 7 0 1 0 7.5 9.5z"/></svg></button>
     <button class="btn sm icon-btn" onclick="toggleNotifPanel()" title="Actividad"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2a6 6 0 0 1 6 6v3l1.5 2.5H2.5L4 11V8a6 6 0 0 1 6-6z"/><path d="M8.5 16.5a1.5 1.5 0 0 0 3 0"/></svg></button>
+    <span id="headerUser" style="font-size:11px;color:var(--muted);display:none"></span>
+    <button class="btn sm" id="logoutBtn" style="display:none" onclick="doLogout()">Salir</button>
     <button class="btn ink" onclick="openModal('proyecto')">+ Nuevo proyecto</button>
   </div>
 </header>
@@ -730,19 +734,74 @@ const SVG_MOON = `<svg width="18" height="18" viewBox="0 0 20 20" fill="none" st
 const SVG_SUN  = `<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="3.5"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="10" y1="16" x2="10" y2="18"/><line x1="2" y1="10" x2="4" y2="10"/><line x1="16" y1="10" x2="18" y2="10"/><line x1="4.5" y1="4.5" x2="5.9" y2="5.9"/><line x1="14.1" y1="14.1" x2="15.5" y2="15.5"/><line x1="15.5" y1="4.5" x2="14.1" y2="5.9"/><line x1="5.9" y1="14.1" x2="4.5" y2="15.5"/></svg>`;
 
 // ── LOGIN ──
-function doLogin() {
-  if (document.getElementById('loginInput').value === 'rebo2026') {
-    sessionStorage.setItem('auth','1');
-    document.getElementById('loginOverlay').style.display = 'none';
-  } else {
-    document.getElementById('loginError').style.display = 'block';
-    document.getElementById('loginInput').value = '';
-    document.getElementById('loginInput').focus();
+const USERS_CSV_URL = 'https://docs.google.com/spreadsheets/d/1KqAym0of976_GzTxiR-kmOvUgOs1n-6-qaR5HhlGkag/export?format=csv';
+let currentUser = null;
+
+async function doLogin() {
+  const nombre = document.getElementById('loginNombre').value.trim();
+  const pass   = document.getElementById('loginPass').value;
+  const errEl  = document.getElementById('loginError');
+  const btn    = document.getElementById('loginBtn');
+  if (!nombre || !pass) { errEl.style.display = 'block'; errEl.textContent = 'Ingresá nombre y contraseña'; return; }
+  errEl.style.display = 'none';
+  btn.textContent = 'Verificando...'; btn.disabled = true;
+  try {
+    const res  = await fetch(USERS_CSV_URL);
+    const text = await res.text();
+    const rows = text.split('\n').map(l => l.trim()).filter(Boolean).slice(1); // skip header
+    let matched = null;
+    for (const row of rows) {
+      const cols = row.split(',').map(c => c.replace(/^"|"$/g,'').trim());
+      if (cols[0].toLowerCase() === nombre.toLowerCase() && cols[1] === pass) {
+        matched = { nombre: cols[0], rol: cols[2] || 'invitado' };
+        break;
+      }
+    }
+    if (matched) {
+      currentUser = matched;
+      sessionStorage.setItem('auth', JSON.stringify(matched));
+      document.getElementById('loginOverlay').style.display = 'none';
+      applyUserHeader();
+    } else {
+      errEl.textContent = 'Usuario o password incorrecto';
+      errEl.style.display = 'block';
+      document.getElementById('loginPass').value = '';
+      document.getElementById('loginPass').focus();
+    }
+  } catch(e) {
+    errEl.textContent = 'Error de conexión — verificá tu red';
+    errEl.style.display = 'block';
   }
+  btn.textContent = 'ENTRAR'; btn.disabled = false;
 }
+
+function doLogout() {
+  sessionStorage.removeItem('auth');
+  currentUser = null;
+  document.getElementById('headerUser').style.display = 'none';
+  document.getElementById('logoutBtn').style.display  = 'none';
+  document.getElementById('loginNombre').value = '';
+  document.getElementById('loginPass').value   = '';
+  document.getElementById('loginError').style.display = 'none';
+  document.getElementById('loginOverlay').style.display = 'flex';
+}
+
+function applyUserHeader() {
+  if (!currentUser) return;
+  const el = document.getElementById('headerUser');
+  el.textContent = currentUser.nombre;
+  el.style.display = 'inline';
+  document.getElementById('logoutBtn').style.display = 'inline-flex';
+}
+
 function checkAuth() {
-  if (sessionStorage.getItem('auth') === '1') {
-    document.getElementById('loginOverlay').style.display = 'none';
+  const s = sessionStorage.getItem('auth');
+  if (s) {
+    try {
+      currentUser = JSON.parse(s);
+      document.getElementById('loginOverlay').style.display = 'none';
+      applyUserHeader();
+    } catch(e) { sessionStorage.removeItem('auth'); }
   }
 }
 
@@ -763,9 +822,10 @@ function initDark() {
 function logActivity(action, detail, projOverride) {
   const p = getCurrentProject();
   const proj = projOverride || (p ? `${p.cliente} — ${p.nombre}` : '');
+  const user = currentUser ? currentUser.nombre : '';
   let log = [];
   try { log = JSON.parse(localStorage.getItem('activity_log') || '[]'); } catch(e) {}
-  log.unshift({ ts: new Date().toISOString(), proj, action, detail: detail || '' });
+  log.unshift({ ts: new Date().toISOString(), proj, action, detail: detail || '', user });
   if (log.length > 50) log = log.slice(0, 50);
   localStorage.setItem('activity_log', JSON.stringify(log));
 }
@@ -808,6 +868,7 @@ function renderNotifPanel() {
   list.innerHTML = log.map(e => {
     const icon = NOTIF_ICONS[e.action] || '·';
     const timeStr = fmtNotifTime(e.ts);
+    const metaParts = [timeStr, e.user || ''].filter(Boolean).join(' · ');
     return `<div class="notif-item">
       <div style="display:flex;align-items:flex-start;gap:10px">
         <span style="font-size:14px;flex-shrink:0;margin-top:1px;color:var(--muted2)">${icon}</span>
@@ -815,7 +876,7 @@ function renderNotifPanel() {
           ${e.proj ? `<div style="font-size:11px;font-weight:600;margin-bottom:2px;color:var(--ink)">${e.proj}</div>` : ''}
           <div class="notif-action">${e.action}</div>
           ${e.detail ? `<div class="notif-detail">${e.detail}</div>` : ''}
-          <div class="notif-meta" style="margin-top:3px">${timeStr}</div>
+          <div class="notif-meta" style="margin-top:3px">${metaParts}</div>
         </div>
       </div>
     </div>`;
